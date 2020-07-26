@@ -1,0 +1,26 @@
+
+基础框架
+===
+版本|描述|时间
+---|---|---
+0.0.1-SNAPSHOT|修复jetty运行时静态文件死锁的问题|2018-04-26 13:43
+
+
+
+
+
+环境：JDK1.7
+
+
+```
+ <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
+  </properties>
+```
+
+有关项目启动和配置的说明：
+
+1、。。。。<br>
+
+有疑问请及时反馈黄杰忠

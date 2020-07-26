@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title>bootstrapTable_demo</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <style>
+        /* 时序图样式 */
+        .chartBlock{position:relative; padding-top:10px; margin-right:20px;}
+        .chartBlock .yAxis{position:relative; z-index:100; width:15%; overflow:hidden; border-right:1px solid  #EBEBEB;}
+        .chartBlock .yAxis .yAxis_inner{width:125%;}
+        .chartBlock .yAxis .axisLine .axis_label{height:50px; padding-right:10px;}
+
+        .chartBlock .xAxis{position:relative; width:85%; height:100%; overflow-x:auto;}
+        .chartBlock .xAxis .axisLine{position:relative; z-index:1; border-top:1px solid #EBEBEB;}
+        .chartBlock .xAxis .axisLine .axis_item{position:relative; float:left; width:20%; height:20px;}
+        .chartBlock .xAxis .axisLine .axis_item:before{content:""; position:absolute; left:0; bottom:20px; z-index:0; width:1px; height:500px; background:#EBEBEB;}
+        .chartBlock .xAxis .axisLine .axis_item span{position:absolute; left:-20%; display:block; width:100%;}
+        .chartBlock .xAxis .axisLine .axis_item:first-child span{left:0;}
+        .chartBlock .xAxis .axisLine .axis_item_last{position:absolute; right:0;}
+        .chartBlock .xAxis .axisLine .axis_item_last:before{right:0; left:auto;}
+        .chartBlock .xAxis .axisLine .axis_item_last span{position:absolute; left:20%; text-align:right;}
+        .chartBlock .xAxis .axisLine .axisLine_long{position:relative;}
+
+        .chartBlock .xAxis .axisBars{position:relative; z-index:10;}
+        .chartBlock .xAxis .axisBars .axis_bar{height:50px;}
+        .chartBlock .xAxis .axisBars .axis_bar .barLine{position:relative; height:20px; background:#F4F250;}
+        .chartBlock .xAxis .axisBars .axis_bar .bar_item{position:absolute; top:0; height:100%;}
+        .chartBlock .xAxis .axisBars .axis_bar .bar_item-gc{left:0; background:#04964D;}
+        .chartBlock .xAxis .axisBars .axis_bar .bar_item-zf{background:#5A9CD9;}
+        .colorIntro{margin-top:10px; text-align:center;}
+        .colorIntro .item{display:inline-block; margin:0 10px;}
+        .colorIntro .item .color{display:inline-block; width:24px; height:13px; margin-right:3px; vertical-align:middle; border-radius:2px;}
+        .colorIntro .item .color-1{background:#04964D;}
+        .colorIntro .item .color-2{background:#5A9CD9;}
+        .colorIntro .item .color-3{background:#F4F250;}
+        /* 设定滚动高度 */
+        .chartBlock{height:260px !important;}
+        .chartBlock .yAxis .yAxis_inner,
+        .chartBlock .xAxis .axisBars{height:210px; overflow-y:auto;}
+
+        .showBarInfo{position:absolute; padding:10px; z-index:999999999; color:#FFF; background:#828282; border-radius:6px;}
+        .showBarInfo li{line-height:25px;}
+    </style>
+    <style>
+        /* 封闭资源柱状图 */
+        .barChart{height:300px; padding-right:15px;}
+        .barChart .yAxis{position:relative; z-index:100; width:25%; border-right:1px solid  #000;}
+        .barChart .yAxis .axisLine .axis_label{height:27px; padding-right:10px; font-size:12px;}
+        .barChart .xAxis{position:relative; width:75%;}
+        .barChart .xAxis:before{content:"0"; position:absolute; bottom:0; left:0;}
+        .barChart .xAxis .axisLine{position:relative; z-index:1; border-top:1px solid #000;}
+        .barChart .xAxis .axisLine .axis_item{position:relative; float:left; width:20%; height:20px; text-align:right;}
+        .barChart .xAxis .axisLine .axis_item:before{content:""; position:absolute; right:0; bottom:20px; z-index:0; width:1px; height:190px; background:#EBEBEB;}
+        .barChart .xAxis .axisLine .axis_item span{position:absolute; right:-10px;}
+        .barChart .xAxis .axisLine .axis_item_last{position:absolute; right:0;}
+        .barChart .xAxis .axisLine .axis_item_last:before{right:0; left:auto;}
+        .barChart .xAxis .axisLine .axis_item_last span{position:absolute; left:20%; text-align:right;}
+        .barChart .xAxis .axisLine .axisLine_long{position:relative;}
+        .barChart .xAxis .axisBars{position:relative; z-index:10;}
+        .barChart .xAxis .axisBars .axis_bar{position:relative; height:27px; cursor:pointer;}
+        .barChart .xAxis .axisBars .axis_bar .bar_item{position:absolute; left:0; top:0; height:15px;}
+        .barChart .xAxis .axisBars .axis_bar .bar_item-jhs{background:#1C9493;}
+        .barChart .xAxis .axisBars .axis_bar .bar_item-zxs{background:#7CB554;}
+    </style>
+    <style>
+        /* 年度执行情况 */
+        .bar2Chart{height:300px; padding-top:20px;}
+        .bar2Chart .xAxis .axisLine{position:relative; width:10%; border-right:1px solid #000;}
+        .bar2Chart .xAxis .axisLine:before{content:"0"; position:absolute; bottom:-10px; right:10px;}
+        .bar2Chart .xAxis .axisLine .axis_label{position:relative; height:40px;}
+        .bar2Chart .xAxis .axisLine .axis_label:before{content:""; position:absolute; right:0; top:0; width:5px; height:1px; background:#000;}
+        .bar2Chart .xAxis .axisLine .axis_label:after{content:""; position:absolute; left:100%; top:0; width:900%; height:1px; background:#BEBEBE;}
+        .bar2Chart .xAxis .axisLine .axis_label span{position:absolute; right:10px; top:-10px;}
+        .bar2Chart .xAxis .axisBars{width:90%; height:200px;}
+        .bar2Chart .xAxis .axisBars .axis_bar{height:100%;}
+        .bar2Chart .xAxis .axisBars .axis_bar-inner{width:60px; height:100%; margin:0 auto;}
+        .bar2Chart .xAxis .axisBars .bar_item{position:relative; width:20px; height:100%; margin:0 5px;}
+        .bar2Chart .xAxis .axisBars .bar_item .color_item{position:absolute; bottom:0; width:100%;}
+        .bar2Chart .xAxis .axisBars .bar_item .color_item-tdjh{background:#C23531;}
+        .bar2Chart .xAxis .axisBars .bar_item .color_item-tdzx{background:#2F4554;}
+        .bar2Chart .xAxis .axisBars .bar_item .color_item-xmjh{background:#61A0A8;}
+        .bar2Chart .xAxis .axisBars .bar_item .color_item-xmzx{background:#D48265;}
+        .bar2Chart .yAxis{margin-left:10%;}
+        .bar2Chart .yAxis .axisLine{position:relative; z-index:1; border-top:1px solid #000;}
+        .bar2Chart .yAxis .axis_item:before{content:""; position:absolute; right:0; top:0; width:1px; height:5px; background:#000;}
+        .bar2Chart .yAxis .axisLine .axis_item{position:relative; float:left; height:20px; text-align:center;}
+    </style>
+    <script>
+        $(function () {
+            var data = {
+                "TASKLIST": [{
+                    "ID": 1,
+                    "DATE1": "2018-01-02",
+                    "NAME": "项目1",
+                    "DATE2": "2018-03-04",
+                    "DATE3": "2019-01-02",
+                    "DATE4": "2019-08-07"
+                }, {
+                    "ID": 2,
+                    "DATE1": "2018-08-09",
+                    "NAME": "项目2",
+                    "DATE2": "2018-10-09",
+                    "DATE3": "2019-02-01",
+                    "DATE4": "2019-03-02"
+                }, {
+                    "ID": 3,
+                    "DATE1": "2018-12-09",
+                    "NAME": "项目3",
+                    "DATE2": "2019-06-09",
+                    "DATE3": "2019-07-01",
+                    "DATE4": "2020-03-01"
+                }, {
+                    "ID": 4,
+                    "DATE1": "2019-08-09",
+                    "NAME": "项目4",
+                    "DATE2": "2019-11-09",
+                    "DATE3": "2019-12-01",
+                    "DATE4": "2021-03-01"
+                }, {
+                    "ID": 5,
+                    "DATE1": "2019-10-09",
+                    "NAME": "项目5",
+                    "DATE2": "2030-06-09",
+                    "DATE3": "2028-06-01",
+                    "DATE4": "2032-03-01"
+                }],
+                "MINDATE": "2018-01-02",
+                "MAXDATE": "2032-03-01"
+            };
+            setChart(data, $(".chartBlock"));
+
+            var data2 = {
+                "MAXDATE":"600",
+                "TASKLIST":[
+                    {"GUID":1,"MC":"存量土地","JHS":150,"ZXS":320},
+                    {"GUID":2,"MC":"存量房产","JHS":300,"ZXS":200},
+                    {"GUID":3,"MC":"存量项目","JHS":110,"ZXS":180},
+                    {"GUID":4,"MC":"配置土地","JHS":400,"ZXS":200},
+                    {"GUID":5,"MC":"区县分担","JHS":50,"ZXS":100},
+                    {"GUID":6,"MC":"ppp社会资金","JHS":20,"ZXS":10},
+                    {"GUID":7,"MC":"其他","JHS":100,"ZXS":600}
+                ]
+            };
+            // drawFBZY(data2, $("#fbzy"));
+
+            var data3 = {
+                "MAXDATE":"65",
+                "TASKLIST": [
+                    {"XMZX":54,"TDJH":21,"MC":"平台1","XMJH":16,"TDZX":16},
+                    {"XMZX":13,"TDJH":32,"MC":"平台2","XMJH":65,"TDZX":32},
+                    {"XMZX":32,"TDJH":41,"MC":"平台3","XMJH":43,"TDZX":23},
+                    {"XMZX":24,"TDJH":13,"MC":"平台4","XMJH":24,"TDZX":21}
+                ]
+            };
+            // drawNDZX(data3, $("#ndzx2"));
+        });
+
+        function drawNDZX(data, target){
+            var colors = ['#C23531', '#2F4554', '#61A0A8', '#D48265'],
+                multi = 20,
+                totalHeight = getTenMultiple(parseInt(data.MAXDATE), multi),//x轴总宽
+                splitNum = totalHeight / multi,//x轴的分割段数
+                interval = Math.ceil(totalHeight / splitNum),//x轴等分后每份的值
+                intervalWidth = 100 / data.TASKLIST.length,
+                tdjh_percentArr = [],//土地计划占比
+                tdzx_percentArr = [],//土地执行占比
+                xmjh_percentArr = [],//项目计划占比
+                xmzx_percentArr = [],//项目执行占比
+                yAxisValArr = [],//y轴的值
+                yAxisHtml = '<div class="yAxis"><div class="axisLine clearfix">',
+                xAxisHtml = '<div class="xAxis clearfix">',
+                xAxis_barHtml = '<div class="axisBars pull-left">',
+                xAxis_LineHtml = '<div class="axisLine pull-left">';
+
+            //计算y轴
+            for(var i=0; i<splitNum; i++){
+                var prevVal = (i===0) ? 0 : yAxisValArr[i-1];
+                yAxisValArr.push(prevVal + interval);
+            }
+            yAxisValArr.reverse();
+
+            $.each(data.TASKLIST, function(key, val){
+                tdjh_percentArr.push(val.TDJH / totalHeight);
+                tdzx_percentArr.push(val.TDZX / totalHeight);
+                xmjh_percentArr.push(val.XMJH / totalHeight);
+                xmzx_percentArr.push(val.XMZX / totalHeight);
+
+                yAxisHtml += '<div class="axis_item" style="width:'+ intervalWidth +'%;"><span>'+ val.MC +'</span></div>';
+
+                //执行和计划，值小的覆盖值大的
+                var classNameArr1 = ["tdjh", "tdzx"],
+                    classNameArr2 = ["xmjh", "xmzx"],
+                    widthValArr1 = [tdjh_percentArr[key]*100, tdzx_percentArr[key]*100],
+                    widthValArr2 = [xmjh_percentArr[key]*100, xmzx_percentArr[key]*100];
+                if(tdjh_percentArr[key] < tdzx_percentArr[key]){
+                    classNameArr1.reverse();
+                    widthValArr1.reverse();
+                }
+                if(xmjh_percentArr[key] < xmzx_percentArr[key]){
+                    classNameArr2.reverse();
+                    widthValArr2.reverse();
+                }
+                xAxis_barHtml += '<div class="axis_bar pull-left clearfix" style="width:'+ intervalWidth +'%;">' +
+                    '<div class="axis_bar-inner">' +
+                    '    <div class="bar_item bar_item_1 pull-left">' +
+                    '        <div class="color_item color_item-'+ classNameArr1[0] +'" style="height:'+ widthValArr1[0] +'%;"></div>' +
+                    '        <div class="color_item color_item-'+ classNameArr1[1] +'" style="height:'+ widthValArr1[1] +'%;"></div>' +
+                    '    </div>' +
+                    '    <div class="bar_item bar_item_2 pull-left">' +
+                    '        <div class="color_item color_item-'+ classNameArr2[0] +'" style="height:'+ widthValArr2[0] +'%;"></div>' +
+                    '        <div class="color_item color_item-'+ classNameArr2[1] +'" style="height:'+ widthValArr2[1] +'%;"></div>' +
+                    '    </div>' +
+                    '</div></div>';
+            });
+
+            $.each(yAxisValArr, function (i) {
+                xAxis_LineHtml += '<div class="axis_label text-right"><span>'+ yAxisValArr[i] +'</span></div>';
+            });
+
+            xAxis_barHtml += '</div>';
+            xAxis_LineHtml += '</div>';
+            xAxisHtml += xAxis_LineHtml + xAxis_barHtml + '</div>';
+            yAxisHtml += '</div></div>';
+
+            target.addClass("bar2Chart clearfix").html(xAxisHtml + yAxisHtml);
+            target.find(".axisBars").height(target.find(".xAxis .axisLine").height());
+
+            //绑定鼠标移入事件;绑定点击事件
+            var timer = null;
+            target.find(".axis_bar-inner").hover(function(e){
+                var othis = $(this);
+                timer = setTimeout(function(){
+                    var barIndex = othis.index(),
+                        barData = data["TASKLIST"][barIndex],
+                        infoHtml = $('<ul class="list-unstyled showBarInfo" style="display:none; left:'+ e.pageX +'px; top:'+ e.pageY +'px;">' +
+                            '<li>'+ barData.MC +'</li>' +
+                            '<li><b>土地计划：</b>'+ barData.TDJH +'</li>' +
+                            '<li><b>土地执行：</b>'+ barData.TDZX +'</li>' +
+                            '<li><b>项目计划：</b>'+ barData.XMJH +'</li>' +
+                            '<li><b>项目执行：</b>'+ barData.XMZX +'</li>' +
+                            '</ul>');
+                    infoHtml.appendTo($("body")).fadeIn(400);
+                }, 100);
+            }, function(){
+                clearTimeout(timer);
+                $(".showBarInfo").remove();
+            });
+        }
+        //获取20的倍数
+        function getTenMultiple(number, multi){
+            var multi = (multi===undefined) ? 20 : multi,
+                res = number;
+            for(var j = 1; j <= multi; j++){
+                if(number % multi === 0){
+                    res = number;
+                    return res;
+                }
+
+                if((number+j) % multi === 0){
+                    res = number + j;
+                    return res;
+                }
+            }
+        }
+
+        function drawFBZY(data, target){
+            var totalWidth = parseInt(data.MAXDATE),//x轴总宽
+                splitNum = 5,//x轴的分割段数
+                interval = Math.ceil(totalWidth / splitNum),//x轴等分后每份的值
+                jh_percentArr = [],//计划占比
+                zx_percentArr = [],//执行占比
+                xAxisValArr = [],//x轴的值
+                yAxisHtml = '<div class="yAxis pull-left">',
+                xAxisHtml = '<div class="xAxis pull-left">',
+                xAxis_barHtml = '<div class="axisBars">',
+                xAxis_labelHtml = '<div class="axisLine clearfix">',
+                titleHtml = '<h4 class="col-xs-12 text-center"><b>封闭资源盘活情况</b></h4>';
+
+            //计算x轴
+            for(var i=0; i<splitNum; i++){
+                var prevVal = (i===0) ? 0 : xAxisValArr[i-1];
+                xAxisValArr.push(prevVal + interval);
+            }
+            $.each(data.TASKLIST, function(key, val){
+                jh_percentArr.push(val.JHS / totalWidth);
+                zx_percentArr.push(val.ZXS / totalWidth);
+
+                //执行和计划，值小的覆盖值大的
+                var classNameArr = [], widthValArr = [];
+                if(jh_percentArr[key] > zx_percentArr[key]){
+                    classNameArr = ["jhs", "zxs"];
+                    widthValArr = [jh_percentArr[key]*100, zx_percentArr[key]*100];
+                }else{
+                    classNameArr = ["zxs", "jhs"];
+                    widthValArr = [zx_percentArr[key]*100, jh_percentArr[key]*100];
+                }
+
+                xAxis_barHtml += '<div class="axis_bar clearfix" data-guid="'+ val.GUID +'">' +
+                    '    <div class="bar_item bar_item-'+ classNameArr[0] +'" style="width:'+ widthValArr[0] +'%;"></div>' +
+                    '    <div class="bar_item bar_item-'+ classNameArr[1] +'" style="width:'+ widthValArr[1] +'%;"></div>' +
+                    '</div>';
+
+                yAxisHtml += '<div class="axisLine"><div class="axis_label text-right">'+ val.MC +'</div></div>';
+            });
+            $.each(xAxisValArr, function (i) {
+                xAxis_labelHtml += '<div class="axis_item"><span>'+ xAxisValArr[i] +'</span></div>';
+            });
+
+            xAxis_barHtml += '</div>';
+            xAxis_labelHtml += '</div>';
+            xAxisHtml += xAxis_barHtml + xAxis_labelHtml + '</div>';
+            yAxisHtml += '</div>';
+
+            var colors = ["#1C9493", "#7CB554"];
+            var colorIntro = '<div class="colorIntro clearfix col-xs-12">' +
+                '<div class="item"><i class="color" style="background:'+colors[0]+';"></i><span>计划</span></div>' +
+                '<div class="item"><i class="color" style="background:'+colors[1]+';"></i><span>执行</span></div>' +
+                '</div>';
+
+            target.addClass("barChart clearfix").html(titleHtml + yAxisHtml + xAxisHtml + colorIntro);
+
+            //绑定鼠标移入事件;绑定点击事件
+            var timer = null;
+            target.find(".bar_item").hover(function(e){
+                var othis = $(this);
+                timer = setTimeout(function(){
+                    var barIndex = othis.parent().index(),
+                        barData = data["TASKLIST"][barIndex],
+                        infoHtml = $('<ul class="list-unstyled showBarInfo" style="display:none; left:'+ e.pageX +'px; top:'+ e.pageY +'px;">' +
+                            '<li>'+ barData.MC +'</li>' +
+                            '<li><b>计划：</b>'+ barData.JHS +'</li>' +
+                            '<li><b>执行：</b>'+ barData.ZXS +'</li>' +
+                            '</ul>');
+                    infoHtml.appendTo($("body")).fadeIn(400);
+                }, 100);
+            }, function(){
+                clearTimeout(timer);
+                $(".showBarInfo").remove();
+
+            });
+        }
+
+        //画 图表
+        function setChart(data, target){
+            var task_dateRangeArr = [],//每个项目的总天数
+                task_percentArr = [],//每个项目所占的百分比
+                task_dateRangeArr_s = [],//每个项目内每个阶段的天数范围
+                task_percentArr_s = [],//每个项目内每个阶段所占的百分比
+                blankArr = [],//每个项目最开始的空白部分
+                blankPercentArr = [],//每个项目最开始的空白部分占比
+                xAxisHtml = '<div class="xAxis pull-left">',
+                yAxisHtml = '<div class="yAxis pull-left"><div class="yAxis_inner">',
+                xAxisRangeArr = setXAxisRange(data.MINDATE, data.MAXDATE),
+                totalDateRange = getDateRange(data.MINDATE, xAxisRangeArr[xAxisRangeArr.length-1]);//总时间天数
+
+            var longWidth = (xAxisRangeArr.length > 5) ? 100*(xAxisRangeArr.length-1) : "100%";
+            xAxisHtml += '<div class="axisLine_long clearfix" style="width:'+ longWidth +'px;">' +
+                '<div class="axisBars">';
+
+            $.each(data.TASKLIST, function(i){
+                blankArr[i] = getDateRange(data.MINDATE, this.DATE1);
+                blankPercentArr[i] = blankArr[i] / totalDateRange;
+                task_dateRangeArr[i] = getDateRange(this.DATE1, this.DATE4);
+                task_percentArr[i] = task_dateRangeArr[i] / totalDateRange;
+                task_dateRangeArr_s[i] = [getDateRange(this.DATE1, this.DATE2), getDateRange(this.DATE1, this.DATE3)];
+
+                task_percentArr_s[i] = [];
+                $.each(task_dateRangeArr_s[i], function(k, v){
+                    task_percentArr_s[i].push(v / task_dateRangeArr[i]);
+                });
+
+                var task_perHtml = "", classArr = ['gc', 'zf'];
+                $.each(task_percentArr_s[i], function (k) {
+                    if(task_percentArr_s[i][0] < task_percentArr_s[i][1]){
+                        task_percentArr_s[i].reverse();
+                        classArr.reverse();
+                    }
+                    task_perHtml += '<div class="bar_item bar_item-'+ classArr[k] +'" style="width:'+ task_percentArr_s[i][k]*100 +'%;"></div>';
+                });
+
+                xAxisHtml += '<div class="axis_bar">' +
+                    '    <div class="barLine clearfix" style="width:'+ task_percentArr[i]*longWidth +'px; margin-left:'+ blankPercentArr[i]*longWidth +'px;">' +
+                    task_perHtml +
+                    '    </div>' +
+                    '</div>';
+
+                yAxisHtml += '<div class="axisLine clearfix" data-id="'+ this.ID +'">' +
+                    '    <div class="axis_label text-right">'+ this.NAME +'</div>' +
+                    '</div>'
+            });
+            xAxisHtml += '</div><div class="axisLine clearfix">';
+            $.each(xAxisRangeArr, function(i){
+                var lastClass = (i < xAxisRangeArr.length - 1) ?"" : " axis_item_last",
+                    itemWid = (xAxisRangeArr.length > 5) ? "100px" : "20%";
+                xAxisHtml += '<div class="axis_item'+ lastClass +'" style="width:'+ itemWid +';"><span>'+ xAxisRangeArr[i].substr(0, 7) +'</span></div>';
+            });
+            xAxisHtml += '</div></div></div>';
+            yAxisHtml += '</div></div>';
+
+            var colorIntro = '<div class="colorIntro clearfix">' +
+                '<div class="item"><i class="color color-1"></i><span>工程进度</span></div>' +
+                '<div class="item"><i class="color color-2"></i><span>支付进度</span></div>' +
+                '<div class="item"><i class="color color-3"></i><span>项目计划周期</span></div>' +
+                '</div>';
+            target.addClass("chartBlock clearfix").html(yAxisHtml + xAxisHtml + colorIntro);
+
+            //绑定鼠标移入事件
+            var timer = null;
+            target.find(".barLine").hover(function(e){
+                var othis = $(this);
+                timer = setTimeout(function(){
+                    var barIndex = othis.parents(".axis_bar").index(),
+                        barData = data["TASKLIST"][barIndex],
+                        infoHtml = $('<ul class="list-unstyled showBarInfo" style="display:none; left:'+ e.pageX +'px; top:'+ e.pageY +'px;">' +
+                            '<li><b>项目名称：</b>'+ barData.NAME +'</li>' +
+                            '<li><b>阶段1：</b>'+ barData.DATE1 +'</li>' +
+                            '<li><b>阶段2：</b>'+ barData.DATE2 +'</li>' +
+                            '<li><b>阶段3：</b>'+ barData.DATE3 +'</li>' +
+                            '<li><b>阶段4：</b>'+ barData.DATE4 +'</li>' +
+                            '</ul>');
+                    infoHtml.appendTo($("body")).fadeIn(400);
+                }, 100);
+            }, function(){
+                clearTimeout(timer);
+                $(".showBarInfo").remove();
+            });
+
+            //图表区和y轴同步滚动
+            target.find(".axisBars").scroll(function(){
+                target.find(".yAxis_inner").scrollTop($(this).scrollTop());
+            });
+            /*var task_dateRangeArr = [],//每个项目的总天数
+                task_percentArr = [],//每个项目所占的百分比
+                task_dateRangeArr_s = [],//每个项目内每个阶段的天数范围
+                task_percentArr_s = [],//每个项目内每个阶段所占的百分比
+                blankArr = [],//每个项目最开始的空白部分
+                blankPercentArr = [],//每个项目最开始的空白部分占比
+                xAxisHtml = '<div class="xAxis pull-left">',
+                yAxisHtml = '<div class="yAxis pull-left">',
+                xAxisRangeArr = setXAxisRange(data.MINDATE, data.MAXDATE),
+                totalDateRange = getDateRange(data.MINDATE, xAxisRangeArr[xAxisRangeArr.length-1]);//总时间天数
+
+            var longWidth = (xAxisRangeArr.length > 5) ? 100*(xAxisRangeArr.length-1) : "100%";
+            xAxisHtml += '<div class="axisLine_long clearfix" style="width:'+ longWidth +'px;">' +
+                '<div class="axisBars">';
+
+            $.each(data.TASKLIST, function(i){
+                blankArr[i] = getDateRange(data.MINDATE, this.DATE1);
+                blankPercentArr[i] = blankArr[i] / totalDateRange;
+                task_dateRangeArr[i] = getDateRange(this.DATE1, this.DATE4);
+                task_percentArr[i] = task_dateRangeArr[i] / totalDateRange;
+                task_dateRangeArr_s[i] = [getDateRange(this.DATE1, this.DATE2), getDateRange(this.DATE2, this.DATE3), getDateRange(this.DATE3, this.DATE4)];
+
+                task_percentArr_s[i] = [];
+                $.each(task_dateRangeArr_s[i], function(k, v){
+                    task_percentArr_s[i].push(v / task_dateRangeArr[i]);
+                });
+
+                var task_perHtml = "";
+                $.each(task_percentArr_s[i], function (k) {
+                    task_perHtml += '<div class="bar_item bar_item-'+ (k+1) +'" style="width:'+ task_percentArr_s[i][k]*100 +'%;"></div>';
+                });
+
+                xAxisHtml += '<div class="axis_bar">' +
+                '    <div class="barLine clearfix" style="width:'+ task_percentArr[i]*longWidth +'px; margin-left:'+ blankPercentArr[i]*longWidth +'px;">' +
+                task_perHtml +
+                '    </div>' +
+                '</div>';
+
+                yAxisHtml += '<div class="axisLine clearfix" data-id="'+ this.ID +'">' +
+                    '    <div class="axis_label text-right">'+ this.NAME +'</div>' +
+                    '</div>'
+            });
+            xAxisHtml += '</div><div class="axisLine clearfix">';
+            $.each(xAxisRangeArr, function(i){
+                var lastClass = (i < xAxisRangeArr.length - 1) ?　"" : " axis_item_last",
+                    itemWid = (xAxisRangeArr.length > 5) ? "100px" : "20%";
+                xAxisHtml += '<div class="axis_item'+ lastClass +'" style="width:'+ itemWid +';"><span>'+ xAxisRangeArr[i].substr(0, 7) +'</span></div>';
+            });
+            xAxisHtml += '</div></div></div>';
+            yAxisHtml += '</div>';
+
+            target.addClass("chartBlock clearfix").html(yAxisHtml + xAxisHtml);
+
+            //绑定鼠标移入事件
+            var timer = null;
+            target.find(".barLine").hover(function(e){
+                var othis = $(this);
+                timer = setTimeout(function(){
+                    var barIndex = othis.parents(".axis_bar").index(),
+                        barData = data["TASKLIST"][barIndex],
+                        infoHtml = $('<ul class="list-unstyled showBarInfo" style="display:none; left:'+ e.pageX +'px; top:'+ e.pageY +'px;">' +
+                            '<li><b>项目名称：</b>'+ barData.NAME +'</li>' +
+                            '<li><b>阶段1：</b>'+ barData.DATE1 +'</li>' +
+                            '<li><b>阶段2：</b>'+ barData.DATE2 +'</li>' +
+                            '<li><b>阶段3：</b>'+ barData.DATE3 +'</li>' +
+                            '<li><b>阶段4：</b>'+ barData.DATE4 +'</li>' +
+                            '</ul>');
+                    infoHtml.appendTo($("body")).fadeIn(400);
+                }, 100);
+            }, function(){
+                clearTimeout(timer);
+                $(".showBarInfo").remove();
+            });*/
+        }
+        //获取时间范围
+        function getDateRange(start, end){
+            var minDate = new Date(start).getTime(),
+                maxDate = new Date(end).getTime();
+            return getDayNum(maxDate - minDate);
+        }
+        //获取时间范围内的天数
+        function getDayNum(d){
+            return parseInt(d) / (1000 * 60 * 60 * 24);
+        }
+        //日期格式化，返回值形式为yy-mm-dd
+        function formatDate(d) {
+            if (typeof(d) === "string") {
+                d = new Date(d);
+            }
+            var year = d.getFullYear(),
+                month = formatMonth(d.getMonth() + 1),
+                date = formatMonth(d.getDate());
+            return year + "-" + month + "-" + date;
+        }
+        //初始化月、日，个位数则前面补0
+        function formatMonth(str){
+            str = parseInt(str, 10);
+            return (str < 10) ? ("0" + str) : str;
+        }
+        //设置x轴坐标
+        function setXAxisRange(start, end){
+            var rangeArr = [],
+                addDate = start,
+                startDate = new Date(start),
+                year = startDate.getFullYear(),
+                month = startDate.getMonth() + 1,
+                date = startDate.getDate(),
+                addYear = year, addMonth = month,
+                split = 6;//半年间隔
+            rangeArr.push(start);
+            for(var i=0; i<100; i++){
+                if(new Date(addDate).getTime() <= new Date(end).getTime()){
+                    if(addMonth < 7){
+                        addMonth = month + split;
+                        addDate = addYear + "-" + formatMonth(addMonth) + "-" + formatMonth(date);
+                        rangeArr.push(addDate);
+                    }else{
+                        addYear = addYear + 1;
+                        addMonth = addMonth + split - 12;
+                        addDate = addYear + "-" + formatMonth(addMonth) + "-" + formatMonth(date);
+                        rangeArr.push(addDate);
+                    }
+                }else{
+                    return rangeArr;
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="chartBlock"></div>
+<div id="ndzx2"></div>
+
+    <div id="fbzy" class="barChart"></div>
+</body>
+</html>

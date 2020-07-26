@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.datanew.js"></script>
+    <!--<script src="plugins/webuploader/webuploader.datanew.js"></script>-->
+    <script>
+        $(function(){
+            var json = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype": "dtable",
+                                            "columns": [
+                                                {'field':'checkType', 'checkbox': true},
+                                                {
+                                                    "field": "status",
+                                                    "title": "状态",
+                                                    "width": 100,
+                                                    "align": "center",
+                                                    "sortable": true
+                                                },
+                                                {
+                                                    "field": "account",
+                                                    "title": "代收机构",
+                                                    "width": 100,
+                                                    "align": "center",
+                                                    "sortable": true
+                                                },
+                                                {
+                                                    "field": "accountname",
+                                                    "title": "接入应用",
+                                                    "width": 100,
+                                                    "align": "center",
+                                                    "sortable": true
+                                                },
+                                                {
+                                                    "field": "writeusername",
+                                                    "title": "支付方式",
+                                                    "width": 150,
+                                                    "align": "center",
+                                                    "sortable": true
+                                                }
+                                            ],
+                                            "data": [
+                                                {
+                                                    "status": 1,
+                                                    "account": "1",
+                                                    "accountname": "账户1",
+                                                    "writeusername": "姓名1"
+                                                },
+                                                {
+                                                    "status": 2,
+                                                    "account": "2",
+                                                    "accountname": "账户2",
+                                                    "writeusername": "姓名2"
+                                                },
+                                                {
+                                                    "status": 3,
+                                                    "account": "3",
+                                                    "accountname": "账户3",
+                                                    "writeusername": "姓名3"
+                                                }
+                                            ],
+                                            // "clickToSelect": 1,
+                                            // 'detailView': true,
+                                            // "checkboxHeader": true,
+                                            // "onCheck": function($row,$el){ console.log($el)}
+                                            "clickToSelect": 1,
+                                            "onCheck": "function($row,$el){ console.log($el)}",
+                                            "showColumns": 1,
+                                            "showToggle": 1,
+                                            "showFooter": 1,
+                                            "detailView": 1,
+                                            "showPaginationSwitch": 1,
+                                            // "cardView": 1
+                                            "height": "400"
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+            $.initPage(json);
+        })
+    </script>
+</head>
+<body style="padding-bottom: 300px;">
+    <section class="parser container-fluid">
+        <h2>语法解析</h2>
+        <pre>
+            <ol style="display: table">
+                <li><span>$(function(){</span></li>
+                <li><span>    var json = [{ <strong style="color:#900">//json数据可通过点击 拖拽页面顶部栏的下载按钮 获取</strong></span></li>
+                <li><span>        "plug": [{</span></li>
+                <li><span>            "plug": [{</span></li>
+                <li><span>                "plug": [{</span></li>
+                <li><span>                    "dtype": "div",<b style="color:#F00;">//自定义一个div</b></span></li>
+                <li><span>                    "classes": "",<b style="color:#F00;">//自定义样式，每个样式名用空格隔开，如："class1 class2"</b></span></li>
+                <li><span>                    "attrs": {} <b style="color:#F00;">//自定义属性，格式如：{"role":"leader", "show":true}</b></span></li>
+                <li><span>                    "plug": [{...}]</span></li>
+                <li><span>                }],</span></li>
+                <li><span>                "colspan": "6",</span></li>
+                <li><span>                "dtype": "column"</span></li>
+                <li><span>            }, {</span></li>
+                <li><span>                "plug": [{</span></li>
+                <li><span>                    "dtype": "html",</span></li>
+                <li><span>                    "dragHtml": '&lt;div class="panel-group layoutClass" id="accordion" role="tablist" aria-multiselectable="true"&gt;......&lt;/div&gt;'</span></li>
+                <li><span>                }],</span></li>
+                <li><span>                "colspan": "6",</span></li>
+                <li><span>                "dtype": "column"</span></li>
+                <li><span>            }],</span></li>
+                <li><span>            "dtype": "row"</span></li>
+                <li><span>        }],</span></li>
+                <li><span>        "dtype": "body"</span></li>
+                <li><span>    }];</span></li>
+                <li><span>    $.initPage(json);</span></li>
+                <li><span>})</span></li>
+            </ol>
+        </pre>
+        <br>
+    </section>
+    <h3>案例： <button class="btn btn-info btm-sm copyBtn" id="copyBtn1">查看代码</button></h3>
+
+<div style="width:1px;height:1px;overflow:hidden;">
+<textarea id="copyTarget1">
+var json = [
+    {
+        "plug": [
+            {
+                "plug": [
+                    {
+                        "plug": [
+                            {
+                                "dtype": "dtable",
+                                "columns": [
+                                    {'field':'checkType', 'checkbox': true},
+                                    {
+                                        "field": "status",
+                                        "title": "状态",
+                                        "width": 100,
+                                        "align": "center",
+                                        "sortable": true
+                                    },
+                                    {
+                                        "field": "account",
+                                        "title": "代收机构",
+                                        "width": 100,
+                                        "align": "center",
+                                        "sortable": true
+                                    },
+                                    {
+                                        "field": "accountname",
+                                        "title": "接入应用",
+                                        "width": 100,
+                                        "align": "center",
+                                        "sortable": true
+                                    },
+                                    {
+                                        "field": "writeusername",
+                                        "title": "支付方式",
+                                        "width": 150,
+                                        "align": "center",
+                                        "sortable": true
+                                    }
+                                ],
+                                "data": [
+                                    {
+                                        "status": 1,
+                                        "account": "1",
+                                        "accountname": "账户1",
+                                        "writeusername": "姓名1"
+                                    },
+                                    {
+                                        "status": 2,
+                                        "account": "2",
+                                        "accountname": "账户2",
+                                        "writeusername": "姓名2"
+                                    },
+                                    {
+                                        "status": 3,
+                                        "account": "3",
+                                        "accountname": "账户3",
+                                        "writeusername": "姓名3"
+                                    }
+                                ],
+                                "clickToSelect": 1,
+                                "onCheck": "function($row,$el){ console.log($el)}",
+                                "showColumns": 1,
+                                "showToggle": 1,
+                                "showFooter": 1,
+                                "detailView": 1,
+                                "showPaginationSwitch": 1,
+                                "height": "400"
+                            }
+                        ],
+                        "colspan": "12",
+                        "dtype": "column"
+                    }
+                ],
+                "dtype": "row"
+            }
+        ],
+        "dtype": "body"
+    }];
+    $.initPage(json);
+</textarea>
+</div>
+</body>
+</html>
+<script>
+    $(function(){
+        $(".copyBtn").on("click", function(){
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var target = $("#copyTarget"+ num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>"+ target.html() +"</pre>",
+                area: ["90%", "100%"],
+                btn: ["复制", "取消"],
+                btn1: function(index){
+                    var res = $.copyToClipboard(target.get(0));
+                    if(res){
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>

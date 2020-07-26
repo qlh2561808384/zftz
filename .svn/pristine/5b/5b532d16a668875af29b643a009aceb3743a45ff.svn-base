@@ -1,0 +1,174 @@
+package com.datanew.service;
+
+import com.datanew.dto.Result;
+import com.datanew.model.ZftzXm;
+import org.springframework.aop.target.LazyInitTargetSource;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
+
+public interface ProService {
+    public void save(HttpServletRequest request,String jsonData, Result result,String id,String dataArr,String fileId,String zcdjFileId);
+
+    public List getZGBMTree(HttpSession session);
+
+    public List getZGBMNOTree();
+
+    public List getJSDWTree(HttpSession session);
+
+    public List getJSDWNoTree();
+
+    public List getXMData(String xmmc,String XMLX,String XMSSLX,HttpSession session);
+
+    public List query(String xmmc, String xmlx, String xmsslx, Result result);
+
+    public void delete(List<Integer> ids, Result result);
+
+    public void deleteGSMX(List<Integer> ids, Result result);
+
+    public List getJclbTreeData();
+
+    public List getRzfsTreeData();
+
+    public List getZcdjData(String id);
+
+    public void deleteZcdj(String id, Result result);
+
+    public List getXMJDTree();
+
+    public List getXMJD(String id);
+
+    public List getXMLXTree();
+
+    public List getXmsslxTree();
+
+    public List selectXmlx();
+
+    public List selectXmsslx();
+
+    public List selectXmjd();
+
+    public List getXmmcTree(String id,HttpSession session);
+
+    public List getXmtzwhTree(String id, HttpSession session);
+
+    public List loadxmData(String id,HttpSession session);
+
+    public List loadXMData(String id);
+
+    public void saveXmgs(HttpServletRequest request,String json,String xmgsyjidm,Result result,String xmgszxd);
+
+    public List getXmgsyjData(String xmmc, String zt,HttpSession session);
+
+    public List getXmGSYJData(String xmmc, String zt,HttpSession session);
+
+    public List getXmgsfkData(String xmmc,HttpSession session);
+
+    public List selectZgbm();
+
+    public List selectJsdw(HttpSession session);
+
+    public List selectNoJsdw();
+
+    public void deleteXmgsyj(List<Integer> ids, Result result);
+
+    public List getZBKData(String id);
+
+    public List getZjlydj(String id);
+
+    public List getXmqqch(String id);
+
+    public List getShyj(String id);
+
+    public List getXmgsmcTree(String id,HttpSession session);
+
+    public void saveGs(HttpServletRequest request, Result result, String xmgsid, Map xmgs,List<Map> xmgsmx,List<Map> gsfileid);
+
+    public List getFylx();
+
+    public List getXmgsData(String xmmc,String zt,HttpSession session);
+
+    public List getXmgsmxData(String id);
+    List getTzbadj(String xmmc,String lchj,HttpSession session);
+
+    List getXmmc(HttpSession session);
+
+    public void delXmgs(List<Integer> ids);
+
+    List getXmmc2(HttpSession session);
+
+//    public void delXmgs(String id);
+
+    public List getFile(String id);
+
+    public List getZcdjFile(String id);
+
+    public List getXmgszxdFile(String id);
+
+    public List getZjlyFile(String id);
+
+    public List getQqchFile(String id);
+
+    public List getXmgsFile(String id);
+
+    public void checkData(String id,Result result);
+
+    void insertExcel(List<Object[]>  list, HttpSession session, Map<String,Object> resultMap,String id);
+
+    void saveExcel(List<String[]>  list, HttpSession session, Map<String,Object> resultMap,String id);
+
+    List getJsdw();
+
+    List getZgbm();
+
+    List getXmlx();
+
+    Object getXmgsinfo(String xmid);
+
+    Object getXmgsinfobyid(String tzid);
+
+    List getGcfymc(String xmid);
+
+    List getGcfymctree(String xmid);
+
+    Map getGsmxinfo(String gsid,String tzid);
+
+    List getFylx1();
+
+    String getFylxbygsmxid(String gsmxid);
+
+    List getFylxtree1();
+
+    List getTzefl();
+
+    Map getGstzje(String xmid,String gc, String fylx, String tzefl);
+
+    void insertGstzba(String sdata,String uploadTableData,String form, String xmid,String gsid, HttpSession session,Result result);
+
+    void deleteGstzbadj(String sdata, HttpSession session,Result result);
+
+    void deleteGstzba(String sdata,String xmid,String gsid, HttpSession session,Result result);
+
+    void savePro(HttpServletRequest request, ZftzXm zftzxm, Result result);
+
+    List getBatzmx(String tzid,String xmid);
+
+    void updateGstzbamx(String sdata,String uploadTableData,String tzid, HttpSession session,Result result,String formData);
+
+    void deleteGstzbamx(String sdata, HttpSession session,Result result);
+
+    List getfile(String bsid);
+
+    void saveGsmx(String sdata, HttpSession session,Result result);
+    
+    //获取项目资金来源选择项目树
+    public List getXmZjlymcTree(String id,HttpSession session);
+
+    public List getXmgsYj(String id);
+
+    Result selThyj(String id,String type);
+
+    List getAllZGBMTree(HttpSession session);
+}

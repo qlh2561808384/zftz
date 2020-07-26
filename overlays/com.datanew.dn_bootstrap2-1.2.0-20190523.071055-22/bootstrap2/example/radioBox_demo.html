@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <title>单/多选框</title>
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function(){
+            $("#radioBox").radioBox({
+                multiple:true,
+                radioName:"role",
+                required:true,
+                localdata:[{id:1,text:"232"}, {id:2,text:"rewori"}, {id:3,text:"9t53",disabled:true}, {id:4,text:"kjqw13"}]
+            });
+            $("#radioBox2").radioBox({
+                radioName:"role2",
+                localdata:[{id:1,text:"232"}, {id:2,text:"rewori"}, {id:3,text:"9t53"}, {id:4,text:"kjqw13"}]
+            });
+        });
+        function clearRadio(){
+            $("#radioBox").radioBox("clear");
+        }
+        function setDisabled(){
+            $("#radioBox").radioBox("setDisabled", true);
+        }
+        function setEnable(){
+            $("#radioBox").radioBox("setDisabled", false);
+        }
+        function setReadonly(){
+            $("#radioBox").radioBox("setReadonly", true);
+        }
+        function setReadonly2(){
+            $("#radioBox").radioBox("setReadonly", false);
+        }
+        function validate(){
+            var flag = $("#radioBox").radioBox("validate");
+            if (!flag) {
+                $.dalert("验证不通过，有部分数据有误")
+            }
+        }
+        function getDataById(){
+            alert(JSON.stringify($("#radioBox").radioBox("getDataById", "1")));
+        }
+        function getValue(){
+            alert($("#radioBox").radioBox("getValue"));
+        }
+        function setValue(){
+            $("#radioBox").radioBox("setValue", "1,2");
+        }
+    </script>
+</head>
+<body>
+<section class="parser">
+    <div class="page-header"><h1>语法解析</h1></div>
+    <div class="row">
+        <pre class="col-xs-6" style="padding:0;">
+            <ol style="display: table">
+                <li><span>$(function(){</span></li>
+                <li><span>  $("#radioBox").radioBox({</span></li>
+                <li><span>    multiple:true,//复选框</span></li>
+                <li><span>    radioName:"role"//单/复选框的name</span></li>
+                <li><span>  })</span></li>
+                <li><span>})</span></li>
+            </ol>
+        </pre>
+        <pre class="col-xs-6" style="padding:0;">
+            <ol style="display:table">
+                <li><span><b>数据格式：</b></span></li>
+                <li><span>[{</span></li>
+                <li><span>    id:1,</span></li>
+                <li><span>    text:"232",</span></li>
+                <li><span>    //disabled:true,//默认禁用，可省略</span></li>
+                <li><span>    //checked:true//默认选中，可省略</span></li>
+                <li><span>}]</span></li>
+            </ol>
+        </pre>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4><b>属性：</b></h4>
+            <table class=" table-border">
+                <thead>
+                <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+                </thead>
+                <tbody>
+                <tr><td>url</td><td>String</td><td>远程数据路径</td><td></td></tr>
+                <tr><td>localdata</td><td>Array</td><td>本地数据，数据格式</td><td></td></tr>
+                <tr><td>radioName</td><td>String</td><td>一组单/复选框的name值，必填</td><td>""</td></tr>
+                <tr><td>valueField</td><td>String</td><td>定义取值 字段名</td><td>id</td></tr>
+                <tr><td>textField</td><td>String</td><td>定义显示文本 字段名</td><td>text</td></tr>
+                <tr><td>multiple</td><td>Boolean</td><td>是否为复选框</td><td>false</td></tr>
+                <tr><td>disabled</td><td>Boolean</td><td>是否默认禁用状态</td><td>false</td></tr>
+                <tr><td>required</td><td>Boolean</td><td>是否必填</td><td>false</td></tr>
+                <tr><td>queryParam</td><td>Object</td><td>远程请求时的额外参数</td><td></td></tr>
+                <tr><td>validFail</td><td>Function</td><td>验证失败事件回调，参数为组件对象</td><td></td></tr>
+                <tr><td>validSuccess</td><td>Function</td><td>验证成功事件回调，参数为组件对象</td><td></td></tr>
+                <tr><td>onChange</td><td>Function</td><td>change触发回调方法 参数1：newValue；参数2：oldValue；参数3：点击的单条数据</td><td></td></tr>
+                <tr><td>onLoaded</td><td>Function</td><td>组件加载完成的回调函数，参数为组件对象</td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <h4><b>方法：</b></h4>
+            <table class=" table-border">
+                <thead>
+                <tr><th>名称</th><th>参数</th><th>描述</th></tr>
+                </thead>
+                <tbody>
+                <tr><td>clear</td><td></td><td>清空数据</td></tr>
+                <tr><td>setDisabled</td><td>true/false</td><td>禁用/启用</td></tr>
+                <tr><td>setReadonly</td><td>true/false</td><td>只读/取消只读</td></tr>
+                <tr><td>validate</td><td></td><td>验证</td></tr>
+                <tr><td>getDataById</td><td>id</td><td>根据id获取数据</td></tr>
+                <tr><td>getValue</td><td></td><td>取值</td></tr>
+                <tr><td>setValue</td><td></td><td>设值</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h4>案例1: 多选框</h4>
+    <div class="outbackframe">
+        <button style="margin-left: 5px;margin-bottom: 10px" type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn1">查看代码</button>
+        <div class="innerback">
+            <div id="bt">
+                <button class="btn btn-primary btn-sm" type="button" onclick="clearRadio()">清空</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setDisabled()">禁用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setEnable()">启用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn5">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setReadonly()">只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn6">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setReadonly2()">取消只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn7">查看代码</button> |
+                <br><br>
+                <button class="btn btn-primary btn-sm" type="button" onclick="validate()">验证数据</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn8">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="getDataById()">根据id获取数据</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn9">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="getValue()">取值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn10">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setValue()">设值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn11">查看代码</button> |
+            </div>
+            <br>
+            <div id="radioBox"></div>
+        </div>
+    </div>
+    <br>
+    <h4>案例2: 单选框</h4>
+    <div class="outbackframe">
+        <button style="margin-left: 5px;margin-bottom: 10px" type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn2">查看代码</button>
+        <div class="innerback">
+            <div id="radioBox2"></div>
+        </div>
+    </div>
+</section>
+<div style="width:1px;height:1px;overflow:hidden;">
+    <textarea id="copyTarget1">
+    $("#radioBox").radioBox({
+        multiple:true,
+        radioName:"role",
+        required:true,
+        localdata:[{id:1,text:"232",checked:true}, {id:2,text:"rewori"}, {id:3,text:"9t53",disabled:true}, {id:4,text:"kjqw13"}]
+    });
+    </textarea>
+    <textarea id="copyTarget2">
+    $("#radioBox2").radioBox({
+        radioName:"role2",
+        localdata:[{id:1,text:"232"}, {id:2,text:"rewori"}, {id:3,text:"9t53"}, {id:4,text:"kjqw13"}],
+    });
+    </textarea>
+    <textarea id="copyTarget3">
+    $("#radioBox").radioBox("clear");
+    </textarea>
+    <textarea id="copyTarget4">
+    $("#radioBox").radioBox("setDisabled", true);
+    </textarea>
+    <textarea id="copyTarget5">
+    $("#radioBox").radioBox("setDisabled", false);
+    </textarea>
+    <textarea id="copyTarget6">
+    $("#radioBox").radioBox("setReadonly", true);
+    </textarea>
+    <textarea id="copyTarget7">
+    $("#radioBox").radioBox("setReadonly", false);
+    </textarea>
+    <textarea id="copyTarget8">
+    var flag = $("#radioBox").radioBox("validate");
+    if (!flag) {
+        $.dalert("验证不通过，有部分数据有误")
+    }
+    </textarea>
+    <textarea id="copyTarget9">
+    alert(JSON.stringify($("#radioBox").radioBox("getDataById", "1")));
+    </textarea>
+    <textarea id="copyTarget10">
+    alert($("#radioBox").radioBox("getValue"));
+    </textarea>
+    <textarea id="copyTarget11">
+    $("#radioBox").radioBox("setValue", "1,2");
+    </textarea>
+</div>
+<br><br><br><br><br><br><br><br>
+</body>
+</html>
+<script>
+    $(function(){
+        $(".copyBtn").on("click", function(){
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var openH = "auto";
+            if(num == 13){
+                openH = "400px";
+            }
+            var target = $("#copyTarget"+ num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>"+ target.html() +"</pre>",
+                area: ["600px", openH],
+                btn: ["复制", "取消"],
+                btn1: function(index){
+                    var res = $.copyToClipboard(target.get(0));
+                    if(res){
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>

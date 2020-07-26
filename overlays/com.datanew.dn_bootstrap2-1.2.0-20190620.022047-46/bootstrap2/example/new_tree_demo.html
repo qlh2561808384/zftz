@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<TITLE> ztree </TITLE>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+	<link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.datanew.js"></script>
+    <style>
+        .tree_demo .col-4{padding:10px; background:#DEDEDE; border:1px solid #DDD;border-radius: 10px;}
+        .tree_demo [class^='copytree']{margin-bottom:10px;}
+        .tree_demo .ztree{background:#FFF;}
+    </style>
+</head>
+
+<body>
+
+<section class="parser container-fluid">
+	<div class="page-header" id="a1"><h1>tree---树展示组件</h1></div>
+
+	<div class="tableBox">
+		<div class="tableBox-left">
+			<pre>
+				<ol style="display:table">
+					<li><span>初始化：</span></li>
+					<li><span>fn.tree(初始化参数对象)</span></li>
+					<li><span>方法调用：</span></li>
+					<li><span>fn.tree('方法名',参数)</span></li>
+				</ol>
+			</pre>
+			<h4>数据格式:</h4>
+			<pre>
+				<ol style="display:table">
+                    <li><span>[</span></li>
+			        <li><span>	{id:1, pId:0, name:"北京", ISLEAF:1},</span></li>
+			        <li><span>	{id:2, pId:0, name:"天津", ISLEAF:1},</span></li>
+			        <li><span>	{id:3, pId:0, name:"上海", ISLEAF:1},</span></li>
+			        <li><span>	{id:4, pId:0, name:"河北省", ISLEAF:0},</span></li>
+			        <li><span>	{id:41, pId:4, name:"石家庄", ISLEAF:0},</span></li>
+			        <li><span>	{id:42, pId:4, name:"保定", ISLEAF:1},</span></li>
+			        <li><span>	{id:43, pId:4, name:"邯郸", ISLEAF:1},</span></li>
+			        <li><span>	{id:44, pId:4, name:"承德", ISLEAF:1},</span></li>
+			        <li><span>	{id:5, pId:0, name:"广东省", ISLEAF:0},</span></li>
+			        <li><span>	{id:51, pId:5, name:"广州", ISLEAF:1}</span></li>
+			        <li><span>]</span></li>
+		         </ol>
+			</pre>
+			<!--<h4 id="a2">：</h4>-->
+			<div class="table">
+				<div class="table-tr" id="a2">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 100%;">
+									属性：
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr" id="a2_tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="table-th" style="width: 25%;">
+									名称
+								</div>
+								<div class="table-th" style="width: 15%;">
+									类型
+								</div>
+								<div class="table-th" style="width: 40%;">
+									描述
+								</div>
+								<div class="table-th" style="width: 20%;">
+									默认值
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									searchPlaceholder
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									string
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									查询栏查询字符串占位符
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									outerHeight
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									Number
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									固定树的高度，超出部分滚动
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									undefined
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									fixedTreeHeight
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									Number
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									有查询框的情况下，树的高度
+									<br />（为了让输入框一直显示在顶部，需要固定树的高度，超出部分滚动）
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									(body的高度)减去
+									<br />(输入框高度)的值
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									localdata
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									Array
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									本地数据，zNodes =[{id:1, pId:0, name:&quot;节点搜索演示 1&quot;}]
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									url
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									String
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									远程数据请求地址
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									queryParam
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									obj
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									远程请求所携带的参数 格式：{param1:xxx,param2:xx}
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									openSearch
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									boolean
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									是否显示搜索框 开启搜索栏后 根据data.key.name 进行模糊查询 回车触发查询方法
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									false
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									searchAttr
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									string
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									根据配置的属性进行模糊查询，保存在data中的该属性对应的值只有为字符串才能被查询到
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									name
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									checkType
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									String
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									定义选择框类型，checkbox为多选框，radio为单选框,
+									nocheck则不显示
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									&quot;radio&quot;
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+                                    onlyLeaf
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									Boolean
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+                                    是否只能选择叶子节点。 true 时 单选和多选模式下 父节点不显示选择框、无法被进行选中赋值
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									true
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									rootElement
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									Boolean
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									是否添加“全部”节点
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									false
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									onLoaded
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									function
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									树加载完毕后 所执行方法 包含一个参数 ztree对象 可使用原生api 实现展开所有节点 等操作
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									false
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									data
+								</div>
+								<div class="sub-table-td" style="width: 75%;">
+									目前加载的数据格式均使用 simpleData 模式 即 简单的数组数据 具体具体数据格式样例可右键查看源代码
+									<div class="pre">
+										        <ol style="display:table">
+         <li><span>data:{</span></li>
+         <li><span>    key : {</span></li>
+         <li><span>        name: &quot;name&quot;, //保存节点<span style="color:#F00;">名称</span>的属性名</span></li>
+         <li><span>        url: &quot;url&quot;, //保存节点<span style="color:#F00;">链接url</span>的属性名</span></li>
+         <li><span>        icon: &quot;icon&quot;, //保存节点<span style="color:#F00;">小图标</span>的属性名</span></li>
+         <li><span>    },</span></li>
+         <li><span>    simpleData : {</span></li>
+         <li><span>        enable: true, //数据是否采用简单数据模式(Array)，true为是</span></li>
+         <li><span>        idKey: &quot;id&quot;, //保存节点<span style="color:#F00;">唯一标识</span>的属性名</span></li>
+         <li><span>        pIdKey: &quot;pId&quot;,  //保存节点<span style="color:#F00;">其父节点的唯一标识</span>的属性名</span></li>
+         <li><span>        rootPId: null //指定<span style="color:#F00;">根节点</span>数据</span></li>
+         <li><span>    }</span></li>
+         <li><span>}</span></li>
+        </ol>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    edit
+                                </div>
+                                <div class="sub-table-td" style="width: 75%;">
+                                    <div class="pre">
+                                        <ol style="display:table">
+                                            <li><span>edit:{</span></li>
+                                            <li><span>    enable: true //设置zTree是否处于编辑状态，默认false，true时会显示增、删、改三个图标按钮</span></li>
+                                            <li><span>    //showRemoveBtn: true //设置是否显示删除按钮，[setting.edit.enable=true时生效]</span></li>
+                                            <li><span>    //showRenameBtn: true //设置是否显示重命名按钮，[setting.edit.enable=true时生效]</span></li>
+                                            <li><span>    //showAddBtn: true //设置是否显示新增按钮，[setting.edit.enable=true时生效]</span></li>
+                                            <li><span>}</span></li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									callback
+								</div>
+								<div class="sub-table-td" style="width: 75%;">
+									<div class="pre">
+										<ol style="display:table">
+											<li><span>callback:{</span></li>
+											<li><span>    clickNode : function(e,treeId,treeNode,clickFlag){</span></li>
+											<li><span>     点击节点回调方法（由于封装时 使用了onclick事件 所以由该回调来代替onClick）  </span></li>
+											<li><span>}</span></li>
+											<li><span>}</span></li>
+										</ol>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									getValueField
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									String
+								</div>
+								<div class="sub-table-td" style="width: 40%;">
+									getValue方法中，如果配置该项，则获取的是该字段的内容。
+									<br />默认为空，获取的是id
+								</div>
+								<div class="sub-table-td" style="width: 20%;">
+									&quot;&quot;
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tableBox-right">
+			<!--<h4 id="a3">：</h4>-->
+			<div class="table">
+				<div class="table-tr" id="a3">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 100%;">
+									节点属性：
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr" id="a3_tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="table-th" style="width: 25%;">
+									名称
+								</div>
+								<div class="table-th" style="width: 25%;">
+									类型
+								</div>
+								<div class="table-th" style="width: 50%;">
+									描述
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									color
+								</div>
+								<div class="sub-table-td" style="width: 25%;">
+									String
+								</div>
+								<div class="sub-table-td" style="width: 50%;">
+									节点字体颜色 同 css 属性
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--<h4 id="a4">方法:</h4>-->
+			<div class="table">
+				<div class="table-tr" id="a4">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 100%;">
+									方法：
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr" id="a4_tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="table-th" style="width: 25%;">
+									名称
+								</div>
+								<div class="table-th" style="width: 15%;">
+									参数
+								</div>
+								<div class="table-th" style="width: 60%;">
+									描述
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    getTree
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    返回ztree对象 用于调用ztree api 语法为：ztree对象.方法名。eg：$("#tree").tree("getTree");
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    getData
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    返回所有数据 语法为：ztree对象.方法名。eg：$("#tree").tree("getData");
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+                                    getValue
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									none
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									返回选择节点的value值 多选模式下逗号分隔。eg：$("#tree").tree("getValue");
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									setValue
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									none
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									设置节点的value值 多选模式下逗号分隔。eg：$("#tree").tree("setValue", '1,2,3');
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									getText
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									none
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									返回选择节点的文本内容 多选模式下逗号分隔。eg：$("#tree").tree("getText");
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									getTextById
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									id
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									根据id返回该节点的文本内容。eg：$("#tree").tree("getTextById", id);
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									clearTree
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									none
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									清空选项。eg：$("#tree").tree("clearTree");
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									reload
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									obj
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									重新加载内容 dataOption url参数 或本地数据对象 eg：$("#tree").tree("reload", {localdata:[]}); OR $("#tree").tree("reload", {url:XXXX,queryParam:{}});
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									searchNodes
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									string
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									根据参数 模糊匹配节点name 隐藏非匹配节点 输入参数为''时 显示所有节点
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									expandAll
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									boolean
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									(true)展开/(false)折叠所有节点 本案例中onLoaded 回调使用该方法实现展开树所有节点。eg：ztree.expandAll(true);
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="table-tr">
+					<div class="table-td">
+						<div class="sub-table">
+							<div class="sub-table-tr">
+								<div class="sub-table-td" style="width: 25%;">
+									getCheckedNodes
+								</div>
+								<div class="sub-table-td" style="width: 15%;">
+									boolean
+								</div>
+								<div class="sub-table-td" style="width: 60%;">
+									(true)获取被选中的节点数组 true可缺省 (false)获取未被选中的节点数组，eg：$("#tree").tree("getCheckedNodes");
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    expandNode
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    treeNode, expandFlag, sonSign, focus, callbackFlag
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    treeNode：需要 展开 / 折叠 的节点数据 【必填】<br>
+                                    expandFlag：true表示展开节点；false表示折叠节点【缺省=toggle切换】<br>
+                                    sonSign：true 表示 全部子孙节点 进行与 expandFlag 相同的操作；false 表示 只影响此节点，对于其 子孙节点无任何影响【缺省=false】<br>
+                                    focus：true 表示 展开 / 折叠 操作后，通过设置焦点保证此焦点进入可视区域内；false 表示 展开 / 折叠 操作后，不设置任何焦点【缺省=true】<br>
+                                    callbackFlag：true 表示执行此方法时触发 beforeExpand / onExpand 或 beforeCollapse / onCollapse 事件回调函数；false 表示执行此方法时不触发事件回调函数【缺省=false】
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    expandAll
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    Boolean
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    展开所有节点。 true 表示 展开 全部节点 ；false 表示 折叠 全部节点
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    checkNode
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    treeNode, checked, checkTypeFlag, callbackFlag
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    treeNode：需要 勾选/取消勾选 的节点数据 【必填】<br>
+                                    checked：true表示勾选节点；false表示取消勾选【缺省则toggle切换】<br>
+                                    checkTypeFlag：true表示按照 setting.check.chkboxType 属性进行父子节点的勾选联动操作；false表示只修改此节点勾选状态，无任何勾选联动操作<br>
+                                    callbackFlag：true表示执行此方法时触发 beforeCheck & onCheck 事件回调函数；false表示执行此方法时不触发事件回调函数【缺省=false】
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    checkAllNodes
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    Boolean
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    勾选所有节点。 true 表示 勾选 全部节点 ；false 表示 取消勾选 全部节点
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    setChkDisabled
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    treeNode, disabled, inheritParent, inheritChildren
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    禁用 或 解禁 某个节点的 checkbox / radio <br>
+                                    treeNode：需要禁用 或 解禁 checkbox / radio 的节点数据,<br>
+                                    disabled：true 表示禁用、false 表示解禁（省略此参数，等同于 disabled = false）,<br>
+                                    inheritParent：true 表示全部父节点进行同样的操作、false 表示不影响父节点（省略此参数，等同于 inheritParent = false）,<br>
+                                    inheritChildren：true 表示全部子节点进行同样的操作、false 表示不影响子节点（省略此参数，等同于 inheritChildren = false）
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+
+
+	<h4 id="a5">案例:</h4>
+</section>
+<div style="margin:0 15px 15px 15px;">
+    <h5>按钮事件绑定在第一个tree中</h5>
+<input type="button" class="btn-sm" value="reload" onclick="reload()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn1">查看代码</button> |
+<input type="button" class="btn-sm" value="getvalue" onclick="getValue()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn2">查看代码</button> |
+<input type="button" class="btn-sm" value="setvalue" onclick="setValue()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button> |
+<input type="button" class="btn-sm" value="clearTree" onclick="clearTree()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button> |
+<input type="button" class="btn-sm" value="getTree" onclick="getTree()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn5">查看代码</button><br><br>
+<input type="button" class="btn-sm" value="addNode" onclick="addNode()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn6">查看代码</button>
+    <input type="button" value="getTextById" onclick="getTextById()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn10">查看代码</button>
+    <input type="button" value="getCheckedNodes" onclick="getCheckedNodes()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn12">查看代码</button>
+    <br><br>
+    <input type="button" value="禁用整个树的选择框" onclick="setDisabledTree()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn13">查看代码</button>
+    <input type="button" value="启用选择框" onclick="setEnabledTree()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn15">查看代码</button>
+    <input type="button" value="禁用第二个节点的选择框" onclick="setDisabledNode()"/>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn14">查看代码</button>
+</div>
+
+<div style="width:1px;height:1px;overflow:hidden;">
+    <textarea id="copyTarget1">$("#tree").tree("reload",{localdata:zNodes, url:""});</textarea>
+    <textarea id="copyTarget2">$("#tree").tree("getValue");</textarea>
+    <textarea id="copyTarget3">$("#tree").tree("setValue",'1,2,3');</textarea>
+    <textarea id="copyTarget4">$("#tree").tree("clearTree");</textarea>
+    <textarea id="copyTarget5">$("#tree").tree("getTree");</textarea>
+    <textarea id="copyTarget6">
+    var node=$("#tree").tree("getCheckedNodes")[0];
+    $("#tree").tree("getTree").addNodes(node,{id:999,parentTId:1,name:'朝阳区'},false);
+    </textarea>
+    <textarea id="copyTarget7">
+    $("#tree").tree({
+		url:'./json/treeData.json',
+		checkType:'checkbox',
+		rootElement:true,
+		openSearch:true,
+		onlyLeaf:false,
+		onLoaded:function(ztree){//加载完毕后 触发
+			ztree.expandAll(true);
+		}
+	});
+    </textarea>
+    <textarea id="copyTarget8">
+    $("#tree2").tree({
+		outerHeight: 200,
+		url:'./json/treeData.json',
+		checkType: 'radio',
+		rootElement: true,
+		callback:{
+			clickNode : function(e,treeId,treeNode,clickFlag){
+				var ztree = $("#"+treeId).tree("getTree");
+				ztree.expandNode(treeNode);
+			}
+		}
+	});
+    </textarea>
+    <textarea id="copyTarget9">
+    $("#tree3").tree({
+        url:'./json/treeData.json',
+        checkType: 'radio'
+    });
+    </textarea>
+    <textarea id="copyTarget10">
+    function getTextById(){
+        alert($("#tree").tree("getTextById", 11));
+    }
+    </textarea>
+    <textarea id="copyTarget11">
+    $("#tree4").tree({
+        url:'./json/treeData.json',
+        openSearch:true,//是否显示搜索栏
+        searchAttr: "realName"
+    });
+    </textarea>
+    <textarea id="copyTarget12">
+    $("#tree").tree("getCheckedNodes");
+    </textarea>
+    <textarea id="copyTarget13">
+    var nodes = $("#tree").tree("getData");
+    for(var i=0; i<nodes.length; i++){
+        $("#tree").tree("setChkDisabled", nodes[i], true);
+    }
+    </textarea>
+    <textarea id="copyTarget14">
+    var nodes = $("#tree").tree("getData");
+    $("#tree").tree("setChkDisabled", nodes[1], true);
+    </textarea>
+    <textarea id="copyTarget15">
+    var nodes = $("#tree").tree("getData");
+    for(var i=0; i<nodes.length; i++){
+        $("#tree").tree("setChkDisabled", nodes[i], false);
+    }
+    </textarea>
+</div>
+<script>
+    $(function(){
+        $(".copyBtn").on("click", function(){
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var target = $("#copyTarget"+ num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>"+ target.html() +"</pre>",
+                area: ["600px", "auto"],
+                btn: ["复制", "取消"],
+                btn1: function(index){
+                    var res = $.copyToClipboard(target.get(0));
+                    if(res){
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>
+
+<div class="container-fluid tree_demo">
+    <div class="col-xs-3">
+        <div class="col-4">
+            <div class="copytree1"><button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn7">查看代码</button><span style="padding-left: 10px">多选按钮树</span></div>
+            <ul class="list-unstyled text-danger">
+                <li>checkType: 'checkbox' //定义选择框类型</li>
+                <li>openSearch: true //是否显示搜索栏</li>
+                <li>rootElement: true //是否添加“全部”节点</li>
+                <li>onlyLeaf: false //父节点是否有选择框</li>
+            </ul>
+            <div id="tree"></div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class="col-4">
+            <div class="copytree2"><button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn8">查看代码</button><span style="padding-left: 10px">带回调单选按钮树</span></div>
+            <ul class="list-unstyled text-danger">
+                <li>outerHeight: 200 //固定树高度</li>
+                <li>checkType: 'radio' //定义选择框类型</li>
+            </ul>
+            <div id="tree2"></div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class="col-4">
+            <div class="copytree3"><button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn9">查看代码</button><span style="padding-left: 10px">纯单选按钮树</span></div>
+            <div id="tree3"></div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class="col-4">
+            <div class="copytree3"><button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn11">查看代码</button><span style="padding-left: 10px">根据不同属性进行模糊查找</span></div>
+            <ul class="list-unstyled text-danger">
+                <li>searchAttr: "realName"</li>
+            </ul>
+            <div id="tree4"></div>
+        </div>
+    </div>
+</div>
+<br><br><br><br>
+<div class="target">
+	<div class="sideBarLink">
+		目录
+	</div>
+	<div class="sideBar">
+
+		<div class="siteDir">
+			<div class="dir-title">
+				目录
+				<button type="button" class="close" aria-label="Close">
+				</button>
+			</div>
+			<div class="dir-list">
+				<ul id="dir_tree"></ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    $(function(){
+        $(".sideBarLink").on({
+            mouseenter:function () {
+                var left = $(".sideBar").offset().left,
+                    clientWidth = $(window).width();
+                if(Math.round(left) == clientWidth){
+                    $(".sideBar").animate({right: 5},'slow')
+                    $(this).animate({right: $(".sideBar").width()+5 },'slow')
+                }
+            },
+            click:function () {
+                var left = $(".sideBar").offset().left,
+                    clientWidth = $(window).width();
+                if(Math.round(left) == clientWidth){
+                    $(".sideBar").animate({right: 20},'slow')
+                    $(this).animate({right: $(".sideBar").width()+20 },'slow')
+                }else {
+                    $(".sideBar").animate({right:-180},'slow')
+                    $(this).animate({right: 0},'slow')
+                }
+            }
+        })
+        var debounce = function debounce(fn, wait) {
+            var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+            var timer = 0,
+                startTimeStamp = 0;
+            var context =  0,
+                args = 0;
+
+            var run = function run(timerInterval) {
+                timer = setTimeout(function () {
+                    var now = new Date().getTime();
+                    var interval = now - startTimeStamp;
+                    if (interval < timerInterval) {
+                        // the timer start time has been reset，so the interval is less than timerInterval
+                        startTimeStamp = now;
+                        run(timerInterval - interval); // reset timer for left time
+                    } else {
+                        if (!immediate) {
+                            fn.apply(context, args);
+                        }
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+                }, timerInterval);
+            };
+
+            return function () {
+                context = this;
+                args = arguments;
+                var now = new Date().getTime();
+                startTimeStamp = now; // set timer start time
+
+                if (!timer) {
+                    if (immediate) {
+                        fn.apply(context, args);
+                    }
+                    run(wait); // last timer alreay executed, set a new timer
+                }
+            }();
+        };
+        $(".target").on({
+            mouseleave:function () {
+                debounce(function () {
+                    $(".sideBar").stop().animate({right:-180})
+                    $(".sideBarLink").stop().animate({right: 0})
+                },100)
+            }
+        })
+
+        function addEleId(ele) {
+            var i = 0;
+            $('#'+ele+'_tr').parent().find(".sub-table-tr").map(function (index,value) { //a3_tr_1
+                $(this).attr('id',ele+"_tr_"+(++i));
+            })
+        }
+        addEleId('a2');//传入参数a2
+        addEleId('a3');
+        addEleId('a4');
+        function createObject(ele) { //创建一个对象，{id:3, pId:0, name:"方法", url:"#a4", target:"_self"}
+            var gdatastring = [];
+            var gdata = {
+                arg:{},
+                i:3,
+                sumarg:[],
+                glength:$('#a'+ele+'_tr').parent().find('.sub-table-tr').length,
+                gseriesinfo:function () {
+                    var sumarg = [];
+                    for(;gdata.i<=gdata.glength;gdata.i++){
+                        gdata.arg.id=ele.toString()+gdata.i;
+                        gdata.arg.pId = ele;
+                        gdata.arg.name = $('#a'+ele+'_tr_'+gdata.i).find('.sub-table-td:first').html();
+                        gdata.arg.url = '#a'+ele+'_tr_'+gdata.i;
+                        gdata.arg.target = '_self';
+                        sumarg.push(JSON.stringify(gdata.arg));
+                    }
+                    return sumarg;
+                }
+            }
+
+            gdata.gseriesinfo().map(function (i,v) {
+                gdatastring.push(JSON.parse(i));
+            });
+            return gdatastring;
+        } //动态生成对象
+
+        $("#dir_tree").tree({
+            localdata: [
+                {id:1, pId:0, name:"用法 & 数据格式", url:"#a1", target:"_self"},
+                {id:2, pId:0, name:"属性", url:"#a2", target:"_self"},
+                {id:3, pId:0, name:"节点属性", url:"#a3", target:"_self"},
+                {id:4, pId:0, name:"方法", url:"#a4", target:"_self"},
+                {id:5, pId:0, name:"案例", url:"#a5", target:"_self"}
+            ].concat(createObject(2),createObject(3),createObject(4)),
+            checkType:'nocheck',
+            view: {
+                showIcon: false
+            },
+            data : { // 必须使用data
+                simpleData : {
+                    enable : true,
+                    idKey : "id", // id编号命名 默认
+                    pIdKey : "pId", // 父id编号命名 默认
+                    rootPId : 0
+                },
+                key: {
+                    url: "url"
+                }
+            },
+            callback:{
+                clickNode : function(e,treeId,treeNode,clickFlag){
+                    var ztree = $("#"+treeId).tree("getTree");
+                    ztree.expandNode(treeNode);
+                    hashLoadClass()
+                }
+            }
+        });
+
+        hashLoadClass()
+        function hashLoadClass() {
+            setTimeout(function () {
+                var id = location.hash;
+                if(id){
+                    $(".sub-table-tr").each(function (i) {
+                        if('#'+$(this).attr("id") == id){
+                            $(this).addClass("active");
+                        }else {
+                            $(this).removeClass("active");
+                        }
+                    })
+
+                }
+            },100)
+
+        }
+    })
+</script>
+</body>
+</html>
+
+<script type="text/javascript">
+	function reload(){
+		$("#tree").tree("reload", {localdata:zNodes, url:""});
+	}
+	function getValue(){
+		alert($("#tree").tree("getValue"));
+	}
+	function setValue(){
+		$("#tree").tree("setValue",'1,2,3')
+	}
+	function clearTree(){
+		$("#tree").tree("clearTree");
+	}
+	function getTree(){
+		$("#tree").tree("getTree");
+	}
+    function setDisabledTree(){
+        var nodes = $("#tree").tree("getData");
+        for(var i=0; i<nodes.length; i++){
+            $("#tree").tree("setChkDisabled", nodes[i], true);
+        }
+    }
+    function setDisabledNode(){
+        var nodes = $("#tree").tree("getData");
+        $("#tree").tree("setChkDisabled", nodes[1], true);
+    }
+    function setEnabledTree(){
+        var nodes = $("#tree").tree("getData");
+        for(var i=0; i<nodes.length; i++){
+            $("#tree").tree("setChkDisabled", nodes[i], false);
+        }
+    }
+
+	/**
+	 * 添加节点
+	 */
+	function addNode(){
+		var node=$("#tree").tree("getCheckedNodes")[0];
+		$("#tree").tree("getTree").addNodes(node,{id:999,parentTId:1,name:'朝阳区'},false)
+	}
+
+    function getTextById(){
+        alert($("#tree").tree("getTextById", 11));
+    }
+    function getCheckedNodes(){
+        alert(JSON.stringify($("#tree").tree("getCheckedNodes")));
+    }
+
+	$(document).ready(function(){
+		// 在这个案例中  由于本地数据 pid id 和默认配置一致 所以无需进行重写simpleData属性中  idKey 和 pIdKey
+		$("#tree").tree({
+			checkType:'checkbox',
+			rootElement:true,
+			openSearch:true,//是否显示搜索栏
+//            searchPlaceholder:'ceshi',
+            onlyLeaf: false,
+			// localdata: zNodes,
+			url:'./json/treeData.json',
+			data:{
+                simpleData : {
+                    enable: true, //数据是否采用简单数据模式(Array)，true为是
+                    idKey: "id", //保存节点唯一标识的属性名
+                    pIdKey: "pId",  //保存节点其父节点的唯一标识的属性名
+                    rootPId: 0 //指定根节点数据
+                }
+			},
+            //getValueField: "tId",
+			callback:{
+				clickNode : function(e,treeId,treeNode,clickFlag){
+					// console.log(treeNode)
+				},
+				onCheck: function(e, treeId, treeNode) {
+					/*console.log(treeNode.tId)
+					console.log(treeNode)*/
+				}
+			},
+			onLoaded:function(ztree){//加载完毕后 触发
+				ztree.expandAll(true);
+				//$("#tree").tree("setValue",'1,2,3')
+			}
+		});
+        $("#tree2").tree({
+            outerHeight: 200,
+            url:'./json/treeData.json',
+            checkType: 'radio',
+            rootElement: true,
+            callback:{
+                clickNode : function(e,treeId,treeNode,clickFlag){
+                    var ztree = $("#"+treeId).tree("getTree");
+                    ztree.expandNode(treeNode);
+                }
+            }
+        });
+        $("#tree3").tree({
+            url:'./json/treeData.json',
+            checkType: 'radio'
+        });
+        $("#tree4").tree({
+            url:'./json/treeData.json',
+            openSearch:true,//是否显示搜索栏
+            searchAttr: "realName"
+        })
+	});
+
+	var zNodes = [
+		{id:1, pId:0, name:"北京", ISLEAF:1},
+   		{id:2, pId:0, name:"天津", ISLEAF:1,color:'#ccc111'},
+   		{id:3, pId:0, name:"上海", ISLEAF:1},
+   		{id:4, pId:0, name:"河北省", ISLEAF:0},
+   		{id:41, pId:4, name:"石家庄", ISLEAF:0},
+   		{id:42, pId:4, name:"保定", ISLEAF:1},
+   		{id:43, pId:4, name:"邯郸", ISLEAF:1},
+   		{id:44, pId:4, name:"承德", ISLEAF:1},
+   		{id:5, pId:0, name:"广东省", ISLEAF:0},
+   		{id:51, pId:5, name:"广州", ISLEAF:1},
+   		{id:52, pId:5, name:"深圳", ISLEAF:1},
+   		{id:53, pId:5, name:"东莞", ISLEAF:1},
+   		{id:54, pId:5, name:"佛山", ISLEAF:1},
+   		{id:6, pId:0, name:"福建省", ISLEAF:0},
+   		{id:61, pId:6, name:"福州", ISLEAF:1},
+   		{id:62, pId:6, name:"厦门", ISLEAF:1},
+   		{id:63, pId:6, name:"泉州", ISLEAF:1},
+   		{id:64, pId:6, name:"三明", isParent:true}
+	];
+	var zNodes1 =[
+		{ id:1, pId:0, name:"节点搜索演示 1", open:true, ISLEAF:0},
+		{ id:11, pId:1, name:"关键字可以是名字", test:123,ISLEAF:1},
+		{ id:12, pId:1, name:"关键字可以是level", ISLEAF:1},
+		{ id:13, pId:1, name:"关键字可以是id", ISLEAF:1},
+		{ id:14, pId:1, name:"关键字可以是各种属性", ISLEAF:1},
+		{ id:2, pId:0, name:"节点搜索演示 2", open:true, ISLEAF:0},
+		{ id:21, pId:2, name:"可以只搜索一个节点", ISLEAF:1},
+		{ id:22, pId:2, name:"可以搜索节点集合", ISLEAF:1},
+		{ id:23, pId:2, name:"搜我吧", ISLEAF:1},
+		{ id:3, pId:0, name:"节点搜索演示 3", open:true, ISLEAF:0},
+		{ id:31, pId:3, name:"我的 id 是: 31", ISLEAF:0},
+		{ id:32, pId:31, name:"我的 id 是: 32", ISLEAF:0},
+		{ id:33, pId:32, name:"我的 id 是: 33", ISLEAF:1}
+	];
+</script>
+<style>
+	 html input[type=button]{border-radius: 4px;background-color:#428BCA;border:1px solid #2E6DA4;font-family: "Microsoft YaHei";font-size:14px;height:34px;line-height:34px;padding:0 10px;color:#fff;}
+	 html input[type=button]:hover{background-color: #3276b1;border:1px solid #125590;}
+</style>

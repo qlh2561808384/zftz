@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <script src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+<h3>项目工程决算批复登记</h3>
+<div id="tableDemo"></div>
+<script src="../js/common.js"></script>
+<script src="../js/file.js"></script>
+<script>
+    var api = $.extend({}, API, {
+        // getXmList: function (isAddPage, callback) {
+        //     this.doGet("../xmgcjsbz/xm.do", {excludeDw: !isAddPage, excludeExistItem: isAddPage}, function (list) {
+        //         var newObj = {list: [], map: {}};
+        //         $.each(list, function (index, item) {
+        //             newObj.list.push(item);
+        //             newObj.map[item.ID_ZFTZ_XM] = item;
+        //         });
+        //         callback(newObj);
+        //     })
+        // },
+        saveOrUpdate: function (data, callback) {
+            return new Promise(function (resolve, reject) {
+                API.doPost("../xmgcjsbz/save.do", JSON.stringify(data), function (id) {
+                    callback && callback(id);
+                    resolve(id);
+                }, {contentType: "application/json"});
+            });
+        },
+        getDetail: function (id, callback) {
+            return new Promise(function (resolve, reject) {
+                API.doGet("../xmgcjsbz/detail.do", {id: id}, function (detail) {
+                    callback && callback(detail);
+                    resolve(detail);
+                })
+            });
+        },
+        updateComment: function (ids, comment, callback) {
+            return new Promise(function (resolve, reject) {
+                API.doPost("../xmgcjsbz/update/comment.do", JSON.stringify({
+                    ids: ids,
+                    comment: comment
+                }), function (result) {
+                    callback && callback(result);
+                    resolve(result);
+                }, {contentType: "application/json"})
+            });
+        }
+    });
+    var toolObj = [
+        createToolBarBtn("编辑/查看", 'query', "", editCallback),
+        createToolBarBtn("审核", 'review', "", reviewCallback),
+        createToolBarBtn("退回", 'disable', "", backCallback)
+    ];
+    var _homeTable;
+    var openPageIndex = 0;
+    var table;
+    var sxbm = '11';
+
+    function openEditPage(xmList, fjlx, zjjg, detail) {
+        detail = detail || {};
+        edited = false;
+        openPageIndex = $.dopen({
+            type: 6,
+            title: "项目财务决算编制",
+            area: ["100%", "100%"],
+            content: getPageJson(fjlx, detail),
+            end: function () {
+                _homeTable.dtable("refresh");
+            }
+        });
+        var readOnlyField = ["SDSJ", "JGJSSDJ", "PFBASJ", "YJJYZJ", "JHJYZJ", "PFWH", "ZC_GDZC", "ZC_WXZC", "ZC_DHXJJZC", "ZC_ZCTZ", "CZSPYJ"];
+        table = CustomTable.init("formTable", {
+            dName: {
+                ID_ZFTZ_XM: {
+                    localdata: xmList,
+                    valueField: "ID_ZFTZ_XM",
+                    textField: "XMMC"
+                },
+                SHZJJG: {localdata: zjjg},
+                CZSPYJ: {
+                    multiline: true
+                }
+            },
+            dType: {
+                dateBox: {
+                    startView: 3,
+                    minView: 2,
+                    format: 'yyyy-mm-dd',
+                    pickerPosition: "bottom-left",
+                    getterFormatter: dateSaveFormatter,
+                    setterFormatter: dateShowFormatter
+                },
+                decimal: {
+                    getterFormatter: numberSaveFormatter,
+                    setterFormatter: numberShowFormatter,
+                    textAlign: "right"
+                }
+            }
+        });
+        if (detail.XMBH) {
+            $("#subTitle_xmbh_value").text(detail.XMBH);
+        }
+        // if (detail.CZSJ) {
+        //     $("#subTitle_bbrq_value").text(detail.CZSJ);
+        // }
+        table.setReadonly(readOnlyField, false);
+        detail.JH_HJ = (parseFloat(detail.JH_CZZJ) + parseFloat(detail.JH_ZYPH) + parseFloat(detail.JH_QTZJ)).toFixed(fixLength);
+        detail.SJ_HJ = (parseFloat(detail.SJ_CZZJ) + parseFloat(detail.SJ_ZYPH) + parseFloat(detail.SJ_QTZJ)).toFixed(fixLength);
+        detail.JY_CZZJ = (parseFloat(detail.JH_CZZJ) - parseFloat(detail.SJ_CZZJ)).toFixed(fixLength);
+        detail.JY_ZYPH = (parseFloat(detail.JH_ZYPH) - parseFloat(detail.SJ_ZYPH)).toFixed(fixLength);
+        detail.JY_QTZJ = (parseFloat(detail.JH_QTZJ) - parseFloat(detail.SJ_QTZJ)).toFixed(fixLength);
+        detail.JY_HJ = (parseFloat(detail.JY_CZZJ) + parseFloat(detail.JY_ZYPH) + parseFloat(detail.JY_QTZJ)).toFixed(fixLength);
+        detail.ZC_HJ = (parseFloat(detail.ZC_GDZC) + parseFloat(detail.ZC_WXZC) + parseFloat(detail.ZC_DHXJJZC) + parseFloat(detail.ZC_ZCTZ)).toFixed(fixLength);
+        table.loadData(detail);
+        $("#uploadTable").tableEditor("initAll");
+        watchInputChange([
+            $("input[name=ZC_GDZC]").prev(),
+            $("input[name=ZC_WXZC]").prev(),
+            $("input[name=ZC_DHXJJZC]").prev(),
+            $("input[name=ZC_ZCTZ]").prev()
+        ], function (gdzc, wxzc, dhxjjzc, zctz) {
+            table.exec("ZC_HJ", "setValue", (gdzc + wxzc + dhxjjzc + zctz).toFixed(fixLength));
+        });
+        watchInputChange([
+            $("input[name=JGJSSDJ]").prev()
+        ],function (jgjssdj) {
+            var sjHj = parseFloat(table.exec("SJ_HJ", "getValue"));
+            sjHj = $.isNumber(sjHj) ? sjHj : 0;
+            var yjjyzj = parseFloat((sjHj + jgjssdj).toFixed(fixLength));
+            if (yjjyzj < 0) {
+                yjjyzj = 0;
+            }
+            table.exec("YJJYZJ", "setValue", yjjyzj);
+        });
+        watchInputChange([$("input[name=YJJYZJ]").prev()], function (yjjyzj) {
+            var sjHj = parseFloat(table.exec("SJ_HJ", "getValue"));
+            var jgjssdj = parseFloat(table.exec("JGJSSDJ", "getValue"));
+            sjHj = $.isNumber(sjHj) ? sjHj : 0;
+            jgjssdj = $.isNumber(jgjssdj) ? jgjssdj : 0;
+            var maxYjjyzj = (sjHj + jgjssdj).toFixed(fixLength);
+            if (yjjyzj > maxYjjyzj) {
+                table.exec("YJJYZJ", "setValue", maxYjjyzj);
+            }
+            if (yjjyzj < 0) {
+                table.exec("YJJYZJ", "setValue", -yjjyzj);
+            }
+        })
+
+    }
+
+    //================================= Table Event Start ============================================
+    function editCallback() {
+        var selectData = getSelectedData(_homeTable, false);
+        if (!selectData) {
+            return;
+        }
+
+        var id = selectData.ID;
+
+        Promise.all([
+            api.getFjlx(sxbm),
+            api.getZjjg(),
+            api.getDetail(id)
+        ]).then(function (datas) {
+            var fjlx = datas[0];
+            var zjjg = datas[1];
+            var detail = datas[2];
+            var xmList = [{
+                ID_ZFTZ_XM: detail.ID_ZFTZ_XM,
+                XMMC: detail.XMMC
+            }];
+            openEditPage(xmList, fjlx, zjjg, detail);
+        });
+    }
+
+    function reviewCallback() {
+        var selectedData = getSelectedData(_homeTable, true);
+        if (!selectedData) {
+            return;
+        }
+        var ids = [];
+        var lchjs = [];
+        $.each(selectedData, function (index, item) {
+            ids.push(item.ID);
+            lchjs.push(item.LCHJ + "");
+        });
+        openCommentDialog(1, function (comment) {
+            // 更新审批意见
+            api.updateComment(ids, comment, function () {
+                // 审核
+                api.review(sxbm, ids, lchjs, comment, function (result) {
+                    $.dalert({text: result, icon: 1});
+                    _homeTable.dtable("refresh");
+                });
+            });
+        }, selectedData[0].CZSPYJ);
+    }
+
+    function backCallback() {
+        var selectedData = getSelectedData(_homeTable, true);
+        if (!selectedData) {
+            return;
+        }
+        var ids = [];
+        var lchjs = [];
+        $.each(selectedData, function (index, item) {
+            ids.push(item.ID);
+            lchjs.push(item.LCHJ + "");
+        });
+        openCommentDialog(0, function (comment) {
+            // 更新审批意见
+            api.updateComment(ids, comment, function () {
+                // 退回
+                api.back(sxbm, ids, lchjs, comment, function (result) {
+                    $.dalert({text: result, icon: 1});
+                    _homeTable.dtable("refresh");
+                });
+            });
+        }, selectedData[0].CZSPYJ);
+    }
+
+    //================================= Table Event End ============================================
+
+
+    //================================== Page Event Start ============================================
+    function pageSaveCallback(callback) {
+        var data = table.getData();
+        var uploadTable = $("#uploadTable");
+        uploadTable.tableEditor("updateAll");
+        var fjData = uploadTable.dtable("getData");
+        data.fj = [];
+        $.each(fjData, function (index, fj) {
+            data.fj.push({
+                FILEID: fj.FILEID || fj.GUID,
+                FILEDL: fj.FILEDL,
+                FILEXL: fj.FILEXL
+            })
+        });
+        if (!data.ID_ZFTZ_XM) {
+            $.dalert({text: "请选择项目!", icon: 2});
+            return;
+        }
+        data["notUpdateCzr"] = true;
+        api.saveOrUpdate(data, function (id) {
+            table.loadData({ID: id});
+            callback ? callback(id) : $.dalert({text: "保存成功", icon: 1})
+        });
+    }
+
+    function pageCloseCallback() {
+        layer.close(openPageIndex);
+    }
+
+    function pageReviewCallback(id, lchj) {
+        var ids = [id];
+        var lchjs = [lchj];
+        var comment = table.exec('CZSPYJ', "getValue");
+        if (!comment || comment === "") {
+            comment = '同意';
+        }
+        showConfirm("确认提交？", function () {
+            // 更新审批意见
+            api.updateComment(ids, comment, function () {
+                api.review(sxbm, ids, lchjs, comment, function (result) {
+                    $.dalert({text: result, icon: 1}, function (index) {
+                        layer.close(index);
+                        layer.close(openPageIndex);
+                    });
+                });
+            });
+        });
+    }
+
+    function pageBackCallback(id, lchj) {
+        var ids = [id];
+        var lchjs = [lchj];
+        var comment = table.exec('CZSPYJ', "getValue");
+        if (!comment || comment === "") {
+            $.dalert({text: "审批意见不能为空", icon: 2});
+            return;
+        }
+        showConfirm("确认退回？", function () {
+            // 更新审批意见
+            api.updateComment(ids, comment, function () {
+                api.back(sxbm, ids, lchjs, comment, function (result) {
+                    $.dalert({text: result, icon: 1}, function (index) {
+                        layer.close(index);
+                        layer.close(openPageIndex);
+                    });
+                });
+            });
+        });
+    }
+
+    //================================== Page Event End ============================================
+
+    $(function () {
+        api.getZjjg(function (zjjg) {
+            var tableHeight = calcTableHeight();
+            _homeTable = $("#tableDemo").dtable({
+                height: tableHeight,
+                url: "../xmgcjsbz/todo/list.do",
+                toolbar: toolObj,
+                resizable: true,
+                showRefresh: true,
+                headerHeight: 30,
+                sortable: false,
+                columns: [
+                    {radio: true},
+                    {
+                        field: 'INDEX',
+                        title: '序号',
+                        width: 100,
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    },
+                    {field: 'XMBH', title: '项目编号', align: 'center', width: 100},
+                    {field: 'XMMC', title: '项目名称', align: 'center', width: 200},
+                    {field: 'XMLX', title: '项目类型', align: 'center', width: 100},
+                    {field: 'JSDW', title: '建设单位', align: 'center', width: 200},
+                    {
+
+                        field: 'SHZJJG',
+                        title: '审核中介机构',
+                        align: 'center',
+                        width: 200,
+                        formatter: function (value, row, index) {
+                            for (var i = 0; i < zjjg.length; i += 1) {
+                                if (zjjg[i].id == value) {
+                                    return zjjg[i].text;
+                                }
+                            }
+                            return value;
+                        }
+                    },
+                    {
+                        field: 'ZT', title: '状态', align: 'center', width: 70, formatter: function (value) {
+                            if (value == -1) {
+                                return "未提交";
+                            }
+                            if (value == 0) {
+                                return "已完成";
+                            }
+                            return "审核中";
+                        }
+                    },
+                    {field: 'CZR', title: '编制人', align: 'center', width: 80},
+                    {field: 'CZSJ', title: '编制日期', align: 'center', width: 100}
+                ],
+                pageNumber: 1,//起始页
+                pageSize: calcTablePageSize(tableHeight),//页面大小
+                pagination: true,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',
+                clickToSelect: true//点击选中
+            });
+            $(".bootstrap-table").height(tableHeight);
+        })
+    });
+
+    function getPageJson(fjlx, detail) {
+        return [
+            {
+                "plug": [
+                    {
+                        "plug": [
+                            {
+                                "plug": [
+                                    {
+                                        "dtype": "html",
+                                        "dragHtml": "<h3 class='text-center'>项目财务决算编制</h3>"
+                                    },
+                                    {
+                                        "dtype": "html",
+                                        "dragHtml": "<div class='text-center'><span id='subTitle_xmbh'>项目编号：<span id='subTitle_xmbh_value'></span></span></div>"
+                                    },
+                                    {
+                                        "dtype": "html",
+                                        "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                            '<button id="save-btn" class="bootstrap-table-save" type="button" onclick="pageSaveCallback()">保存</button>' +
+                                            '<button id="submit-btn" class="bootstrap-table-submit" type="button" onclick="pageReviewCallback(' + detail.ID + ',' + detail.LCHJ + ')">审核</button>' +
+                                            '<button id="back-btn" class="bootstrap-table-disable" type="button" onclick="pageBackCallback(' + detail.ID + ',' + detail.LCHJ + ')">退回</button>' +
+                                            '<button id="close-btn" class="bootstrap-table-clear" type="button" onclick="pageCloseCallback()">关闭</button>' +
+                                            '<span class="pull-right">单位：万元</span>' +
+                                            '</div>'
+                                    },
+                                    {
+                                        "dtype": "html",
+                                        dragHtml: '<table id="formTable" class="table table-bordered tableCustom">\n' +
+                                            '    <tr>\n' +
+                                            '        <td colspan="2">项目名称</td>\n' +
+                                            '        <td><input type="comboBox" name="ID_ZFTZ_XM"></td>\n' +
+                                            '        <td colspan="2">建设单位</td>\n' +
+                                            '        <td><input type="textBox" name="JSDWMC"></td>\n' +
+                                            '        <td colspan="2">主管部门</td>\n' +
+                                            '        <td><input type="textBox" name="ZGBMMC"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td colspan="2">项目规划选址</td>\n' +
+                                            '        <td><input type="textBox" name="XMGHXZ"></td>\n' +
+                                            '        <td colspan="2">项目概算金额</td>\n' +
+                                            '        <td><input type="decimal" name="XMGSJE"></td>\n' +
+                                            '        <td colspan="2">审核中介机构</td>\n' +
+                                            '        <td><input type="comboBox" name="SHZJJG"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td colspan="2">开工时间</td>\n' +
+                                            '        <td><input type="dateBox" name="KGSJ"></td>\n' +
+                                            '        <td colspan="2">送审时间</td>\n' +
+                                            '        <td><input type="dateBox" name="SSSJ"></td>\n' +
+                                            '        <td colspan="2">竣工决算送审价</td>\n' +
+                                            '        <td><input type="decimal" name="JGJSSSJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td colspan="2">竣工时间</td>\n' +
+                                            '        <td><input type="dateBox" name="JGSJ"></td>\n' +
+                                            '        <td colspan="2">审定时间</td>\n' +
+                                            '        <td><input type="dateBox" name="SDSJ"></td>\n' +
+                                            '        <td colspan="2">竣工决算审定价</td>\n' +
+                                            '        <td><input type="decimal" name="JGJSSDJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td colspan="2">联系人</td>\n' +
+                                            '        <td><input type="textBox" name="LXR"></td>\n' +
+                                            '        <td colspan="2">批复/备案时间</td>\n' +
+                                            '        <td><input type="dateBox" name="PFBASJ"></td>\n' +
+                                            '        <td colspan="2">应缴财政结余资金</td>\n' +
+                                            '        <td><input type="decimal" name="YJJYZJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td colspan="2">联系电话</td>\n' +
+                                            '        <td><input type="textBox" name="LXDH"></td>\n' +
+                                            '        <td colspan="2">批复文号</td>\n' +
+                                            '        <td><input type="textBox" name="PFWH"></td>\n' +
+                                            '        <td colspan="2">缴回结余资金</td>\n' +
+                                            '        <td><input type="decimal" name="JHJYZJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td rowspan="4" width="5%" style="vertical-align: middle;">项目计划资金来源</td>\n' +
+                                            '        <td class="text-right">合计</td>\n' +
+                                            '        <td><input type="decimal" name="JH_HJ"></td>\n' +
+                                            '        <td rowspan="4" width="5%" style="vertical-align: middle;">项目实际到位资金</td>\n' +
+                                            '        <td class="text-right">合计</td>\n' +
+                                            '        <td><input type="decimal" name="SJ_HJ"></td>\n' +
+                                            '        <td rowspan="4" width="5%" style="vertical-align: middle;">项目结余资金（或尚需到位资金）</td>\n' +
+                                            '        <td class="text-right">合计</td>\n' +
+                                            '        <td><input type="decimal" name="JY_HJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td class="text-right">财政资金</td>\n' +
+                                            '        <td><input type="decimal" name="JH_CZZJ"></td>\n' +
+                                            '        <td class="text-right">财政资金</td>\n' +
+                                            '        <td><input type="decimal" name="SJ_CZZJ"></td>\n' +
+                                            '        <td class="text-right">财政资金</td>\n' +
+                                            '        <td><input type="decimal" name="JY_CZZJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td class="text-right">资源平衡</td>\n' +
+                                            '        <td><input type="decimal" name="JH_ZYPH"></td>\n' +
+                                            '        <td class="text-right">资源平衡</td>\n' +
+                                            '        <td><input type="decimal" name="SJ_ZYPH"></td>\n' +
+                                            '        <td class="text-right">资源平衡</td>\n' +
+                                            '        <td><input type="decimal" name="JY_ZYPH"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td class="text-right">其他资金</td>\n' +
+                                            '        <td><input type="decimal" name="JH_QTZJ"></td>\n' +
+                                            '        <td class="text-right">其他资金</td>\n' +
+                                            '        <td><input type="decimal" name="SJ_QTZJ"></td>\n' +
+                                            '        <td class="text-right">其他资金</td>\n' +
+                                            '        <td><input type="decimal" name="JY_QTZJ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td rowspan="2" colspan="2" style="vertical-align: middle;">项目形成资产及费用总额</td>\n' +
+                                            '        <td>合计</td>\n' +
+                                            '        <td colspan="2">固定资产</td>\n' +
+                                            '        <td>无形资产</td>\n' +
+                                            '        <td colspan="2">待核销基建支出</td>\n' +
+                                            '        <td>转出投资</td>\n' +
+                                            '    </tr>\n' +
+                                            '    <tr>\n' +
+                                            '        <td><input type="decimal" name="ZC_HJ"></td>\n' +
+                                            '        <td colspan="2"><input type="decimal" name="ZC_GDZC"></td>\n' +
+                                            '        <td><input type="decimal" name="ZC_WXZC"></td>\n' +
+                                            '        <td colspan="2"><input type="decimal" name="ZC_DHXJJZC"></td>\n' +
+                                            '        <td><input type="decimal" name="ZC_ZCTZ"></td>\n' +
+                                            '    </tr>\n' +
+                                            '     <tr>\n' +
+                                            '        <td colspan="2" style="vertical-align: middle;">项目决算财政审批意见</td>\n' +
+                                            '        <td colspan="10"><input type="textBox" name="CZSPYJ"></td>\n' +
+                                            '    </tr>' +
+                                            '</table>'
+                                    },
+                                    {
+                                        "dtype": "html",
+                                        "dragHtml": '<div style="padding:20px 0 10px 15px;"><b>处理过程意见：</b></div>'
+                                    },
+                                    {
+                                        "dtype": "dtable",
+                                        "height": 250,
+                                        // "id": "uploadTable",
+                                        sortable: false,
+                                        "url": "../flow/shjl/" + sxbm + ".do?ywId=" + detail.ID,
+                                        columns: [
+                                            {field: "DQHJMC", title: "环节", "align": "center", width: 100},
+                                            {field: "XM", title: "处理人", "align": "center", width: 100},
+                                            {
+                                                field: "DDRQ",
+                                                title: "到达时间",
+                                                "align": "center",
+                                                width: 150,
+                                                formatter: function (value) {
+                                                    return getLocalTime(value);
+                                                }
+                                            },
+                                            {
+                                                field: "CLSJ", title: "处理时间", "align": "center", width: 150,
+                                                formatter: function (value) {
+                                                    return getLocalTime(value);
+                                                }
+                                            },
+                                            {field: "CLYJ", title: "处理意见", "align": "center", "min-width": 150}
+                                        ]
+                                    },
+                                    {
+                                        "dtype": "html",
+                                        "dragHtml": '<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button id="uploadFjBtn" type="button" class="bootstrap-table-upload" onclick="pageUploadFile(' + sxbm + ',' + fjlx[1][0]["id"] + ')">上传附件</button><button type="button" id="deleteFjBtn" style="margin-left: 10px" class="bootstrap-table-delete" onclick="deleteFjFile()">删除附件</button></div>'
+                                    },
+                                    {
+                                        "dtype": "dtable",
+                                        "height": 250,
+                                        "id": "uploadTable",
+                                        "url": "",
+                                        data: detail.FJ,
+                                        clickToSelect: true,
+                                        "columns": [
+                                            {checkbox: true},
+                                            {
+                                                field: "xh",
+                                                title: "序号",
+                                                width: 50,
+                                                align: "center",
+                                                formatter: function (value, row, index) {
+                                                    return index + 1;
+                                                }
+                                            },
+                                            {
+                                                field: "FILENAME",
+                                                title: "附件名",
+                                                width: 300,
+                                                align: "center",
+                                                formatter: function (value, row, index) {
+                                                    return '<a href="../file/downloadByid.do?id=' + (row.FILEID || row.GUID) + '">' + value + '<span id="_download"></span></a>';
+                                                }
+                                            },
+                                            {
+                                                field: "FILEDL",
+                                                title: "附件大类",
+                                                width: 120,
+                                                align: "center",
+                                                // disabled: true,
+                                                formatter: function (value) {
+                                                    for (var i = 0; i < fjlx[1].length; i += 1) {
+                                                        if (fjlx[1][i]["id"] == value) {
+                                                            return fjlx[1][i]["text"];
+                                                        }
+                                                    }
+                                                }
+                                                // editor: {
+                                                //     type: "comboBox",
+                                                //     selected: 1,
+                                                //     localdata: fjlx[1]
+                                                // }
+                                            },
+                                            // {
+                                            //     field: "FILEXL", title: "附件小类", width: 200, align: "center", editor: {
+                                            //         type: "comboBox",
+                                            //         localdata: fjlx[0]
+                                            //     }, formatter: function (value) {
+                                            //         for (var i = 0; i < fjlx[1].length; i += 1) {
+                                            //             if (fjlx[0][i]["id"] == value) {
+                                            //                 return fjlx[0][i]["text"];
+                                            //             }
+                                            //         }
+                                            //     }
+                                            // },
+                                            {
+                                                field: "FILESIZE",
+                                                title: "大小",
+                                                width: 80,
+                                                align: "center",
+                                                formatter: function (value, row, index) {
+                                                    return formatSize(value);
+                                                }
+                                            },
+                                            {
+                                                field: "DOWNLOAD",
+                                                title: "操作",
+                                                width: 80,
+                                                align: "center",
+                                                formatter: function (value, row, index) {
+                                                    return '<input value="下载" class="bootstrap-table-download" type="button" style="margin: 3px;" onclick="downloadFile(\'../file/downloadByid.do?id=' + (row.FILEID || row.GUID) + '\')" />';
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "colspan": "12",
+                                "dtype": "column"
+                            }
+                        ],
+                        "dtype": "row"
+                    }
+                ],
+                "dtype": "body"
+            }
+        ];
+    }
+</script>
+</body>
+</html>
+
+

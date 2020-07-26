@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件预览</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#viewFile").mediaBox({
+                src: "http://jquery.malsup.com/media/guice.pdf"
+            });
+            $("#viewFile2").mediaBox({
+                src: $.getRootPath() + "/bootstrap2/plugins/desktop/images/bg/wallpaper1.jpg"
+            });
+        })
+    </script>
+</head>
+<body>
+<section class="parser spacetop">
+    <div class="page-header"><h1>文件预览（支持pdf和图片格式的文件）</h1></div>
+    <h4>属性：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>width</td><td>number</td><td>定义宽度</td><td>100%</td></tr>
+        <tr><td>height</td><td>number</td><td>定义高度</td><td>400</td></tr>
+        <tr><td>src</td><td>string</td><td>文件路径</td><td></td></tr>
+        </tbody>
+    </table>
+    <h4>代码：</h4>
+    <div>
+        <pre style="padding: 0;">
+            <ol style="display:table">
+                <li><span><b>html部分：</b></span></li>
+                <li><span>&lt;a id="viewFile"&gt;&lt;/a&gt;</span></li>
+                <li><span></span></li>
+                <li><span><b>js部分：</b></span></li>
+                <li><span>$("#viewFile").mediaBox({</span></li>
+                <li><span>    src: "http://jquery.malsup.com/media/guice.pdf"</span></li>
+                <li><span>});</span></li>
+            </ol>
+        </pre>
+    </div>
+    <h4>案例：</h4>
+    <div class="row">
+        <div class="col-sm-6">
+            <div>pdf预览</div>
+            <a id="viewFile"></a>
+        </div>
+        <div class="col-sm-6">
+            <div>图片预览</div>
+            <a id="viewFile2"></a>
+        </div>
+    </div>
+</section>
+<br><br>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>table</title>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <style>
+        .clearfix:after{content:""; display:block; visibility: hidden; height:0; clear:both;}
+        .clearfix{zoom:1;}
+        .pull-left{float:left;}
+        .pull-right{float:right;}
+        .text-center{text-align:center;}
+        .blankSpace{display:inline-block; vertical-align:middle; width:40px;}
+
+        .page_title{font-size:20px; margin:0;}
+        .page_subtitle{font-size:13px;}
+        .page_table{width:100%; border-collapse:collapse; margin-top:6px;}
+        .page_table td{border:1px solid #000; vertical-align:top;}
+        .page_table .labelTd{width:100px; vertical-align:middle; text-align:center;}
+    </style>
+</head>
+<body>
+<!--<h1 class="page_title text-center">义乌市财政局<br>部门（单位）办事受理单</h1>
+<div class="page_subtitle text-center">编号：yyyymm-nnnn</div>
+<div class="clearfix">
+    <div class="pull-left">来文单位：<span class="blankSpace"></span></div>
+    <div class="pull-right">来文日期：<span class="blankSpace"></span>年<span class="blankSpace"></span>月<span class="blankSpace"></span>日</div>
+</div>
+<table class="page_table">
+    <tr>
+        <td class="labelTd">事项类别</td>
+        <td>222</td>
+        <td class="labelTd">承办科室</td>
+        <td>3333</td>
+    </tr>
+    <tr>
+        <td class="labelTd">标题</td>
+        <td colspan="3">4543</td>
+    </tr>
+    <tr>
+        <td height="450" class="labelTd">正文</td>
+        <td colspan="3">4545</td>
+    </tr>
+</table>-->
+
+<style>
+    .tableCus .table-row{float:left; width:10%; line-height:280px; border:1px solid #ddd; text-align:center;}
+    .tableCus .bootstrap-table{float:left; width:89%;}
+</style>
+<div class="tableCus clearfix">
+    <div class="table-row">已备案</div>
+    <table id="table"></table>
+</div>
+</body>
+</html>
+<script>
+    $("#table").dtable({
+        url:"",
+        height:300,
+        columns:[
+            {field: 'status', title: '状态', width: 100, align: 'center'},
+            {field: 'agencyName', title: '代收机构', width: 100, align: 'center'}
+        ]
+    })
+</script>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>进度条</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        var $bar1;
+        $(function () {
+            $bar1 = $.progressBar({
+                width:200,
+                target:"#progress1",
+                showPercent:true,
+                defaultValue:"30%"
+            });
+        });
+        function openProgressBar(){
+            var $bar = $.progressBar({
+                width:'80%',
+                popup:true,
+                bgColor:'#F00'
+            });
+
+            //进度条动态加载中
+            var i=0;
+            var timer = setInterval(function(){
+                var valArr = ["12%","39%","56%","70%","89%","100%"];
+                $bar.progressBar("setValue", valArr[i]);
+                if(i < valArr.length-1){
+                    i++;
+                }else{
+                    $bar.progressBar("closeBar");
+                    clearInterval(timer);
+                }
+
+            }, 100);
+        }
+        function setVal() {
+            $bar1.progressBar("setValue", "58%");
+        }
+        function getVal() {
+            alert($bar1.progressBar("getValue"));
+        }
+    </script>
+</head>
+<body>
+
+<section class="parser">
+    <div class="page-header"><h1>语法解析</h1></div>
+
+    <h4>表格参数:</h4>
+    <pre>
+        <ol style="display: table">
+            <li><span>var $bar = $.progressBar({ <span style="color:#F00;">//该方法返回的$bar是进度条的div对象</span></span></li>
+			<li><span>    height:20,</span></li>
+			<li><span>    bgColor:"#f33",</span></li>
+			<li><span>    defaultValue:"40%"</span></li>
+			<li><span>})</span></li>
+        </ol>
+    </pre>
+    <div class="row">
+        <div class="col-xs-6">
+            <h3>属性</h3>
+            <table class=" table-border">
+                <thead>
+                <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+                </thead>
+                <tbody>
+                <tr><td>width</td><td>Number</td><td>进度条宽度</td><td>100%</td></tr>
+                <tr><td>height</td><td>Number</td><td>进度条高度</td><td>10</td></tr>
+                <tr><td>target</td><td>null</td><td>进度条展示位置，可以是jquery选择器 如$("#id")；也可以是选择器字符串 如"#id"</td><td>null</td></tr>
+                <tr><td>popup</td><td>Boolean</td><td>是否为弹出层</td><td>false</td></tr>
+                <tr><td>bgColor</td><td>String</td><td>进度条颜色</td><td>#2F4056</td></tr>
+                <tr><td>defaultValue</td><td>String</td><td>默认值</td><td>0%</td></tr>
+                <tr><td>showPercent</td><td>Boolean</td><td>是否显示进度比文本</td><td>false</td></tr>
+                <tr><td>percentPos</td><td>String</td><td>进度比文本位置【showPercent:true时生效】，inside显示在进度条内，outside显示在进度条上方</td><td>outside</td></tr>
+                <tr><td>onLoaded</td><td>Function</td><td colspan="2">初始化后触发，参数 $bar 进度条对象</td></tr>
+                <tr><td>onCloseBar</td><td>Function</td><td colspan="2">移除进度条后触发，参数 $bar 进度条对象</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-6">
+            <h3>方法</h3>
+            <table class=" table-border">
+                <thead>
+                <tr><th>名称</th><th>参数</th><th>描述</th></tr>
+                </thead>
+                <tbody>
+                <tr><td>setValue</td><td>value</td><td>设值，百分比格式</td></tr>
+                <tr><td>getValue</td><td></td><td>取值</td></tr>
+                <tr><td>closeBar</td><td></td><td>移除进度条</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h4>案例1：基本进度条 <button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn1">查看代码</button></h4>
+    <div>
+        <button class="btn btn-primary btn-xs" type="button" onclick="setVal()">设值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button>
+        <button class="btn btn-primary btn-xs" type="button" onclick="getVal()">取值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button>
+    </div>
+    <br><br>
+    <div id="progress1"></div>
+    <br><br>
+
+    <h4>案例2：弹出层 <button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn5">查看代码</button></h4>
+    <button class="btn btn-success" type="button" onclick="openProgressBar()">点击弹出</button>
+</section>
+<br><br><br><br><br><br><br><br><br><br>
+
+<div style="width:1px;height:1px;overflow:hidden;">
+    <textarea id="copyTarget1">
+    html部分：
+    &lt;div id="progress1"&gt;&lt;/div&gt;
+
+    js部分：
+    var $bar1 = $.progressBar({
+        width:200,
+        target:"#progress1",
+        showPercent:true,
+        defaultValue:"30%"
+    });
+    </textarea>
+    <textarea id="copyTarget3">
+    $bar1.progressBar("setValue", "58%");
+    </textarea>
+    <textarea id="copyTarget4">
+    alert($bar1.progressBar("getValue"));
+    </textarea>
+    <textarea id="copyTarget5">
+    function openProgressBar(){
+        var $bar = $.progressBar({
+            width:'80%',
+            popup:true,
+            bgColor:'#F00'
+        });
+
+        //进度条动态加载 示例
+        var i=0;
+        var timer = setInterval(function(){
+            var valArr = ["12%","39%","56%","70%","89%","100%"];
+            $bar.progressBar("setValue", valArr[i]);
+            if(i < valArr.length-1){
+                i++;
+            }else{
+                $bar.progressBar("closeBar");
+                clearInterval(timer);
+            }
+
+        }, 100);
+    }
+    </textarea>
+</div>
+<script>
+    $(function () {
+        $(".copyBtn").on("click", function () {
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var target = $("#copyTarget" + num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>" + target.html() + "</pre>",
+                area: ["600px", "auto"],
+                btn: ["复制", "取消"],
+                btn1: function (index) {
+                    var res = $.copyToClipboard(target.get(0));
+                    if (res) {
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    } else {
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

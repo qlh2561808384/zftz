@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title>异步加载</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+
+    <script type="text/javascript">
+        var zNodes = [
+            {id: 1, pId: 0, name: "节点搜索演示 1", open: true, ISLEAF: 0},
+            {id: 11, pId: 1, name: "关键字可以是名字", ISLEAF: 1},
+            {id: 12, pId: 1, name: "关键字可以是level", ISLEAF: 1},
+            {id: 13, pId: 1, name: "关键字可以是id", ISLEAF: 1},
+            {id: 14, pId: 1, name: "关键字可以是各种属性", ISLEAF: 1},
+            {id: 2, pId: 0, name: "节点搜索演示 2", open: true, ISLEAF: 0},
+            {id: 21, pId: 2, name: "可以只搜索一个节点", ISLEAF: 1},
+            {id: 22, pId: 2, name: "可以搜索节点集合", ISLEAF: 1},
+            {id: 23, pId: 2, name: "搜我吧", ISLEAF: 1},
+            {id: 3, pId: 0, name: "节点搜索演示 3", open: true, ISLEAF: 0},
+            {id: 31, pId: 3, name: "我的 id 是: 31", ISLEAF: 0},
+            {id: 32, pId: 31, name: "我的 id 是: 32", ISLEAF: 0},
+            {id: 33, pId: 32, name: "我的 id 是: 33", ISLEAF: 1}
+        ];
+        $(function () {
+
+        });
+        function loadVal(){
+            $("#formdemo").dform("load", {
+                searchTree: 35,
+                searchTree2: 23,
+                comboTree: 11,
+                comboTree2: 12,
+                comboBox1: 2,
+                comboBox2: "1,2"
+            });
+        }
+        function openWin() {
+            $.dopen({
+                title: "open",
+                content: '<form id="formdemo"></form>',
+                area: ['600px','500px'],
+                btn: ['确定']
+            });
+            $("#formdemo").dform({
+                rownum:2,
+                labelwidth: "140px",
+                inputs: [
+                    {
+                        title: 'comboTree',
+                        type: 'comboTree',
+                        name: 'comboTree',
+                        url:'./json/largeTreeData2.json',
+                        defaultValue:'1'
+                    },{
+                        title: 'comboTree2',
+                        type: 'comboTree',
+                        name: 'comboTree2',
+                        multiple: true,
+                        localdata: zNodes,
+                        defaultValue:'2'
+                    },
+
+                    {
+                        title: 'searchTree',
+                        type: 'searchTree',
+                        name: 'searchTree',
+                        url:'./json/largeTreeData.json',
+                        ISLEAF: false,
+                        onlyLeaf:true,
+                        modalTitle: '查找名称',
+                        checkType: 'checkbox',
+                        defaultValue:"12"
+                    },
+                    {
+                        title: 'searchTree2',
+                        type: 'searchTree',
+                        name: 'searchTree2',
+                        localdata: zNodes,
+                        modalTitle: '查找名称',
+                        checkType: 'radio',
+                        defaultValue:"13"
+                    },
+
+                    {
+                        title: 'comboBox-单选',
+                        type: 'comboBox',
+                        name: 'comboBox1',
+                        defaultValue: 1,
+                        textField: 'name',
+                        valueField: 'id',
+                        required: true,
+                        url:'./json/largeTreeData.json'
+                    }, {
+                        title: 'comboBox-多选',
+                        type: 'comboBox',
+                        name: 'comboBox2',
+                        defaultValue: "2,3",
+                        multiple: true,
+                        textField: 'comboTxt',
+                        valueField: 'comboId',
+                        required: true,
+                        url:'./json/comboData.json'
+                    }
+                ]
+            });
+
+            loadVal();
+        }
+    </script>
+</head>
+<body>
+
+<button class="btn btn-sm" type="button" onclick="openWin()">打开窗口</button>
+
+</body>
+</html>

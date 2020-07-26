@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	<!-- 定时任务配置 -->
+	<!-- 任务列表 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!--QuartzScheduler 延时启动，/秒，应用启动后 QuartzScheduler 再启动 -->
+		<property name="startupDelay" value="20" />
+		<!-- 普通触发器：触发器列表，（可以配置多个任务） -->
+		<property name="triggers">
+			<list>
+				<ref bean="SendMsgTrigger" />
+				 <ref bean="SynchronizeResultTrigger"  />
+				<ref bean="SynchronizeChannelStatusTrigger" /> 
+				<!-- 
+				   <ref bean="LandingMaintenanceTrigger" /> 
+				   <ref bean="SynchronizeIdcardTrigger" />
+				-->
+			</list>
+		</property>
+		<property name="autoStartup" value="true" />
+	</bean>
+
+	<!-- 任务执行间隔 -->
+	<bean id="SendMsgTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="SendMsgDetail" />
+		<property name="cronExpression" value="0 0/2 * * * ?" />
+		<!-- 每隔2分钟触发一次 -->
+	</bean>
+	
+	<bean id="SynchronizeResultTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="SynchronizeResultDetail" />
+		<property name="cronExpression" value="0/10 * * * * ?" />
+	</bean>
+	<bean id="SynchronizeChannelStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="SynchronizeChannelStatusDetail" />
+		<property name="cronExpression" value="0/10 * * * * ?" />
+	</bean>
+	<bean id="SynchronizeIdcardTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="SynchronizeIdcardDetail" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+		<!-- 每隔5分钟触发一次 -->
+	</bean>
+	<bean id="LandingMaintenanceTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="LandingMaintenanceDetail" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+		<!-- 每隔5分钟触发一次 -->
+	</bean>
+
+
+
+
+	<!-- 任务bean -->
+	<bean id="LandingMaintenanceDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="landingMaintenanceTask" />
+		<property name="targetMethod" value="begin" />
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	<bean id="SendMsgDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="sendMsgTask" />
+		<property name="targetMethod" value="begin" /><!--定时方法名称 -->
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	<bean id="SynchronizeIdcardDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="synchronizeIdcardTask" />
+		<property name="targetMethod" value="begin" /><!--定时方法名称 -->
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	<bean id="SynchronizeResultDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="synchronizeResultTask" />
+		<property name="targetMethod" value="begin" /><!--定时方法名称 -->
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	<bean id="SynchronizeChannelStatusDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="synchronizeChannelStatusTask" />
+		<property name="targetMethod" value="begin" /><!--定时方法名称 -->
+		<property name="concurrent" value="false" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	
+</beans>

@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>desktop_exdemo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <style>
+        .spacetop{margin-top: 10px;}
+    </style>
+</head>
+<body>
+
+<section class="parser spacetop">
+    <div class="page-header"><h1>desktop---桌面系统组件</h1></div>
+    <h4>属性：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>url</td><td>String</td><td>左下角菜单树的远程数据请求地址</td><td></td></tr>
+            <tr><td>localdata</td><td>Array</td><td>左下角菜单树的本地数据</td><td></td></tr>
+            <tr><td>durl</td><td>String</td><td>
+                用于保存桌面左下角树菜单的节点url，等同于其他树组件的data.key.url —— 为了防止点击节点跳转，无需再设置data.key.url
+                <pre style="padding: 0;">
+                    <ol style="display:table">
+                        <li><span>data:{</span></li>
+                        <li><span>    key : {</span></li>
+                        <li><span>        durl: "url", //保存节点<span style="color:#F00;">链接url</span>的属性名</span></li>
+                        <li><span>    },</span></li>
+                        <li><span>}</span></li>
+                    </ol>
+                </pre>
+            </td><td>"url"</td></tr>
+            <tr><td>saveDesktopFunc</td><td>String, Function</td><td>保存桌面信息的方法名，eg: saveDesktopFunc: "saveDesktop" <br>或 eg: saveDesktopFunc: function(){}</td><td></td></tr>
+            <tr><td>loginOutUrl</td><td>String</td><td>点击退出时的跳转链接，eg: loginOutUrl: "user/loginout.do"</td><td></td></tr>
+            <tr><td>systemName</td><td>Boolean, String</td><td>是否显示系统名称，默认false不显示，设置名称eg: systemName:"系统名称"<td>false</td></tr>
+            <tr><td>showSearchBar</td><td>Boolean</td><td>是否显示搜索条</td><td>false</td></tr>
+            <tr><td>showFullscreen</td><td>Boolean</td><td>是否显示全屏<td>false</td></tr>
+            <tr><td>showNotice</td><td>Boolean</td><td>是否显示公告</td><td>false</td></tr>
+            <tr><td>showTodoList</td><td>Boolean</td><td>是否显示待办列表</td><td>false</td></tr>
+            <tr><td>btmBaseInfo</td><td>String</td><td>底部栏的展示信息，html字符串，默认包含日期 <br>如需包含用户名信息，可继续添加 '&lt;span&gt;&lt;i class="glyphicon glyphicon-user"&gt;&lt;/i&gt;&nbsp;您好！&lt;b class="user"&gt;用户名&lt;/b&gt;&lt;/span&gt;'</td><td><textarea style="width:100%; height:100px; background:none; border:none;">'<span><i class="glyphicon glyphicon-time"></i>&nbsp;今天是<b class="today"></b></span>'</textarea></td></tr>
+            <tr>
+                <td>windowFullscreen</td>
+                <td>Boolean</td>
+                <td>窗口是否默认全屏打开
+                    <br> 如果配置为true，在使用dopen打开的子页面中添加如下方法，可以在弹窗缩小/放大时自适应高度（方法名不可更改）， 适用于整个页面只展示一个table的页面
+                <pre style="padding: 0;">
+                    <ol style="display:table">
+                        <li><span>function resetLayerTableView(){</span></li>
+                        <li><span>    $("#datatable").dtable("resetView", {height: $(window).height()});//height值可根据需要进行修改</span></li>
+                        <li><span>}</span></li>
+                    </ol>
+                </pre>
+                </td>
+                <td>false</td>
+            </tr>
+            <tr><td>windowSizeArea</td><td>Object</td><td>窗口非全屏打开的情况下，设定窗口宽高，建议使用百分比</td><td>["50%", "50%"]</td></tr>
+            <!--<tr><td>showFolder</td><td>Boolean</td><td>是否显示桌面文件夹</td><td>false</td></tr>-->
+            <tr><td>folderConfigs</td><td>Object</td><td>桌面文件夹默认样式</td><td>{title: "图标", width: 250, height: 200}</td></tr>
+            <tr><td>fixedMenu</td><td>Boolean</td><td>固定左下角菜单在侧边显示</td><td>false</td></tr>
+            <tr><td>deskBtmPos</td><td>String</td><td>桌面底部栏位置，可选left, right, top, bottom</td><td>bottom</td></tr>
+            <tr><td>dopenResize</td><td>Boolean</td><td>窗口是否可以拖动拉伸</td><td>true</td></tr>
+            <tr><td>leaveTip</td><td>Boolean</td><td>离开或者刷新提示</td><td>false</td></tr>
+            <tr><td>shortTextLen</td><td>Number</td><td>桌面快捷方式显示文字的长度（中文占两个）</td><td>18</td></tr>
+            <tr><td>contextMenu</td><td>Boolean</td><td>右键菜单</td><td>false</td></tr>
+            <tr>
+                <td>onDeskLoaded</td>
+                <td colspan="3">
+                    桌面图标初始化
+                    <pre style="padding: 0;">
+                        <ol style="display:table">
+                            <li><span>onDeskLoaded: function(obj){</span></li>
+                            <li><span>    console.log($(".desktop").desktop("getAllShortcut"));</span></li>
+                            <li><span>}</span></li>
+                        </ol>
+                    </pre>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>方法：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>描述</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>addIframe</td><td>
+            新建桌面iframe框
+            <pre style="padding: 0;">
+                <ol style="display:table">
+                    <li><span>$("#desktop").desktop("addIframe", {</span></li>
+                    <li><span>    src: "./desktop_exdemo.html", <b style="color:#f00;">//src和html不可同时使用。src展示新的页面，html展示自定义html</b></span></li>
+                    <li><span>    //html: '&lt;button type="button" class="btn btn-lg btn-danger"&gt;点我&lt;/button&gt;', //自定义Html</span></li>
+                    <li><span>    title: "iframe",</span></li>
+                    <li><span>    icon: "../plugins/desktop/images/icon_desk4.png",</span></li>
+                    <li><span>    width: 300,</span></li>
+                    <li><span>    height: 400,</span></li>
+                    <li><span>    left: 400,</span></li>
+                    <li><span>    top: 100</span></li>
+                    <li><span>    //rightTopLink: '&lt;a href=""&gt;全部&lt;/a&gt;', //右上角链接</span></li>
+                    <li><span>    //isClose: true, //是否可关闭，true-显示关闭按钮，默认缺省-不可关闭</span></li>
+                    <li><span>    //isCollapse: true //点击标题栏是否可收缩/展开，默认缺省-不可展开收缩</span></li>
+                    <li><span>});</span></li>
+                </ol>
+            </pre>
+        </td></tr>
+        <tr><td>addBtmMenu</td><td>
+            桌面左下角弹出菜单可添加自定义菜单项
+            <pre style="padding: 0;">
+                <ol style="display:table">
+                    <li><span>$("#desktop").desktop("addBtmMenu", {</span></li>
+                    <li><span>    menuTitle: "新建",</span></li>
+                    <li><span>    menuFunc: "newadd",</span></li>
+                    <li><span>    menuIcon: ""</span></li>
+                    <li><span>});</span></li>
+                </ol>
+            </pre>
+        </td></tr>
+        <tr><td>addShortcut</td><td>
+            新建桌面快捷方式
+            <pre style="padding: 0;">
+                <ol style="display:table">
+                    <li><span>$("#desktop").desktop("addShortcut", {</span></li>
+                    <li><span>    id:121,</span></li>
+                    <li><span>    name:"111",</span></li>
+                    <li><span>    url:"111",</span></li>
+                    <li><span>    icon:""</span></li>
+                    <li><span>});</span></li>
+                </ol>
+            </pre>
+        </td></tr>
+        <tr><td>addWindow</td><td>
+            新建dopen弹窗
+            <pre style="padding: 0;">
+                <ol style="display:table">
+                    <li><span>$("#desktop").desktop("addWindow", {</span></li>
+                    <li><span>    id: "",//确保弹窗唯一性</span></li>
+                    <li><span>    title: "",//弹窗标题，参照dopen的配置项title</span></li>
+                    <li><span>    area: ['900px','300px'],//弹窗大小，参照dopen的配置项area</span></li>
+                    <li><span>    type: ,//弹窗类型，参照dopen的配置项type</span></li>
+                    <li><span>    content: ""//参照dopen的配置项content</span></li>
+                    <li><span>});</span></li>
+                </ol>
+            </pre>
+        </td></tr>
+        <tr><td>removeShortcut</td><td>删除快捷方式，参数id <br>$("#desktop").desktop("removeShortcut", 122);</td></tr>
+        <tr><td>getAllShortcut</td><td>获取所有快捷方式 <br>$("#desktop").desktop("getAllShortcut");</td></tr>
+        </tbody>
+    </table>
+    <h4>案例：<a style="text-decoration: none" href="./desktop_demo.html" target="_blank">查看案例</a></h4>
+    <br><br><br>
+</section>
+</body>
+
+</html>

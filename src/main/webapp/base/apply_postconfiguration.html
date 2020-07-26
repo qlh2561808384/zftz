@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>应用岗位配置</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link href="../css/common.css" rel="stylesheet" type="text/css">
+</head>
+<style>
+    *{margin:0; padding:0;}
+    .toolbar_one{background-color: #EBEBEB; border-bottom: 1px solid #ddd; padding: 10px; margin-bottom: 5px;}
+    .leftTree{border-right:1px solid #DEDEDE; overflow: auto;}
+</style>
+<script>
+	var init_form='<br/><div><form id="form" ></form></div>';//弹窗内表单初始样式
+	var treeIds="-1";
+    $(function () {
+
+       $("#sideTree").dtree({
+		       	data:{
+					key : {name:"NAME"},
+					simpleData :{
+						enable : true,
+						idKey : "ID",
+						pIdKey : "PID",
+						rootPId : 0
+					}
+				},
+		         checkType: "nocheck",
+		         rootElement:true,
+		         url: getRootPath()+"/appyltopost/getApplyTree.do",
+
+                callback: {
+                    onClick: getTreeId
+                }
+            });
+        var toolObj = [
+            {"name":"新增", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"add()"},
+            {"name":"修改", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"edit()"},
+            {"name":"删除", "classes":"btn bootstrap-table-delete test", "type":"button", "onclick":"remov()"}
+        ];
+      	//  右侧表单
+        $("#table").dtable({
+            height:400,
+            url:getRootPath()+"/appyltopost/getAppylToPostInfo.do",
+            columns: [
+                {checkbox: true},
+                {field: 'guid', title: '序号', align: 'center',visible:false},              
+                {field: 'mc', title: '岗位名称', align: 'center'},
+                {field: 'bm', title: '岗位编码', align: 'center'},
+                {field: 'ms', title: '岗位说明', align: 'center'},
+                {field: 'ssyybm', title: '所属应用编码', align: 'center',visible:false}, 
+                {field: 'zt', title: '岗位状态', align: 'center', 
+                	editor:{
+                        type:"comboBox",
+                        localdata:[{id:0,text:"停用"}, {id:1,text:"启用"}],
+                    },
+                    formatter:stationTypeFormatters
+                    },
+                {field: 'gwlx', title: '岗位类型', align: 'center', 
+                    editor:{
+                        type:"comboBox",
+                        localdata:[{id:1,text:"单位"}, {id:2,text:"财政"}],
+                    },
+                    formatter:stationTypeFormatter
+                },
+                {field: 'cjsj', title: '新增时间',align: 'center'},
+                {field: 'ssyyid', title: '所属应用id',align: 'center',visible:false},
+                {field: 'cjyhid', title: '创建用户id',align: 'center',visible:false}
+            ],
+            queryParams: queryParams,//查询参数方法
+            resizable:false, //单元格手动拉伸
+            editable :true,
+            pageNumber: 1,//起始页
+            pageSize: 12,//页面大小
+            pagination:true,
+            uniqueId : 'guid',
+            paginationHAlign: 'left',//分页按钮位置  left/right
+            sidePagination: 'server',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+            toolbar: toolObj,
+            singleSelect : true,//单选
+			clickToSelect : true,//点击选中
+			showRefresh:false,
+        });
+      //  左侧树高度
+        $(".leftTree").height($(window).height() - $("#toolbar").outerHeight(true) - 20);
+
+    })
+
+    function stationTypeFormatter(value,row,index) {
+        switch (value){
+            case "1":
+                return "财政";
+            case "2":
+                return "单位";
+        }
+    }
+    
+    function stationTypeFormatters(value,row,index) {
+        switch (value){
+            case "0":
+                return "停用";
+            case "1":
+                return "启用";
+        }
+    }
+    function add() {
+    	
+    	if(treeIds==""){
+    	
+    		$.dalert({text:"请选择需要新增岗位的应用"});
+    		return;
+    	}
+		$.dopen({
+			btns: 2, 
+  		  	btn: ['确定', '取消'],
+  		  	area: ['750px', '300px'],
+  		  	title :"岗位信息录入",
+  		  	content: init_form,
+			closeBtn: 1,
+			skin: 'yourclass',
+			shadeClose: false,
+			yes:function(index){
+// 				for(var i=0;i<$("#form").find("input").length;i++){
+// 					if($("#form").find("input")[i].value==""){
+// 						$.dalert({text:"所有信息必须填写完全"});
+// 						return false;
+// 					}
+// 				}
+				$.dajax({
+					cache : true,
+					url : getRootPath()+"/appyltopost/saveappyltopost.do",
+					data :$.param({"id" : treeIds})+'&'+ $('#form').serialize(),
+					success : function(data) {
+						if (data.success) {
+							$.dalert({
+								text : data.content
+							});
+							layer.close(index);
+							$("#table").bootstrapTable("refresh", {query: {id: treeIds}});
+						}
+					}
+				}); 
+  		  	}
+  		});
+		$("#form").dform({
+			rownum:2,   //每行控件数目
+			labelwidth:"120px",
+			inputs:[
+		        {title:"岗位id", name:"guid", type:"hidden"},
+		        {title:"岗位名称", name:"mc", type:"text"},
+		        {title:"岗位编码", name:"bm", type:"text"},
+		        {title:"岗位说明", name:"ms", type:"text"},
+		        {title:"所属应用编码", name:"ssyybm", type:"hidden"},
+		        {title:"岗位状态", name:"zt", type:"comboBox",selected: 1, textField: 'comboTxt', valueField: 'comboId',  required: true,
+		        	localdata : [{comboId: 1, comboTxt: "启用"},{comboId: 0, comboTxt: "停用"}]},
+		        {title:"新增用户id", name:"cjyhid", type:"hidden"},
+		        {title:"新增时间", name:"cjsj", type:"hidden"},		        
+		        {title:"岗位类型", name:"gwlx", type:"comboBox",selected: 1, textField: 'comboTxt', valueField: 'comboId',  required: true,
+		        	localdata : [{comboId: 1, comboTxt: "财政"},{comboId: 2, comboTxt: "单位"}]},
+		        {title:"对应业务系统岗位", name:"ssyyid", type:"hidden"}
+            ]
+		});
+	
+    }
+
+    function edit(){
+    	var dataArr = $("#table").bootstrapTable("getSelections");
+		if(dataArr.length!=1){
+	    	$.dalert({text:"请选择一条记录进行更改操作！"});
+	    	return false;
+	    }
+		var selectedRowId=dataArr[0].guid;	        
+	        $.dopen({
+	            title :"岗位信息修改",
+	            content:init_form,
+	            area: ['750px', '280px'],
+	            btn: ['确定', '取消'],
+	            btn1:function(index){
+	            	$.dajax({
+	    				cache : true,
+	    				url : getRootPath()+"/appyltopost/saveappyltopost.do",
+	    				data :$.param({"id" : treeIds})+'&'+ $('#form').serialize(),
+	    				success : function(data) {
+	    					if (data.success) {
+	    						$.dalert({
+	    							text : data.content
+	    						});
+	    						layer.close(index);
+	    						$("#table").bootstrapTable("refresh", {query: {id: treeIds}});
+	    					}
+	    				}
+	    			}); 
+	            }
+	        })
+	        $("#form").dform({
+			rownum:2,   //每行控件数目
+			labelwidth:"120px",
+			inputs:[
+		        {title:"岗位id", name:"guid", type:"hidden"},
+		        {title:"岗位名称", name:"mc", type:"text"},
+		        {title:"岗位编码", name:"bm", type:"text"},
+		        {title:"岗位说明", name:"ms", type:"text"},
+		        {title:"所属应用编码", name:"ssyybm", type:"hidden"},
+		        {title:"岗位状态", name:"zt", type:"comboBox",selected: 1, textField: 'comboTxt', valueField: 'comboId',  required: true,
+		        	localdata : [{comboId: 1, comboTxt: "启用"},{comboId: 0, comboTxt: "停用"}]},
+	        	{title:"新增用户id", name:"cjyhid", type:"hidden"},
+		        {title:"新增时间", name:"cjsj", type:"hidden"},		        
+		        {title:"岗位类型", name:"gwlx", type:"comboBox",selected: 1, textField: 'comboTxt', valueField: 'comboId',  required: true,
+		        	localdata : [{comboId: 1, comboTxt: "财政"},{comboId: 2, comboTxt: "单位"}]},
+		        {title:"对应业务系统岗位", name:"ssyyid", type:"hidden"}
+            ]
+			});
+	         $("#form").dform("load", {
+	        	 guid: dataArr[0].guid,
+	        	 mc: dataArr[0].mc,
+	        	 bm: dataArr[0].bm,
+	        	 ms: dataArr[0].ms,
+	        	 zt: dataArr[0].zt,
+	        	 gwlx: dataArr[0].gwlx,
+	        	 ssyyid: dataArr[0].ssyyid,
+	        	 cjyhid: dataArr[0].cjyhid,
+	        	 cjsj: dataArr[0].cjsj,
+	        	 ssyybm: dataArr[0].ssyybm
+	        	 
+            });
+	     	
+	        
+    }
+
+    
+    function remov() {
+        var dataArr = $("#table").bootstrapTable("getSelections");
+		if (dataArr.length == 0) {
+			$.dalert({
+				text : "未选择要删除的项目",
+				icon : 7
+			});
+		} else {
+			var guid = dataArr[0].guid;
+			$.dconfirm({
+				text : "确认继续？",
+				btn : [ "确定", "取消" ],
+				funs : [ function() {
+					$.dajax({
+						type : "POST",
+						url :  getRootPath()+"/appyltopost/delAppylToPost.do",
+						data : {
+							id : guid
+						},
+						dataType : "json",
+						success : function(data) {
+							if (data.success) {
+								$.dalert({
+									text : data.content
+								});
+								$("#table").bootstrapTable("refresh", {query: {id: treeIds}});
+							}
+						}
+
+					});
+				}, function() {
+					
+				} ]
+			});
+
+		}
+	
+
+    }
+    
+    function queryParams(params){
+	
+		return{
+			//如果需要后端进行分页 limit 和offset是必须参数
+			limit:params.limit,
+			offset:params.offset,
+ 			id:treeIds
+
+		}
+	}
+    
+    function getRootPath(){
+        var curWwwPath=window.document.location.href;
+        var pathName=window.document.location.pathname;
+        var pos=curWwwPath.indexOf(pathName);
+        var localhostPaht=curWwwPath.substring(0,pos);
+        var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+        return(localhostPaht+projectName);
+    }
+    
+    var treeId;
+    function getTreeId(event, treeId, treeNode){   	
+    	treeId=treeNode.ID;	
+    	 $("#table").bootstrapTable("refresh", {query: {id: treeId}});
+    	 treeIds=treeId;
+    }
+    
+</script>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-2 leftTree">
+            <div class="app_title">应用列表</div>
+            <div id="sideTree" class="ztree"></div>
+        </div>
+        <div class="col-xs-10 rightCon">
+            <div class="app_title">岗位列表</div>
+            <table id="table"></table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

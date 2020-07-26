@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <title>施工图预算（标底）备案</title>
+    <script src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <script src="../js/file.js"></script>
+    <script src="../js/common.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+    	.tableCus .table-row{float:left; width:13%; line-height:150px; border:1px solid #ddd; text-align:center;}
+    	.tableCus .bootstrap-table{float:left; width:87%;}
+    	textarea{display:inline-block;width:7em;margin-left:0.3em;margin-right:0.3em}
+    	textarea{margin-top:0.3em;margin-bottom:0.3em;}
+    </style>
+    <script>
+    	var getRootPath = function(){
+            var curWwwPath=window.document.location.href;
+            var pathName=window.document.location.pathname;
+            var pos=curWwwPath.indexOf(pathName);
+            var localhostPaht=curWwwPath.substring(0,pos);
+            var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            return(localhostPaht+projectName);
+        }
+        
+        var gcfyData = [];
+        var tzeflData = [];
+        var xmmcData = [];
+        var yhxxData = [];
+        var xmmcHxData = [];
+        var selxmid;
+        var selgcfyid;
+        var seltzefl;
+        var isEdit;
+        var sgtbaid;
+        var tableDetailHeight;
+        var buttonIds;
+        var toolbar = new Array();
+        var dragHtml = '';
+        var dopenJson;
+        var yhlx = '';
+        var lchj;
+        var dopenIndex = 0;
+        var mrzt;
+        //var xmmcurl = getRootPath()+"/sgtysba/selectXmmc.do";
+        $(function(){
+        	$.dajax({
+	            type:'post',
+	            url:getRootPath()+"/user/getButtons.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                buttonIds = data;
+	                yhlx = data.yhlx;
+	                if(yhlx==1){
+	                	mrzt=1;
+	                }else if(yhlx==2){
+	                	mrzt=2;
+	                }
+	                if(data.buttons.indexOf('7100101')!=-1){
+	                	toolbar.push({"name":"新增", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"addRow()"});
+	                	dragHtml='<div class="toolbar layout_toolbar clearfix"><button class="bootstrap-table-add" id="addRowId" type="button" onclick="add2()">添加行</button>'+
+	                		'<button class="bootstrap-table-delete" type="button" id="removeRowId" onclick="remov2()">删除行</button>'+
+	                		'<button class="bootstrap-table-save" type="button" id="saveBaxxId" onclick="saveBaxx()">保存</button>'+
+	                		'<button class="bootstrap-table-submit" type="button" id="submitRowId" onclick="submitRow()">备案</button>'+
+	                		'<button class="bootstrap-table-review" type="button" id="clearFormId" onclick="clearForm()">重填</button>'+
+	                		'<span class="pull-right">单位：万元</span>'+
+	                	'</div>';
+	                }
+	                if(data.buttons.indexOf('7100102')!=-1){
+	                	toolbar.push({"name":"删除", "classes":"btn bootstrap-table-delete", "type":"button", "onclick":"delRow()"});
+	                }
+	                if(data.buttons.indexOf('7100103')!=-1){
+	                	toolbar.push({"name":"查看/修改", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"editRow()"});
+	                }
+	                if(data.buttons.indexOf('7100105')!=-1){
+	                	toolbar.push({"name":"备案", "classes":"btn bootstrap-table-review", "type":"button", "onclick":"submitRow()"});
+	                }
+	                if(data.buttons.indexOf('7100106')!=-1){
+	                	toolbar.push({"name":"核实", "classes":"btn bootstrap-table-verify", "type":"button", "onclick":"verify()"});
+	                	if(dragHtml==''){
+	                		dragHtml='<div class="toolbar layout_toolbar clearfix">'+
+		                		'<button class="bootstrap-table-verify" type="button" onclick="verify()">核实</button>'+
+		                		'<button class="bootstrap-table-disable" type="button" onclick="returnback()">退回</button>'+
+		                		'<span class="pull-right">单位：万元</span>'+
+		                	'</div>';
+	                	}
+	                	//xmmcurl = getRootPath()+"/sgtysba/selectHxXmmc.do";
+	                }
+	                if(data.buttons.indexOf('7100107')!=-1){
+	                	toolbar.push({"name":"退回", "classes":"btn bootstrap-table-disable", "type":"button", "onclick":"returnback()"});
+	                }
+	                
+	            }
+	        });
+	        var xmmcurl = getRootPath()+"/sgtysba/selectXmmc.do";
+	        if(buttonIds.buttons.indexOf('7100106')!=-1&&yhlx!=1){
+	        	xmmcurl = getRootPath()+"/sgtysba/selectHxXmmc.do";
+	        }
+        	//工程费用数据
+	        $.dajax({
+	            type:'post',
+	            url:getRootPath()+"/sgtysba/selectGcfymc.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                gcfyData = data;
+	            }
+	        });
+	        //工程费用数据
+	        $.dajax({
+	            type:'post',
+	            url:getRootPath()+"/sgtysba/selectTzefl.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                tzeflData = data;
+	            }
+	        });
+	        
+	        //项目名称数据
+	        $.dajax({
+	            type:'post',
+	            //url:xmmcurl,
+	            url:getRootPath()+"/sgtysba/selectXmmc.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                xmmcData = data;
+	            }
+	        });
+	        //项目名称数据
+	        $.dajax({
+	            type:'post',
+	            url:getRootPath()+"/sgtysba/getYhxm.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                yhxxData = data;
+	            }
+	        });
+	        $.dajax({
+	            type:'post',
+	            url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                xmmcHxData = data;
+	            }
+	        });
+            var json = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype":"html",
+                                            "dragHtml":"<h4 class='text-center'><b>施工图预算（标底）备案</b></h4>"
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "id":"frTableId",
+                                            "height": $(window).height() - 80,
+                                            pageNumber: 1,//起始页
+                							pageSize: 20,//页面大小
+                							/* paginationHAlign: 'left',//分页按钮位置  left/right
+                							sidePagination: 'server', */
+                                            resizable:true,
+                                            "columns": [
+                                                {field:"checkType", checkbox:true},
+                                                {field:"id",visible:false},
+                                                {field:"zt",visible:false},
+                                                {field:"lchj",visible:false},
+                                                {field:"xh", title:"序号", width:40, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                {field:"bcbagcmc", title:"本次备案工程名称", width:100, align:"center"},
+                                                {field:"id_zftz_xm", title:"项目名称", width:100, align:"center",formatter:xsgcXmmc},
+                                                {field:"bcsgtys", title:"本次施工图预算（标底备案价）", width:100, align:"center"},
+                                                {field:"bcsgtysshdw", title:"本次施工图预算（标底）审核单位", width:100, align:"center"},
+                                                {field:"jsdwlxr", title:"建设单位联系人", width:100, align:"center"},
+                                                {field:"lxdh", title:"联系电话", width:80, align:"center"},
+                                                {field:"czr", title:"备案人", width:80, align:"center",formatter:czrHx},
+                                                {field:"czsj", title:"备案时间", width:100, align:"center"},
+                                                {field: "zt1", title: "状态", width: 100, align: "center",
+	                                                 formatter : function(value, row, index) {
+	                                                    if(value=='退回'){
+	                                                      return '<a href="javascript:void(0)" onclick="selThyj('+row.id+')">退回</a>';
+	                                                    }else{
+	                                                      return value;
+	                                                    }
+	                                          
+	                          						}
+                                                }
+                                            ],
+                                            "url": getRootPath()+"/sgtysba/getSgtysbaData.do",
+                                            
+                                            "toolbar":toolbar,
+                                            "clickToSelect": true,
+                                            queryParams: queryParams,
+                                            searchbar:{
+							                    rownum:2,
+							                    labelwidth: "70px",
+							                    "inputs":[
+	                                                {title:"项目名称", name:"id_zftz_xm", type:"textBox",id:"xmmcid"},
+	                                                {title:"状态", name:"zt", type:"comboBox",id:"ztid",defaultValue:mrzt,localdata:[{id:1,text:'未备案'},{id:2,text:'已备案'},{id:3,text:'经办'}]}
+	                                                //{title:"查询", name:"", type:"plainText", plainText:'<button type="button" class="btn btn-primary btn-sm" onclick="searchByMcOrZt()">查询</button>', textAlign:"left"}
+	                                            ]
+							                }
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+            $.initPage(json);
+            if(yhlx==1){
+            	$("#ztid").comboBox("setValue",1);
+            }else if(yhlx==2){
+            	$("#ztid").comboBox("setValue",2);
+            }
+            dopenJson = [
+	            {
+	                "plug": [
+	                    {
+	                        "plug": [
+	                            {
+	                                "plug": [
+	                                    {
+	                                        "dtype":"html",
+	                                        "dragHtml":"<h5 class='text-center'>施工图预算（标底）备案</h5>"
+	                                    },
+	                                    {
+	                                        "dtype":"html",
+	                                        /* "dragHtml":'<div class="toolbar layout_toolbar clearfix">' +
+	                                        	'<button class="bootstrap-table-add" type="button" onclick="add2()">添加行</button>' +
+	                                        	'<button class="bootstrap-table-delete" type="button" onclick="remov2()">删除行</button>' +
+	                                            '<button class="bootstrap-table-save" type="button" onclick="saveBaxx()">保存</button>' +
+	                                            '<button class="bootstrap-table-submit" type="button" onclick="subBaxx()">提交</button>' +
+	                                            '<button class="bootstrap-table-review" type="button" onclick="clearForm()">重填</button>' +
+	                                            //'<button class="bootstrap-table-clear" type="button" onclick="close()">关闭</button>' +
+	                                            '<span class="pull-right">单位：万元</span>' +
+	                                        '</div>' */
+	                                        "dragHtml":dragHtml
+	                                    },
+	                                    {
+	                                        "dtype":"dform",
+	                                        "id":"openForm",
+	                                        "classes":"tableForm",
+	                                        "rownum":3,
+	                                        "labelwidth":"140px",
+	                                        "labelAlign":"center",
+	                                        "inputs":[
+	                                        	{title:"", name:"id", type:"hidden"},
+	                                            /* {title:"项目名称", name:"id_zftz_xm", type:"comboBox",textField: 'xmmc',
+	                                            	valueField: 'id',
+							                        url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+							                        //localdata:xmmcData,
+							                        onChange:function(newValue,oldValue,itemData){
+											            selxmid = newValue;
+											            $("#tableDetail").dtable("removeAll");
+											            getGsxxByXmid(newValue);
+											        },onClickInput:function(a){
+                                                        a.comboBox("reload",{url:getRootPath()+"/sgtysba/selectXmmc.do"});
+                                                    }//,formatter:xsgcXmmc
+							                    }, */
+							                    {
+							                        title: '项目名称',
+							                        type: 'searchTree',
+							                        name: 'id_zftz_xm',
+							                        searchOption: true,
+							                        isGetText: true,
+							                        getTextField: "searchTree_searchTree",
+							                        required:true,
+							                        url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+							                        isleaf: true,
+							                        onlyLeaf:true,
+							                        modalTitle: '查找名称',
+							                        checkType: 'radio',
+							                        data:{
+														key : {name:"xmmc"},
+														simpleData :{
+															enable : true,
+															idKey : "id",
+														    pIdKey : "pid",
+														    rootPId : null
+														}
+											    	},onClickInput:function(a){
+                                                        a.searchTree("reload",{url:getRootPath()+"/sgtysba/selectXmmc.do"});
+                                                    },onChange:function(newValue,oldValue,itemData){
+											            selxmid = newValue;
+											            $("#tableDetail").dtable("removeAll");
+											            getGsxxByXmid(newValue);
+											        }
+							                    },
+	                                            {title:"建设单位联系人", name:"jsdwlxr", type:"textBox"},
+	                                            {title:"联系电话", name:"lxdh", type:"textBox"},
+	                                            {title:"概算批复文号", name:"gspfwh", type:"textBox",id:"pfwhid"},
+	                                            {title:"概算总投资", name:"gsztz", type:"textBox",id:"ztzid",textAlign:'right'},
+	                                            {title:"概算建安总投资", name:"gsjaztz", type:"textBox",id:"jaztzid",textAlign:'right'},
+	                                            {title:"本次备案工程<br/>名称", name:"bcbagcmc", type:"textBox"},
+	                                            {title:"本次施工图预算<br/>（标底备案价）", name:"bcsgtys",id:"sgtysId", type:"textBox",textAlign:'right'},
+	                                            {title:"本次施工图预算<br/>（标底）审核单位", name:"bcsgtysshdw", type:"textBox"},
+	                                        ]
+	                                    },
+	                                    /* {
+	                                        "dtype":"html",
+	                                        "dragHtml":'<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button type="button" class="bootstrap-table-upload" onclick="uploadFile()">上传附件</button></div>'
+	                                    }, */
+	                                    {
+	                                        dtype: "dtable",
+	                                        sortable: false,
+	                                        sort:false,
+	                                        id:"tableDetail",
+	                                        height: 200,
+	                                        editable :true,
+	                                        data: [],
+	                                        url: "",
+	                                        clickToSelect:true,
+	                                        columns: [
+	                                        	 {radio: true, width: 20},
+	                                        	 {field:"id",visible:false},  
+	                                             {field:"gcfyid", title:"对应工程费用名称", width:200, align:"center",
+	                                             	editor:{type:'comboBox',
+		                                             	textField: 'MC',
+		                                            	valueField: 'BM',
+		                                              	multiple: false,
+		                                              	//localdata:gcfyData,
+							                        	url:getRootPath()+"/sgtysba/selectGcfymc.do",
+							                        	onChange:function(newValue,oldValue,itemData){
+												            selgcfyid=newValue;
+												            selGsxxByFyidAndTzefl();
+												        },onClickInput:function(a){
+	                                                        a.comboBox("reload",{url:getRootPath()+"/sgtysba/selectGcfymcBySgtid.do?xmid="+selxmid});
+	                                                    }
+						                            },formatter:xsgcfymc
+	                                             },  
+	                                            {field:"tzefl", title:"投资额分类", width:120, align:"center",
+	                                            	editor:{type:'comboBox',
+		                                             	textField: 'MC',
+		                                            	valueField: 'BM',
+		                                              	multiple: false,
+		                                              	//localdata:gcfyData,
+							                        	url:getRootPath()+"/sgtysba/selectTzefl.do",
+							                        	onChange:function(newValue,oldValue,itemData){
+												            seltzefl=newValue;
+												            selGsxxByFyidAndTzefl();
+												        }
+						                            },formatter:xsgcTzefl
+						                        },
+	                                            {field:"gss", title:"概算数", width:120,halign:'center',align:'right'},
+	                                            {field:"ysqje", title:"已备案金额", width:80, halign:"center",align:'right',type:'decimal'},
+	                                            {field:"ye", title:"余额", width:80, halign:"center",align:'right',type:'decimal'},
+	                                            {field:"bcsgtys", title:"本次施工图金额", width:80, 
+	                                            	editor:{
+	                                            		type:'decimal',
+	                                            		textAlign:'right',
+	                                            		onChange:function(n,o,i){
+	                                            			getBcsgtys();
+	                                            		}
+	                                            	}
+	                                            },
+	                                            {field:"bz", title:"备注", width:80, align:"center",editor:{type:'textBox'}},
+	                                        ]
+	                                    },
+	                                    {
+	                                        "dtype":"dform",
+	                                        "id":"jsnrForm",
+	                                        "classes":"tableForm",
+	                                        "rownum":1,
+	                                        "labelwidth":"140px",
+	                                        "labelAlign":"center",
+	                                        "inputs":[
+	                                            {title:"<br/>本次备案建设内容", name:"bcbajsnr", type:"textBox",multiline:true,colspan: 3},
+	                                        ]
+	                                    },{
+	                                        "dtype":"html",
+	                                        "dragHtml":'<div class="tableCus clearfix"><div class="table-row">已备案</div><table id="ybaTable"></table></div>'
+	                                    },{
+	                                        "dtype":"dform",
+	                                        "id":"yjForm",
+	                                        "classes":"tableForm",
+	                                        "rownum":1,
+	                                        "labelwidth":"140px",
+	                                        "labelAlign":"center",
+	                                        "inputs":[
+	                                            {title:"<br/>主管部门意见", name:"zgbmyj", type:"textBox",multiline:true,colspan: 3},
+	                                            {title:"<br/>市财政局备案意见", name:"sczjbayj", type:"textBox",multiline:true,colspan: 3},
+	                                        ]
+	                                    },{
+	                                        "dtype":"html",
+	                                        "dragHtml":'<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button type="button" class="bootstrap-table-upload" id="scFjId" onclick="pageUploadFile()">上传附件</button>&nbsp;<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button></div>'
+	                                    },{
+	                                        "dtype": "dtable",
+	                                        "height": 250,
+	                                        "id":"uploadTable",
+	                                        editable :true,
+	                                        "clickToSelect": true,
+	                                        "url": "",
+	                                        "columns": [
+	                                        	{radio: true, width: 20}, 
+	                                        	{field : 'guid',title : 'guid',visible : false},
+	                                            {field:"xh", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+	                                            {field:"filename", title:"附件名", width:300, align:"center"},
+	                                            {field:"filedl", title:"附件大类", width:120, align:"center",type:'comboBox',selected: 1,localdata:[{id:4,text:"施工图备案"}],formatter:function(value,row,index){return "施工图备案";}},
+	                                            //{field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+	                                            {field:"filesize", title:"大小（KB）", width:80, align:"center",formatter:function(value,row,index){return formatSize(value)}},
+	                                            {
+													field : '',
+													title : '操作 ',
+													width : 100,
+													align : 'center',
+													formatter : function(value, row, index) {
+														return '<a href='+getRootPath()+'/file/downloadByid.do?id='+row.guid+'>下载</a>';							
+													}
+												}
+	                                            //{field:"filebz", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+	                                        ]
+	                                    }
+	                                ],
+	                                "colspan": "12",
+	                                "dtype": "column"
+	                            }
+	                        ],
+	                        "dtype": "row"
+	                    }
+	                ],
+	                "dtype": "body"
+	            }
+	        ];
+        });
+
+        
+        function queryParams(params){
+            return{
+                //如果需要后端进行分页 limit 和offset是必须参数
+                limit:params.limit,
+                offset:params.offset,
+            }
+        }
+        function searchByMcOrZt(){
+        	var xmmc = $("#xmmcid").val();
+        	//var zt = $("#ztid").val();
+        	var zt = $("#ztid").comboBox("getValue");
+        	$.dajax({
+               type:'post',
+               url: getRootPath()+"/sgtysba/getSgtysbaData.do",
+               data:{
+               		xmmc:xmmc,
+               		zt:zt,
+               		isCx:1
+               },
+               dataType:'json',
+               success:function (data) {
+                   $("#frTableId").dtable("load",data);
+               }
+           })
+        }
+        function getGsxxByXmid(xmid){
+        	$.dajax({
+               type:'post',
+               url: getRootPath()+"/sgtysba/getGsxxByXmid.do",
+               data:{
+               		xmid:xmid
+               },
+               dataType:'json',
+               async:false,
+               success:function (data) {
+               		
+               		$("#pfwhid").textBox("setValue",data.gspfwh);
+               		$("#ztzid").textBox("setValue",data.gsztz);
+               		$("#jaztzid").textBox("setValue",data.gsjaztz);
+               }
+           });
+           
+           $.dajax({
+               type:'post',
+               url: getRootPath()+"/sgtysba/getYbaByXmid.do",
+               data:{
+               		xmid:xmid
+               },
+               dataType:'json',
+               success:function (data) {
+                   $("#ybaTable").dtable("load",data);
+               }
+           });
+        }
+        
+        function submitRow(){
+        	var ids = '';
+        	var data = $("#frTableId").dtable("getSelections");
+        	var _list = new Array();
+        	var flag = true;
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else{
+            	for(var i=0;i<data.length;i++){
+        			_list.push(data[i].id);
+        			if(data[i].lchj!='-1'){
+        				flag=false;
+        			}
+        		}
+        		if(flag){
+        			$.dajax({
+		               type:'post',
+		               url:getRootPath()+'/sgtysba/submitSgtba.do',
+		               data:{
+		               		id:JSON.stringify(_list)
+		               },
+		               dataType:'json',
+		               success:function (data) {
+		                   if(data.success){
+		                   		$.dalert({text:data.content,icon:1});
+		                   		$('#frTableId').dtable('refresh');
+		                   		layer.close(dopenIndex);
+		                   }else{
+		                   		$.dalert({text:data.content,icon:5});
+		                   }
+		               }
+		           })
+        		}else{
+        			$.dalert({text:'已备案数据不能重复备案！',icon:5});
+        		}
+            	
+            }
+        }
+        function editRow(){
+        	$.dajax({
+                type:'post',
+                url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+                //url:xmmcurl,
+                dataType:'json',
+                async:false,
+                success:function (data) {
+                    xmmcData = data;
+                }
+            });
+        	isEdit = 1;
+        	var data = $("#frTableId").dtable("getSelections");
+        	
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else if(data.length>1){
+            	$.dalert({text:'最多只能选择一行数据',icon:7});
+                return;
+            }else{
+            	sgtbaid = data[0].id;
+            	lchj = data[0].lchj;
+            	selxmid = data[0].id_zftz_xm;
+            	dopenIndex = $.dopen({
+	                type: 6,
+	                title :"施工图预算（标底）备案",
+	                area: ["95%", "100%"],
+	                content: dopenJson,
+	                btn: ["关闭"],
+	                btn1:function(index){
+				        layer.close(index);
+				        
+				        $("#frTableId").dtable("refresh");
+				    },
+				    close:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+				        layer.close(index);
+				        $("#frTableId").dtable("refresh");
+				    }
+	            });
+	            
+	            $(".customInput input").each(function(){
+	                var $inp = $(this),
+	                    dtype = $inp.attr("type"),
+	                    options = $inp.data();
+	                $inp[dtype](options);
+	            })
+	            
+	            $("#ybaTable").dtable({
+		            sort:false,
+		            height:154,
+		//            url: getRootPath()+"/applyuseraccount/getApplyUserAccountFbInfo.do",
+		//            data:[{id:1,rq:'2018-10-15',yfbj:'0',yflx:'0',sjhb:'0',sjfx:'0',bz:'oueljle'}],
+		            sortable: false,
+		            data: [],
+		            columns: [
+		            	{field:'lineNum', title:'序号', width:60, align:'center', formatter:function(value, row, index){
+	                            return index+1;
+	                        }},
+		                {field: 'bcbagcmc', title: '工程名称',align: 'center', width: 100},
+		                {field: 'bcbajsnr', title: '建设内容',halign:'center', width: 100},
+		                {field: 'bcsgtys', title: '施工图预算（标底）备案价',halign:'center',align: 'right', width: 100}
+		                
+		            ],
+		            resizable:false, //单元格手动拉伸
+		            editable :true,
+		            singleSelect:true,
+		            pageNumber: 1,//起始页
+		            pageSize: 10,//页面大小
+		            pagination:false,
+		            paginationHAlign: 'left',//分页按钮位置  left/right
+		            sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+		            showRefresh:false,
+		            clickToSelect: true,//点击选中
+		            onEditLineSave:function(rowIndex,row,oldRow){
+		                //执行修改前回调函数  返回tree 将update 数据行   false 则不更新表格
+		                return true
+		            },
+		//            onLoaded:function(){
+		//                $("#appsys2").inlineBox("init");
+		//            }
+		//            onClickRow: indexOfFrom,
+		//            onCheck:indexOfFrom
+		        });
+		        $("#openForm").dform('load',data[0]);
+		        $.dajax({
+                    type:'post',
+                    url:getRootPath()+'/sgtysba/selSgtysbamxBySgtbaid.do',
+                    data:{sgtbaid:data[0].id,xmid:data[0].id_zftz_xm},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.length>0){
+                        	$("#tableDetail").dtable("load",data);
+                        	var dataLen = $("#tableDetail").dtable("getData").length;
+				        	$("#tableDetail").dtable("refreshOptions",{height:200+30*dataLen});
+                        	if(lchj=='-1'){
+                        		$("#tableDetail").tableEditor("initAll");
+                        	}
+                        }
+                    }
+                });
+                $.dajax({
+                    type:'post',
+                    url:getRootPath()+'/sgtysba/selSgtbaFilesById.do',
+                    data:{sgtbaid:data[0].id},
+                    dataType:'json',
+                    success:function (res) {
+                        if(res.length>0){
+                        	$("#uploadTable").dtable("load",res);
+                        	if(lchj=='-1'){
+                        		$("#uploadTable").tableEditor("initAll");
+                        	}
+                        }
+                    }
+                });
+                getGsxxByXmid(data[0].id_zftz_xm);
+                $("#jsnrForm").dform('load',data[0]);
+                $("#yjForm").dform('load',data[0]);
+                /* $('#pfwhid').attr('disabled',true);
+                $('#ztzid').attr('disabled',true);
+                $('#jaztzid').attr('disabled',true); */
+                $("#sgtysId").textBox("disable");
+                $("#pfwhid").textBox("setDisabled", true);
+                $("#ztzid").textBox("setDisabled", true);
+                $("#jaztzid").textBox("setDisabled", true);
+		        if(lchj!='-1'){
+		        	$("#jsnrForm").dform("setReadonly", true);
+		        	$("#yjForm").dform("setReadonly", true);
+                	$("#openForm").dform("setReadonly", true);
+                	//disableTr('tableDetail');
+                	disableButton(['addRowId','removeRowId','saveBaxxId','submitRowId','clearFormId','scFjId','deleteFileId']);
+                }
+            }
+        }
+        
+        function disableButton(arr) {
+	        $.each(arr,function (i,v) {
+	            $('#'+v).attr('disabled',true);
+	        })
+	    }
+	
+	    function enableButton(arr) {
+	        $.each(arr,function (i,v) {
+	            $('#'+v).attr('disabled',false);
+	        })
+	    }
+        
+		function add2() {
+            var $table = $("#tableDetail");
+            var dataLen = $table.dtable("getData").length;
+            $table.tableEditor("updateAll");
+            $table.dtable('insertRow', {index:dataLen, row:{}});
+			$table.dtable("refreshOptions",{height:200+30*dataLen});
+			tableDetailHeight = 200+30*dataLen;
+            //$table.tableEditor("init",dataLen);
+            $table.tableEditor("initAll");
+        }
+        function getselectdata(){
+        	var dataArr = $("#tableDetail").dtable("getSelections");
+	        if (dataArr.length === 0) {
+	            $.dalert({text:"请选择数据",icon:7});
+	            return;
+	        }
+	        return dataArr;
+        }
+        
+        function getFiledata(){
+        	var dataArr = $("#uploadTable").dtable("getSelections");
+	        if (dataArr.length === 0) {
+	            $.dalert({text:"请选择数据",icon:7});
+	            return;
+	        }
+	        return dataArr;
+        }
+        
+        function delRow(){
+        	var ids = '';
+        	var data = $("#frTableId").dtable("getSelections");
+            if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }
+            var flag=true;
+            if(data.length>0){
+            	for(var i = 0;i<data.length;i++){
+            		ids +=data[i].id+",";
+            		if(data[i].lchj!=-1){
+            			flag=false;
+            		}
+            	}
+            }
+            if(flag){
+            	layer.confirm('确定删除吗？', {
+	                btn: ['确定','取消'] //按钮
+	            }, function(){
+	                $.dajax({
+	                    type:'post',
+	                    url:getRootPath()+'/sgtysba/deleteSgtysba.do',
+	                    data:{ids:ids.substring(0, ids.length-1)},
+	                    dataType:'json',
+	                    success:function (data) {
+	                        if(data.success){
+	                            $.dalert({text:'删除成功',icon:1});
+	                            $('#frTableId').dtable('refresh');
+	                            //$table.dtable("refreshOptions",{height:150+30*dataLen});
+	                        }else{
+	                            $.dalert({text:'删除失败',icon:5});
+	                        }
+	                    }
+	                })
+	            });
+            }else{
+            	$.dalert({text:'已备案数据不能删除！',icon:7});
+            }
+        }
+        function remov2() {
+            var $table = $("#tableDetail");
+            var selectData = getselectdata();
+            if(selectData != undefined){
+                layer.confirm('确定删除吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var tableData = $table.dtable("getData");
+                    $table.tableEditor("updateAll");
+                    $.each(selectData, function(i){
+                        var dataIndex = tableData.indexOf(selectData[i]);
+                        $table.dtable("removeByRowIndex", dataIndex);
+                    });
+                    $table.tableEditor("updateAll");
+
+                    var dataLen = $table.dtable("getData").length;
+                    $table.dtable("refreshOptions",{height:200+30*dataLen});
+                    $table.tableEditor("initAll");
+
+                    layer.msg('删除成功', {icon: 1});
+                });
+            }
+        }
+        function edit2(){
+            var $table = $("#tableDetail");
+            if(!$table.has(".form-control").is("table")){
+                $("#tableDetail").tableEditor("updateAll");
+                $table.tableEditor("initAll");
+            }else {
+                $.dalert({text:"当前已经处于修改状态",icon:7});
+            }
+        }
+        function addRow() {
+        	isEdit = 0;
+            $.dopen({
+                type: 6,
+                title :"施工图预算（标底）备案",
+                area: ["95%", "100%"],
+                content: dopenJson,
+                btn: ["关闭"],
+                btn1:function(index){
+			        layer.close(index);
+			        //$("#frTableId").dtable("refresh");
+			    },
+			    close:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+			        layer.close(index);
+			        //$("#frTableId").dtable("refresh");
+			    }
+            });
+            
+            $(".customInput input").each(function(){
+                var $inp = $(this),
+                    dtype = $inp.attr("type"),
+                    options = $inp.data();
+                $inp[dtype](options);
+            })
+            
+            $("#ybaTable").dtable({
+	            sort:false,
+	            height:154,
+	//            url: getRootPath()+"/applyuseraccount/getApplyUserAccountFbInfo.do",
+	//            data:[{id:1,rq:'2018-10-15',yfbj:'0',yflx:'0',sjhb:'0',sjfx:'0',bz:'oueljle'}],
+	            sortable: false,
+	            data: [],
+	            columns: [
+	            	{field:'lineNum', title:'序号', width:60, align:'center', formatter:function(value, row, index){
+                            return index+1;
+                        }},
+	                {field: 'bcbagcmc', title: '工程名称',align: 'center', width: 100},
+	                {field: 'bcbajsnr', title: '建设内容',halign:'center', width: 100},
+	                {field: 'bcsgtys', title: '施工图预算（标底）备案价',halign:'center',align: 'right', width: 100}
+	                
+	            ],
+	            resizable:false, //单元格手动拉伸
+	            editable :true,
+	            singleSelect:true,
+	            pageNumber: 1,//起始页
+	            pageSize: 10,//页面大小
+	            pagination:false,
+	            paginationHAlign: 'left',//分页按钮位置  left/right
+	            sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+	            showRefresh:false,
+	            clickToSelect: true,//点击选中
+	            onEditLineSave:function(rowIndex,row,oldRow){
+	                //执行修改前回调函数  返回tree 将update 数据行   false 则不更新表格
+	                return true
+	            },
+	//            onLoaded:function(){
+	//                $("#appsys2").inlineBox("init");
+	//            }
+	//            onClickRow: indexOfFrom,
+	//            onCheck:indexOfFrom
+	        });
+	        $("#sgtysId").textBox("disable");
+            $("#pfwhid").textBox("setDisabled", true);
+            $("#ztzid").textBox("setDisabled", true);
+            $("#jaztzid").textBox("setDisabled", true);
+        }
+
+        function clearForm(){
+            var formObj = $("#openForm");
+            formObj.dform("clear");
+            formObj.find(".customInput .form-control").each(function(){
+                var $input = $(this),
+                    dtype = $input.parents(".ztreeBox_inp").find(".valueBox").attr("boxtype");
+                $input[dtype]("clear");
+            });
+            $("#tableDetail").bootstrapTable('removeAll');
+            $("#jsnrForm").dform("clear");
+            $("#yjForm").dform("clear");
+        }
+        function saveBaxx(){
+        	getBcsgtys();
+        	if(isEdit == 1){
+        		if(sgtbaid!=""&&sgtbaid!=null){
+	        		$("#openForm").dform("setValueByName","id",sgtbaid);
+	        	}
+        	}
+        	var openFormdata = $("#openForm").dform('getData');
+        	/* if(isNaN(openFormdata.bcsgtys)){
+                openFormdata.bcsgtys = 0.00;
+            } */
+        	$("#tableDetail").tableEditor("updateAll");
+        	var appData2 = $("#tableDetail").dtable("getData");
+        	$.each(appData2,function (i,v) {
+                if(v.bcsgtys==''&&v.gcmc==''&&v.gss==''&&v.je==''&&v.tzefl==''&&v.ysqje==''){
+                    appData2.splice(i,1);
+                }
+            });
+            $.each(appData2,function (i,v) {
+                  if(isNaN(v.bcsgtys)){
+                      v.bcsgtys = 0.00;
+                  }
+              });
+            openFormdata.sgtysbamx = appData2;
+        	var jsnr = $("#jsnrForm").dform('getData');
+        	var yj = $("#yjForm").dform('getData');
+        	$("#uploadTable").tableEditor("updateAll");
+            var uploadTableData = $("#uploadTable").dtable("getData");
+            $.each(uploadTableData,function (i,v) {
+                if(v.filexl==''&&v.filebz==''&&v.fileid==''){
+                    uploadTableData.splice(i,1);
+                }
+            });
+            openFormdata.zftzFiles=uploadTableData;
+            
+            var isUnique = checkIsUnique();
+            if(isUnique){
+            	$.dajax({
+	               type:'post',
+	               url:getRootPath()+'/sgtysba/saveSgtysba.do',
+	               data:{
+	               		content1:JSON.stringify([openFormdata]),
+	               		jsnr:jsnr.bcbajsnr,
+	               		zgbmyj:yj.zgbmyj,
+	               		sczjbayj:yj.sczjbayj
+	               	},
+	               dataType:'json',
+	               success:function (data) {
+	                   if(data.success){
+	                   		if(isEdit==1){
+	                   			$.dalert({text:'修改成功',icon:1});
+	                   		}else{
+	                   			$.dalert({text:'保存成功',icon:1});
+	                   		}
+	                   		$("#openForm").dform("setValueByName","id",data.content);
+	                   		$('#frTableId').dtable('refresh');
+	                   }else{
+	                   		if(isEdit==1){
+	                   			$.dalert({text:'修改失败',icon:2});
+	                   		}else{
+	                   			$.dalert({text:'修改失败',icon:2});
+	                   		}
+	                   }
+	               }
+	           })
+            }else{
+            	$.dalert({text:'施工图备案明细存在重复数据，请检查！',icon:7});
+            }
+            
+        }
+        /* function uploadFile(){
+            $.dopen({
+                title:"上传附件",
+                area:["600px", "300px"],
+                content:'<form id="uploadForm"></form>',
+                btn:["保存", "取消"],
+                btn1:function (index) {
+					
+                }
+            });
+            $("#uploadForm").dform({
+                rownum:2,
+                labelwidth:"100px",
+                inputs:[
+                    {title:"附件大类", name:"", type:"comboBox"},
+                    {title:"附件小类", name:"", type:"comboBox"},
+                    {title:"选择文件", name:"", type:"webupload", colspan:2}
+                ]
+            })
+        } */
+        
+        function uploadFile(){
+            uploadfile({ server: getRootPath()+'file/uploader.do?filebstype=02' },function(rowData){
+                var $table = $("#uploadTable"),
+                    dataLen = $table.dtable("getData").length;
+                $table.tableEditor("updateAll");
+                for(var i=0;i<rowData.length;i++){
+                    $table.dtable("insertRow", {index:dataLen+i, row:rowData[i]});
+                }
+                $table.tableEditor("initAll");
+            });
+        }
+        function xsgcfymc(value, row, index) {
+	        var treeIdKey = "BM", treeNameKey = "MC", res = "";
+	        $.each(gcfyData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function xsgcXmmc(value, row, index){
+	    	
+	    	var treeIdKey = "id", treeNameKey = "xmmc", res = "";
+	        $.each(xmmcHxData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function czrHx(value, row, index){
+	    	var treeIdKey = "guid", treeNameKey = "xm", res = "";
+	        $.each(yhxxData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function xsgcTzefl(value, row, index){
+	    	var treeIdKey = "BM", treeNameKey = "MC", res = "";
+	        $.each(tzeflData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    
+	    function selGsxxByFyidAndTzefl(){
+	    	$.dajax({
+               type:'post',
+               url:getRootPath()+'/sgtysba/selGsxxByFyidAndTzefl.do',
+               data:{
+               		xmid:selxmid,
+               		gcfyid:selgcfyid,
+               		tzefl:seltzefl,
+               		isEdit:isEdit,
+               		sgtbaid:sgtbaid
+               },
+               dataType:'json',
+               success:function (data) {
+                   	var dataAll = $("#tableDetail").dtable("getData");
+					var dataSel = $("#tableDetail").dtable("getSelections");
+					if(dataSel.length>0){
+						var iIndex = dataAll.indexOf(dataSel[0]);
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"gcfyid",value:selgcfyid});
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"tzefl",value:seltzefl});
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"gss",value:data.gss});
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"ysqje",value:data.ysqje});
+						var ye = parseFloat(data.gss)-parseFloat(data.ysqje);
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"ye",value:ye});
+					}
+					$("#tableDetail").tableEditor("initAll");
+               }
+           })
+	    }
+	    function pageUploadFile() {
+	        uploadfile({server: getRootPath()+'/file/uploader.do?filebstype=4'}, function (rowData) {
+	            var $table = $("#uploadTable"),
+	                dataLen = $table.dtable("getData").length;
+	            $table.tableEditor("updateAll");
+	            for (var i = 0; i < rowData.length; i++) {
+	                var data = {
+	                    filename: rowData[i].name,
+	                    filesize: rowData[i].size,
+	                    guid: rowData[i].fileId
+	                };
+	                $table.dtable("insertRow", {index: dataLen + i, row: data});
+	            }
+	            $table.tableEditor("initAll");
+	        });
+	    }
+	    function verify(){
+	    	var ids = '';
+        	var data = $("#frTableId").dtable("getSelections");
+        	var _list = new Array();
+        	
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else{
+            	for(var i=0;i<data.length;i++){
+        			_list.push(data[i].id);
+        		}
+            	$.dajax({
+	               type:'post',
+	               url:getRootPath()+'/sgtysba/submitSgtba.do',
+	               data:{
+	               		id:JSON.stringify(_list)
+	               },
+	               dataType:'json',
+	               success:function (data) {
+	                   if(data.success){
+	                   		$.dalert({text:'已核实',icon:1});
+	                   		$('#frTableId').dtable('refresh');
+	                   		layer.close(dopenIndex);
+	                   }else{
+	                   		$.dalert({text:'核实失败，请检查！',icon:5});
+	                   }
+	               }
+	           })
+            }
+	    }
+	    function returnback(){
+	    	var ids = '';
+        	var data = $("#frTableId").dtable("getSelections");
+        	var _list = new Array();
+        	
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else if(data.length>1){
+            	$.dalert({text:'只能选择一条数据',icon:7});
+                return;
+            }else{
+            	setThYj();
+            }
+	    }
+	    
+	    function ret(thyj){
+	    	var ids = '';
+        	var data = $("#frTableId").dtable("getSelections");
+        	var _list = new Array();
+	    	for(var i=0;i<data.length;i++){
+        			_list.push(data[i].id);
+        		}
+            	$.dajax({
+	               type:'post',
+	               url:getRootPath()+'/sgtysba/returnback.do',
+	               data:{
+	               		id:JSON.stringify(_list),
+	               		thyj:thyj
+	               },
+	               dataType:'json',
+	               success:function (data) {
+	                   if(data.success){
+	                   		$.dalert({text:'已退回',icon:1});
+	                   		$('#frTableId').dtable('refresh');
+	                   		layer.close(dopenIndex);
+	                   }else{
+	                   		$.dalert({text:'退回失败，请检查！',icon:5});
+	                   }
+	               }
+	           })
+	    }
+	    
+	    function disableTr(tableId){
+	        var $table = $("#tableDetail"),
+		        rowIndex = $table.find("tr.editing").data("index");
+		    $table.dtable("cancel", rowIndex);
+	    }
+	    function deleteFile(){
+	    	var data = $("#uploadTable").dtable("getSelections");
+        	if(data.length==0){
+                $.dalert({text:'请选择您要删除的附件',icon:7});
+                return;
+            }else{
+            	
+	           var $table = $("#uploadTable");
+	            var selectData = getFiledata();
+	            if(selectData != undefined){
+	                layer.confirm('确定删除吗？', {
+	                    btn: ['确定','取消'] //按钮
+	                }, function(){
+	                
+	                	$.dajax({
+			               type:'post',
+			               url:getRootPath()+'/file/deleteById.do',
+			               data:{
+			               		id:data[0].guid
+			               },
+			               dataType:'json',
+			               success:function (data) {
+			                   
+			                   var tableData = $table.dtable("getData");
+			                    $table.tableEditor("updateAll");
+			                    $.each(selectData, function(i){
+			                        var dataIndex = tableData.indexOf(selectData[i]);
+			                        $table.dtable("removeByRowIndex", dataIndex);
+			                    });
+			                    $table.tableEditor("updateAll");
+								$('#uploadTable').dtable('refresh');
+			                    var dataLen = $table.dtable("getData").length;
+			                    //$table.dtable("refreshOptions",{height:200+30*dataLen});
+			                    //$table.tableEditor("initAll");
+			
+			                    layer.msg('删除成功', {icon: 1});
+			               }
+			           })
+	                
+	                    
+	                });
+	            }
+            }
+	    }
+	    
+	    function getBcsgtys(){
+	    	$("#tableDetail").tableEditor("updateAll");
+        	var tableData = $("#tableDetail").dtable("getData");
+        	var sgtys = 0;
+        	for(var i=0;i<tableData.length;i++){
+        		sgtys = sgtys + parseFloat(tableData[i].bcsgtys);
+        	}
+        	$("#sgtysId").textBox("setValue",sgtys);
+	    }
+	    
+	    function checkIsUnique(){
+	    	var idUnique = true;
+	    	var dataAll = $("#tableDetail").dtable("getData");
+	    	if(dataAll.length>0){
+	    		for(var i=0;i<dataAll.length-1;i++){
+	    			for(var j=i+1;j<dataAll.length;j++){
+	    				if(dataAll[i].gcfyid==dataAll[j].gcfyid&&dataAll[i].tzefl==dataAll[j].tzefl){
+	    					idUnique=false;
+	    				}
+	    			}
+	    		}
+	    	}
+	    	return idUnique;
+	    }
+	    
+	    function setThYj(){
+	    	$.dopen({
+			    title: "退回意见",
+			    //type:6,
+			    content: '<div width:98%;height:98%><form id="form"></form></div>',
+			    //content:yjJson,
+			    area: ['45%','55%'],
+			    btn: ['确定', '取消'],
+			    btn1:function(index){
+			    	var formdata = $("#form").dform("getData");
+			    	if(formdata.textBox4!=""){
+			    		ret(formdata.textBox4);
+			    		layer.close(index);
+			    	}else{
+			    		$.dalert({text:'退回意见不能为空',icon:7});
+			    	}
+			    },
+			    btn2:function(index){
+			        layer.close(index);
+			    },
+			    cancel:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+			    },
+			    end: function(){//层被彻底关闭后执行的回调函数。
+			    }
+			});
+			$("#form").dform({
+		        rownum:2,
+		        formVertical: true,
+		        inputs: [
+		            {title: "意见输入框：", name: "textBox4", type: "textBox", multiline:true, height: 150, colspan:2},
+		        ]
+		    })
+	    }
+	    
+	    function selThyj(sgtbaid){
+	    	var yj = '';
+	    	
+	    	$.dopen({
+			    title: "退回意见",
+			    //type:6,
+			    content: '<div width:98%;height:98%><form id="form"></form></div>',
+			    //content:yjJson,
+			    area: ['45%','55%'],
+			    btn: ['确定', '取消'],
+			    btn1:function(index){
+			    	layer.close(index);
+			    },
+			    btn2:function(index){
+			        layer.close(index);
+			    },
+			    cancel:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+			    },
+			    end: function(){//层被彻底关闭后执行的回调函数。
+			    }
+			});
+			$("#form").dform({
+		        rownum:2,
+		        formVertical: true,
+		        inputs: [
+		            {title: "意见输入框：", id:"textBox4",name: "textBox4", type: "textBox", multiline:true, height: 150, colspan:2},
+		        ]
+		    });
+		    $.dajax({
+	               type:'post',
+	               url:getRootPath()+'/sgtysba/selThyj.do',
+	               data:{
+	               		id:sgtbaid
+	               },
+	               dataType:'json',
+	               success:function (data) {
+	               		$("#textBox4").textBox("setValue",data.content);
+		    			$("#textBox4").textBox("disable");
+	               }
+	           })
+		    
+	    }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

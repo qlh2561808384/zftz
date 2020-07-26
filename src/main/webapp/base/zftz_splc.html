@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>审批流程维护</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="../js/es5-shim.min.js"></script>
+    <script src="../js/es5-sham.min.js"></script>
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link href="../css/common.css" rel="stylesheet" type="text/css">
+</head>
+<style>
+    *{margin:0; padding:0;}
+    .toolbar_one{background-color: #EBEBEB; border-bottom: 1px solid #ddd; padding: 10px; margin-bottom: 5px;}
+    .leftTree{border-right:1px solid #DEDEDE; overflow: auto;height: 790px;}
+    #mainform{margin-bottom: 10px}
+</style>
+<script>	
+	var treeData = [];
+	var treeId="";
+	var treeIds="";
+ 	var allflag=false;
+ 	
+ 	function getRootPath(){
+        var curWwwPath=window.document.location.href;
+        var pathName=window.document.location.pathname;
+        var pos=curWwwPath.indexOf(pathName);
+        var localhostPaht=curWwwPath.substring(0,pos);
+        var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+        return(localhostPaht+projectName);
+    }
+ 	
+    $(function () {
+    	$(".bootstrap-table-submit").attr("disabled", true);
+    	$.dajax({
+    		data:{
+				key : {name:"NAME"},
+				simpleData :{
+					enable : true,
+					idKey : "ID",
+					pIdKey : "PID",
+					rootPId : 0
+				}
+			},
+            url:getRootPath()+"/yhglggryqz/getRyqzTree.do",
+            dataType:"json",
+            success: function(data){
+                treeData = data;
+            }
+        });
+        //左侧树
+        $("#sideTree").tree({
+		       	data:{
+					key : {name:"NAME"},
+					simpleData :{
+						enable : true,
+						idKey : "ID",
+						pIdKey : "PID",
+						rootPId : 0
+					}
+				},
+		         checkType: "radio",
+		         rootElement:true,
+		         url: getRootPath()+"/yhglggryqz/getsxTree.do",
+                callback: {
+                    clickNode: getTreeId
+                }
+            });
+      
+        
+        var toolObj = [
+            {"name":"新增行", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"add()"},
+            {"name":"修改行", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"edit()"},
+            {"name":"删除行", "classes":"btn bootstrap-table-delete test", "type":"button", "onclick":"remov()"},
+            {"name":"保存", "classes":"btn bootstrap-table-delete test", "type":"button", "onclick":"savaall()"}
+        ];
+        
+       
+
+        
+
+        //右侧表格
+        $("#table").dtable({
+            height:400,
+            title:"应用审批流程信息",
+            url:getRootPath()+"/yhglggryqz/getSplcInfo.do",
+            columns: [
+                {checkbox: true},
+                {field: 'DQHJBM', title: '当前环节编码', align: 'center', width: 120,
+                    editor:{
+                        type:"textBox"
+                    }
+                },
+                {field: 'XYHJBM', title: '下一环节编码', align: 'center', width: 120,
+                    editor:{
+                        type:"textBox"
+                    }
+                },
+                {field: 'DQHJMC', title: '当前环节名称', align: 'center', width: 120,
+                    editor:{
+                        type:"textBox"
+                    }
+                },
+                {field: 'CZLX', title: '操作类型', align: 'center', width: 150,
+                	editor:{
+                        type:"comboBox",
+                        multiple:true,
+                        localdata:[{id:1,text:'提交'},{id:2,text:"退回"},{id:3,text:"不同意"}]
+              },
+                formatter:stationTypeFormatters
+                },
+                {field: 'SPRFZID', title: '审批分组',align: 'center',width: 140,
+                	editor:{
+                		data:{
+        					key : {name:"NAME"},
+        					simpleData :{
+        						enable : true,
+        						idKey : "ID",
+        						pIdKey : "PID",
+        						rootPId : 0
+        					}
+        				},
+                        type:"searchTree",
+                        checkType:'radio',         
+                        validText:'测试',
+                        url:getRootPath()+"/yhglggryqz/getRyqzTree.do", 
+                        rootElement:false,
+                        onlyLeaf:true
+              },
+              formatter: treeFormatter
+                
+                }
+
+             ],
+            queryParams: queryParams,//查询参数方法
+            editable :true,
+            pageNumber: 1,//起始页
+            pageSize: 10,//页面大小
+            pagination:false,
+            showRefresh:false,
+            paginationHAlign: 'left',//分页按钮位置  left/right
+            sidePagination: 'server',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+            toolbar: toolObj,
+            clickToSelect: true,//点击选中
+            singleSelect:true,
+            sortStable:true,
+            onSort:function () {
+              save();
+            }
+//             onEditLineSave:function(rowIndex,row,oldRow){
+//                 //执行修改前回调函数  返回tree 将update 数据行   false 则不更新表格
+//                 //todo 进行数据提交
+//                
+//                 return true
+//             }
+        });
+
+    });
+
+
+    function add() {
+    	
+    	var treeObj = $('#sideTree').tree('getTree');
+    	
+    	var nodes = treeObj.getSelectedNodes();
+    	
+        if(nodes.length==0){
+        	 $.dalert({text:"请先选择需要修改新增的事项！",icon:2});
+        		 return;
+        }
+        var $table = $("#table");
+        var dataLen = $table.dtable("getData").length;
+        $table.tableEditor("updateAll");
+
+        $table.bootstrapTable('insertRow', {index:dataLen, row:{}});
+
+        $table.tableEditor("initAll");
+      
+       
+    }
+
+    
+
+
+
+    function edit(){
+    	var treeObj = $('#sideTree').tree('getTree');
+    	var nodes = treeObj.getSelectedNodes();
+        if(nodes.length==0){
+        	 $.dalert({text:"请先选择需要修改新增的事项！",icon:2});
+        		 return;
+        }
+        var $table = $("#table");
+        if(!$table.has(".form-control").is("table")){
+            $table.tableEditor("updateAll");
+            $table.tableEditor("initAll");
+            traverse();
+        }else {
+            $.dalert({text:"当前已经处于修改状态",icon:2});
+        }
+    }
+
+    
+
+    function save() {
+        var $table = $("#table");
+        $table.tableEditor("updateAll"); //编辑后，保存全部
+    }
+
+    function getselectdata() {
+        var dataArr = $("#table").dtable("getSelections");
+        if (dataArr.length === 0) {
+            $.dalert({text:"请选择数据",icon:2});
+            return;
+        }
+        return dataArr;
+    }
+    
+    function remov() {
+        var $table = $("#table");
+        var selectData = getselectdata();
+        if(selectData != undefined){
+            layer.confirm('确定删除吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                var tableData = $table.dtable("getData");
+                $table.tableEditor("updateAll");
+                $.each(selectData, function(i){
+                    var dataIndex = tableData.indexOf(selectData[i]);
+                    $table.dtable("removeByRowIndex", dataIndex);
+                });
+                $table.tableEditor("updateAll");
+
+                var dataLen = $table.dtable("getData").length;
+               
+                $table.tableEditor("initAll");
+                layer.msg('删除成功', {icon: 1});
+              
+            });
+        }
+    }
+  
+    
+    
+    
+   
+
+    function getTreeId(event, treeId, treeNode){   	
+        treeId=treeNode.ID;  
+        treeIds=treeId;
+        $.dajax({
+			cache : true,
+			url : getRootPath()+"/yhglggryqz/getSplcInfo.do",
+			data :$.param({"id" : treeId}),
+			success : function(data) {           
+                $("#table").bootstrapTable("refresh", {query: {id: treeId}});
+          
+			}
+		}); 
+	 
+    	 
+    }
+    
+    function queryParams(params){
+    	
+		return{
+			//如果需要后端进行分页 limit 和offset是必须参数
+			limit:params.limit,
+			offset:params.offset
+		}
+	}
+    
+   
+   
+
+    
+   
+
+    function savaall() {
+    	var $table = $("#table");
+        save();  
+       
+        var dataArrs=$("#table").bootstrapTable("getData");
+    
+        if(dataArrs==null||dataArrs==""){
+        	$.dalert({text:"需要保存的数据为空，请检查！",icon:2});
+   		 	return;
+        }
+       
+      
+        //选中节点
+        if(allflag){
+        	var nodes = treeObj.getSelectedNodes();
+            if(nodes.length==0){
+            	 $.dalert({text:"请先选择需要修改新增的事项！",icon:2});
+            		 return;
+            }
+        }
+        
+    	
+	    		var dqhjbm2="";
+	    		var xyhjbm2="";
+	    		var dqhjmc2="";
+	    		var czlx2="";
+	    		var sprfzid2="";
+	    		var isflag2="0";
+	    		for(i=0;i<dataArrs.length;i++){
+	    			if(dataArrs[i].DQHJBM==""){
+	    				isflag2="1";				
+	    			}
+	    			if(dataArrs[i].XYHJBM==""){
+	    				isflag2="2";
+	    			}
+	    			if(dataArrs[i].SPRFZID==""){
+	    				isflag2="3";
+	    			}			
+	    		}
+	    		if(isflag2=="1"){
+	    			$.dalert({text:"内部审核流程当前环节编码不能为空", icon: 2});
+	    			return;
+	    		}
+	    		if(isflag2=="2"){
+	    			$.dalert({text:"内部审核流程下一环节编码不能为空", icon: 2});
+	    			return;
+	    		}
+	    		if(isflag2=="3"){
+	    			$.dalert({text:"内部审核流程审批人分组不能为空", icon: 2});
+	    			return;
+	    		}
+	    		for(i=0;i<dataArrs.length;i++){
+	    			dqhjbm2 += dataArrs[i].DQHJBM + " ";
+	    			xyhjbm2 +=dataArrs[i].XYHJBM+" ";
+	    			dqhjmc2 +=dataArrs[i].DQHJMC + " ";
+	    			czlx2 +=dataArrs[i].CZLX + " ";
+	    			sprfzid2 +=dataArrs[i].SPRFZID + " ";	    			
+	    		}
+	    		$.dajax({
+	    			cache : true,
+	    			type : "POST",
+	    			url : getRootPath()+"/yhglggryqz/saveSplcInfo.do",
+	    			data:$.param({"id":treeIds,"dqhjbm" : dqhjbm2,"xyhjbm":xyhjbm2,"dqhjmc":dqhjmc2,"czlx":czlx2,"sprfzid":sprfzid2}),
+	    			async : false,
+	    			dataType : 'json',
+	    			success : function(data) {
+	    				if (data.success) {
+	    					$.dalert({text:data.content, icon: 1});
+	    					var rowIndex = $table.find("tr.editing").data("index");
+	    					$table.tableEditor("cancel", rowIndex);
+	    					
+	    				} else {	    				
+	    					$.dalert({text:data.content, icon: 2});
+	    					var rowIndex = $table.find("tr.editing").data("index");
+	    					$table.tableEditor("cancel", rowIndex);
+	    					
+	    					
+	    				}
+	    			}
+	    		});
+  
+    	}
+
+
+
+    function stationTypeFormatters(value,row,index) {
+        switch (value){
+		        case "1":
+		            return "提交";
+		        case "2":
+		            return "退回";
+		        case "3":
+		            return "不同意";
+		        case "1,2":
+		            return "提交,退回";
+		        case "1,3":
+		            return "提交,不同意";
+		        case "2,3":
+		            return "退回,不同意";
+		        case "1,2,3":
+		            return "提交,退回,不同意";
+        }
+    }
+    
+    function stationTypeFormatter(value,row,index) {
+        switch (value){
+            case "1":
+                return "是";
+            case "2":
+                return "否";
+          
+        }
+    }
+    
+    
+    function treeFormatter(value, row, index) {
+        var thisEditor = this.editor,
+            treeIdKey = "", treeNameKey = "", res = "";
+        if(!!thisEditor.data && !!thisEditor.data.simpleData && !!thisEditor.data.simpleData.idKey){
+            treeIdKey = thisEditor.data.simpleData.idKey;
+        }else{
+            treeIdKey = "id";
+        }
+        if(!!thisEditor.data && !!thisEditor.data.key && !!thisEditor.data.key.name){
+            treeNameKey = thisEditor.data.key.name;
+        }else{
+            treeNameKey = "name";
+        }
+        $.each(treeData, function(key, val){
+            if(val[treeIdKey] == value){
+                res = val[treeNameKey];
+                return false;
+            }
+        });
+        return res;
+    }
+   
+</script>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-2 leftTree">
+            <div class="app_title">选项列表</div>
+            <div id="sideTree" class="ztree"></div>
+        </div>
+        <div class="col-xs-10 rightCon">
+           
+            <div class="app_title">审批流程信息</div>        
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="appTb1">
+                    <table id="table"></table>
+                </div>
+      
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

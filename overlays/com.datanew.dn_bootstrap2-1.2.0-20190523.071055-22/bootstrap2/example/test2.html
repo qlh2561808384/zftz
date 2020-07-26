@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#formDemo").dform({
+                formtitle:"项目信息",
+                rownum:3,
+                labelwidth:"100px",
+                inputs:[
+                    {
+                        title:"姓名",
+                        name:"name",
+                        type:"textBox",
+                        defaultValue:"张三",
+                        required:true,
+                        colspan:2
+                    }
+                ]
+            });
+            $("#tbDemo").dtable({
+                height:300,
+                url: "../example/json/tableData.json",
+                columns: [
+                    {checkbox: true},
+                    {field: 'status', title: '状态', width: 100, align: 'center'},
+                    {field: 'postaccount', title: '商户号', align: 'center',width:150},
+                    {field: 'appName', title: '接入应用', align: 'center',width: 150, clickToSelect:false, editor:{
+                            type:'comboTree',
+                            name:'comboTree',
+                            url:'./json/treeData.json'
+                        }},
+                    {field: 'accountbank', title: '开户银行',  align: 'center',width: 150},
+                    {field: 'enddate', title: '到期日期',  align: 'center',width: 150},
+                    {field: 'remark', title: '备注', align: 'center'}
+                ],
+                uniqueId: "guid",
+                clickToSelect: true//点击选中
+            });
+            $("#search_tree").searchTree({
+                url:'./json/treeData.json',
+                checkType: 'radio'
+            });
+        })
+    </script>
+    <style>
+        @media print {
+            .noPrint{display:none;}
+        }
+    </style>
+</head>
+<body>
+    <input id="search_tree" /><br><br>
+
+    <form id="formDemo" class="noPrint"></form>
+
+    <table id="tbDemo"></table>
+</body>
+</html>

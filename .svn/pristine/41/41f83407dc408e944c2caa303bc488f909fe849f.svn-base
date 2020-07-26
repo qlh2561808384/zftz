@@ -1,0 +1,82 @@
+#application configs
+#数据源配置
+jdbc.driverClassName=oracle.jdbc.driver.OracleDriver
+#mysql配置
+#jdbc.driverClassName=com.mysql.jdbc.Driver
+#hibernate 配置
+#oracle
+hibernate.dialect = org.hibernate.dialect.Oracle10gDialect
+#mysql
+#hibernate.dialect = org.hibernate.dialect.MySQLDialect
+hibernate.show_sql = true
+hibernate.format_sql = false
+hibernate.hbm2ddl.auto = false
+hibernate.maxActive = 30
+hibernate.cache.use_second_level_cache = true
+hibernate.cache.use_query_cache = true
+hibernate.cache.region.factory_class = org.hibernate.cache.ehcache.EhCacheRegionFactory
+hibernate.cache.provider_configuration_file_resource_path = ehcache.xml
+
+
+
+#本机
+#是否加密，只加密密码(默认为false)
+#jdbc.encrypt=false
+jdbc.url = jdbc:oracle:thin:@10.41.130.18:1521:FXKF
+jdbc.username = sxfx
+jdbc.password = sxfx
+
+#jdbc.url = jdbc:oracle:thin:@172.16.12.213:1521:orcl
+#jdbc.username = zftz
+#jdbc.password = zftz
+
+#所属应用编码
+YYBM= YHGL
+#cas服务地址
+CASSERVERURL=http://mhtest.sx.zj.mof:9080
+
+#FTP上传附件地址
+#ftp.url=172.16.12.213
+#ftp.port=21
+#ftp.username=zftz
+#ftp.password=zftz
+#ftp.upload.path=/zftz
+#ftp.url=172.16.12.84
+#ftp.port=21
+#ftp.username=zftz	
+#ftp.password=zftz
+#ftp.upload.path=/zftz
+
+ftp.url=10.41.130.54
+ftp.port=21
+ftp.username=zftz
+ftp.password=zftz
+ftp.upload.path=zftz
+
+
+
+
+sso.mode.key=mode
+sso.mode.lczorg=lcz
+sso.mode.sxcas=cas
+sso.mode.sxcas.loginurl=/user/caslogin.do
+sso.mode.lczorg.loginurl=/user/orglogin.do
+sso.mode.redirectto.key=sjcj_sso_redirect_to
+sso.mode.accountId=accountId
+sso.mode.appCode=appCode
+
+CDYYBM=ZFTZ
+
+#报表服务地址配置
+#nwbbdz:http://166.1.1.60:9080
+nwbbdz:http://10.41.130.59:9080
+#nwbbdz:http://10.40.192.133:8880
+#nwbbdz:http://172.16.12.217:8081
+
+#地理信息地址 填写完整地址
+#nwdlxx:http://127.0.0.1:8880/HappyServer
+#wwdlxx:http://172.23.205.171:8880
+nwdlxx:http://10.41.130.58:8080
+#标准库打印地址
+ZBKPATH=http://10.41.130.59:9080/HappyServer/hrServlet?fileName=hte_2019_06_26103215038&fileAlias=zbkdy&hideToolbar=false&authId=5621E53CABB5C27C98547DB385A89E5B&targetVolume=zftz&isLink=true&directMakeReport=true&variants=XMID%3D
+

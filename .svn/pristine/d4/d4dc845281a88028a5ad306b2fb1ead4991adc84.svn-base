@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>项目池管理</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script type="text/javascript" src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <style type="text/css">
+
+    </style>
+    <script>
+        var getRootPath = function(){
+            var curWwwPath=window.document.location.href;
+            var pathName=window.document.location.pathname;
+            var pos=curWwwPath.indexOf(pathName);
+            var localhostPaht=curWwwPath.substring(0,pos);
+            var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            return(localhostPaht+projectName);
+        }
+
+        var toolObj = [
+            {"name":"保存", "classes":"btn bootstrap-table-save", "type":"button", "onclick":"save()"}
+
+        ];
+
+        function fixTable(){
+            //兼容ie8下表格内容部分宽度比表头小
+            if(navigator.userAgent.indexOf("MSIE")>0 && navigator.userAgent.indexOf("MSIE 8.0")>0){
+                var tbObj = $("#bjtable"),
+                    tableW = tbObj.width(),
+                    trTotalW = 0, trWArr = [];
+                tbObj.find("thead tr:eq(0) th").each(function(){
+                    trTotalW += $(this).width();
+                    trWArr.push($(this).width());
+                });
+                tbObj.find("thead tr:eq(0) th").each(function(i){
+                    $(this).width(tableW*(trWArr[i]/trTotalW));
+                });
+            }
+        }
+
+
+        //解决ie8下indexof 问题
+        if (!Array.prototype.indexOf){
+            Array.prototype.indexOf = function(elt /*, from*/){
+                var len = this.length >>> 0;
+
+                var from = Number(arguments[1]) || 0;
+                from = (from < 0)
+                    ? Math.ceil(from)
+                    : Math.floor(from);
+                if (from < 0)
+                    from += len;
+
+                for (; from < len; from++){
+                    if (from in this && this[from] === elt)
+                        return from;
+                }
+                return -1;
+            };
+        }
+
+        $(function () {
+
+            function turnFormatter( value,row,index ){
+                switch(value){
+                    case 0:
+                        return '-';
+                    case "0":
+                        return '-';
+                    case 0.00:
+                        return '-';
+                    case "0.00":
+                        return '-';
+                    default:
+                        var v = typeof(value)=="undefined"?'-':value;
+                        return  '<div style="text-align: right">'+v+'</div>';
+                }
+            }
+
+            $("#bjtable").dtable({
+                height: 550,
+                url:getRootPath()+"/xmc/getXmcList.do",
+                onLoadSuccess:function(){
+                    fixTable();
+                },
+                columns: [
+                    {field: 'XH', title: '序号', align: 'center', width: 30,formatter:function (value,row,index ) {
+                            return parseFloat(index+1);
+                        }},
+                    {field: 'ID', title: 'id', align: 'center', width: 50,visible:false},
+                    {field: 'SFFB',"class":'bg', title: '是否纳入封闭运行', align: 'center', width: 80,formatter:function (value, row, index) {
+                            if(value == 1){
+                                return '<input checked data-index='+index+' name="btSelectItem" type="checkbox" value='+(index+1)+'>'
+                            }else {
+                                return '<input  data-index='+index+' name="btSelectItem" type="checkbox" value='+(index+1)+'>'
+                            }
+
+                        }
+                    },
+                    {field: 'XMBH', title: '项目编号', align: 'center', width: 60, editor: {"name":"xmbh",type: 'textBox'}},
+                    {field: 'XMMC',"class":'bg', title: '项目名称', align: 'center', width: 80, editor: {"name":"xmmc",type: 'textBox'}},
+                    {field: 'XMLX',"class":'bg', title: '项目类型', align: 'center', width: 60, editor: {"name":"xmlx",type: 'searchTree',
+                            url:getRootPath()+"/xmc/queryXmlx.do",
+                            // ISLEAF:false,
+                            onlyLeaf:true,
+                            checkType: 'radio',
+                            onLoaded: function(ztree){
+                                ztree.expandAll(true);
+                            },
+                            data:{
+                                key : {
+                                    name: "MC", //保存节点名称的属性名
+                                    icon: "icon" //保存节点小图标的属性名
+                                },
+                                simpleData : {
+                                    enable: true, //数据是否采用简单数据模式(Array)，true为是
+                                    idKey: "BM", //保存节点唯一标识的属性名
+                                    pIdKey: "PID",  //保存节点其父节点的唯一标识的属性名
+                                    rootPId: 0 //指定根节点数据
+                                }
+                            }
+                    }},
+                    {field: 'LXND',"class":'bg', title: '立项年度', align: 'center', width: 50, editor: {"name":"lxnd",type: 'textBox'}},
+                    {field: 'SDTZE',"class":'bg', title: '总投资额(万元)', align: 'center', width: 80, editor:{"name":"sdtze",type: 'decimal', decimalPlaces: 2} ,formatter:turnFormatter},
+                    {field: 'XMJD',"class":'bg', title: '项目阶段', align: 'center', width: 60, editor: {"name":"xmjd",type: 'comboBox',
+                            valueField:"BM",
+                            textField:"MC",
+                            url:getRootPath()+"/xmc/queryXmzt.do"
+
+                            }
+                    },
+                    {field: 'JSDW',"class":'bg', title: '平台公司', align: 'center', width: 80, editor: {"name":"jsdw",type: 'searchTree',
+                            url:getRootPath()+"/xmc/queryJsdw.do",
+                            // ISLEAF:false,
+                            onlyLeaf:true,
+                            checkType: 'radio',
+                            onLoaded: function(ztree){
+                                ztree.expandAll(true);
+                            },
+                            data:{
+                                key : {
+                                    name: "MC", //保存节点名称的属性名
+                                    icon: "icon" //保存节点小图标的属性名
+                                },
+                                simpleData : {
+                                    enable: true, //数据是否采用简单数据模式(Array)，true为是
+                                    idKey: "BM", //保存节点唯一标识的属性名
+                                    pIdKey: "PID",  //保存节点其父节点的唯一标识的属性名
+                                    rootPId: 0 //指定根节点数据
+                                }
+                            }
+                        }},
+                    {field: 'JHKGRQ',"class":'bg', title: '开工日期', align: 'center', width: 80, editor:{"name":"jhkgrq",type: 'dateBox',format: "yyyymmdd"}},
+                    {field: 'ZT', title: '状态', align: 'center', width: 50,visible:false}
+
+
+
+                ],
+                resizable: false, //单元格手动拉伸
+                editable: true,
+                pageNumber: 1,//起始页
+                pageSize: 20,//页面大小
+                showRefresh: false,
+                pagination: true,
+                toolbar: toolObj,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'server',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                searchbar: {
+                    rownum: 3,//搜索栏表单列数  最大支持3
+                    labelwidth:150 ,
+                    inputs: [//搜索栏表单参数
+                        {
+                            title: "项目范围：",
+                            name: "sffb",
+                            type: "comboBox",
+                            valueField:"id",
+                            textField:"text",
+                            localdata: [{id: "0", text: "全部"},{id: "1", text: "纳入封闭运行"},{id: "2", text: "未纳入封闭运行"}],
+                            colspan: "1"
+                        },
+                        {
+                            title: "项目名称：",
+                            name: "xmmc",
+                            type: "textBox",
+                            colspan: "1"
+                        }, {
+                            title: "项目类型：",
+                            name: "xmlx",
+                            type: "searchTree",
+                            colspan: "1",
+                            url:getRootPath()+"/xmc/queryXmlx.do",
+                            // ISLEAF:false,
+                            onlyLeaf:true,
+                            checkType: 'radio',
+                            onLoaded: function(ztree){
+                                ztree.expandAll(true);
+                            },
+                            data:{
+                                key : {
+                                    name: "MC", //保存节点名称的属性名
+                                    icon: "icon" //保存节点小图标的属性名
+                                },
+                                simpleData : {
+                                    enable: true, //数据是否采用简单数据模式(Array)，true为是
+                                    idKey: "BM", //保存节点唯一标识的属性名
+                                    pIdKey: "PID",  //保存节点其父节点的唯一标识的属性名
+                                    rootPId: 0 //指定根节点数据
+                                }
+                            }
+                        }, {
+                            title: "平台公司：",
+                            name: "ptgs",
+                            type: "searchTree",
+                            colspan: "1",
+                            url:getRootPath()+"/xmc/queryJsdw.do",
+                            opensearch:true,
+                            onlyLeaf:true,
+                            checkType: 'radio',
+                            onLoaded: function(ztree){
+                                ztree.expandAll(true);
+                            },
+                            data:{
+                                key : {
+                                    name: "MC", //保存节点名称的属性名
+                                    icon: "icon" //保存节点小图标的属性名
+                                },
+                                simpleData : {
+                                    enable: true, //数据是否采用简单数据模式(Array)，true为是
+                                    idKey: "ID", //保存节点唯一标识的属性名
+                                    pIdKey: "PID",  //保存节点其父节点的唯一标识的属性名
+                                    rootPId: 0 //指定根节点数据
+                                }
+                            }
+                        }
+                    ]
+                }
+            })
+
+
+        });
+
+
+
+        function serializeFormJSON(a) {
+            var o = {};
+            $.each(a, function () {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+
+        };
+
+
+        function  save() {
+            var $table = $("#bjtable");
+            var row =  $table.dtable("getData");
+            var rowTr = $table.find("tr");
+
+
+
+            //rowTr比row多一行列头
+            var  flag = true;
+            for(var i = 1 ;i <rowTr.length;i++){
+                var sffb = $(rowTr[i]).find("input[type='checkbox']").prop("checked") == true ? "1":"0";
+                if(row[i-1].SFFB != sffb){
+                   row[i-1].tableEdited= true
+                }
+                $.extend(row[i-1],{
+                    SFFB:sffb
+                });
+            }
+
+            if(flag){
+                $table.tableEditor("updateAll");
+                var row =$table.dtable("getData")
+                for(var i=0;i<row.length;i++){
+                    // console.log(row[i])
+                    // console.log(row[i].tableEdited)
+                    if(row[i].tableAdd==true|| row[i].tableEdited==true){
+                        var data = {
+                            id:row[i].ID,
+                            sffb:row[i].SFFB
+                        };
+
+                        $.dajax({
+                            url: getRootPath()+"/xmc/update.do",
+                            data:data,
+                            async:false,
+                            success: function (data) {
+
+                            }
+                        });
+                    }
+                }
+                $.dalert({text:"保存成功",icon:1});
+                setTimeout(function () {
+                    $table.dtable("refresh");
+
+                },100)
+            }
+
+
+        }
+
+    </script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <h4 style="text-align:center;font-weight: bold">项目确认</h4>
+        <div>
+            <div role="tabpanel" class="tab-pane active" id="div1"><table id="bjtable" ></table></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

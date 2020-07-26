@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <TITLE> ztree </TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.datanew.js"></script>
+    <style>
+        .tree_demo .col-4{padding:10px; background:#DEDEDE; border:1px solid #DDD;border-radius: 10px;}
+        .tree_demo [class^='copytree']{margin-bottom:10px;}
+        .tree_demo .ztree{background:#FFF;}
+    </style>
+</head>
+
+<body>
+<section class="parser">
+    <h4>案例</h4>
+</section>
+<div class="outbackframe">
+    <div style="width:98.5%;"><ul id="tree"></ul></div>
+</div>
+<section class="parser spacetop">
+    <table class="table-border">
+        <thead>
+        <tr><th>浏览器</th><th>数据条数</th><th>时间(ms)</th></tr>
+        </thead>
+        <tbody>
+        <tr><td rowspan="3">chrome</td><td>1000</td><td>569</td></tr>
+        <tr><td>10000</td><td>2953</td></tr>
+        <tr><td>100000</td><td>61858</td></tr>
+        <tr><td rowspan="3">ie8</td><td>1000</td><td>1719</td></tr>
+        <tr><td>10000</td><td>7467</td></tr>
+        <tr><td>100000</td><td>页面未响应</td></tr>
+        <tr><td colspan="3">数据仅供参考，以实际运行为准</td></tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $("#tree").tree({
+            checkType:'checkbox',
+            rootElement:true,
+            openSearch:false,//是否显示搜索栏
+            outerHeight:150,
+//          searchPlaceholder:'ceshi',
+            ISLEAF:true,
+            // localdata: zNodes,
+            //url:'./json/treeData.json',
+            localdata:localdata,
+            data:{
+                simpleData : {
+                    enable: true, //数据是否采用简单数据模式(Array)，true为是
+                    idKey: "id", //保存节点唯一标识的属性名
+                    pIdKey: "pId",  //保存节点其父节点的唯一标识的属性名
+                    rootPId: null //指定根节点数据
+                }
+            },
+            //getValueField: "tId",
+            callback:{
+                clickNode : function(e,treeId,treeNode,clickFlag){
+                    // console.log(treeNode)
+                },
+                onCheck: function(e, treeId, treeNode) {
+                    /*console.log(treeNode.tId)
+                    console.log(treeNode)*/
+                }
+            },
+            onLoaded:function(ztree){//加载完毕后 触发
+                ztree.expandAll(true);
+                //$("#tree").tree("setValue",'1,2,3')
+            }
+        });
+
+    });
+
+    window.onload = function () {
+        var loadTime = window.performance.timing.domComplete  -window.performance.timing.domInteractive ;
+        //console.log('Page load time is '+ loadTime);
+    }
+
+    var zNodes = [
+        {id:1, pId:0, name:"北京", ISLEAF:1},
+        {id:2, pId:0, name:"天津", ISLEAF:1,color:'#ccc111'},
+        {id:3, pId:0, name:"上海", ISLEAF:1},
+        {id:4, pId:0, name:"河北省", ISLEAF:0},
+        {id:41, pId:4, name:"石家庄", ISLEAF:0},
+        {id:42, pId:4, name:"保定", ISLEAF:1},
+        {id:43, pId:4, name:"邯郸", ISLEAF:1},
+        {id:44, pId:4, name:"承德", ISLEAF:1},
+        {id:5, pId:0, name:"广东省", ISLEAF:0},
+        {id:51, pId:5, name:"广州", ISLEAF:1},
+        {id:52, pId:5, name:"深圳", ISLEAF:1},
+        {id:53, pId:5, name:"东莞", ISLEAF:1},
+        {id:54, pId:5, name:"佛山", ISLEAF:1},
+        {id:6, pId:0, name:"福建省", ISLEAF:0},
+        {id:61, pId:6, name:"福州", ISLEAF:1},
+        {id:62, pId:6, name:"厦门", ISLEAF:1},
+        {id:63, pId:6, name:"泉州", ISLEAF:1},
+        {id:64, pId:6, name:"三明", isParent:true}
+    ];
+    var localdata = [{id:1, pId:0, name:"北京", ISLEAF:1}];
+    var localdefdata = {id:63, pId:6, name:"泉州", ISLEAF:1};
+    var time = 1000;  //数据条数
+
+
+    for(var i=1;i<time;i++){
+        localdata.push(localdefdata);
+    }
+
+
+</script>
+<style>
+    .spacetop{margin-top: 10px;}
+    .outbackframe{background-color: #fff;padding: 0;border: 10px solid #DEDEDE;}
+    html input[type=button]{border-radius: 4px;background-color:#428BCA;border:1px solid #2E6DA4;font-family: "Microsoft YaHei";font-size:14px;height:34px;line-height:34px;padding:0 10px;color:#fff;}
+    html input[type=button]:hover{background-color: #3276b1;border:1px solid #125590;}
+</style>

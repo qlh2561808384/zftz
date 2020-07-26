@@ -1,0 +1,122 @@
+package com.datanew.action.xmgcjjs;
+
+import com.datanew.annotation.SessionData;
+import com.datanew.annotation.UserInfo;
+import com.datanew.dto.Pages;
+import com.datanew.dto.Result;
+import com.datanew.model.YhglYwYh;
+import com.datanew.model.YhglYwYhyy;
+import com.datanew.model.ZftzXmgcjsba;
+import com.datanew.model.ZftzXmgcjsbaFymx;
+import com.datanew.service.xmgcjjs.XmgcjsbbService;
+import com.datanew.util.JavaBeanUtil;
+import com.datanew.util.StaticData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 项目工程结算报备
+ *
+ * @author inRush
+ * @date 2019/5/21
+ **/
+@Controller
+@ResponseBody
+@RequestMapping("/xmgcjsbb")
+public class XmgcjsbbController {
+    @Autowired
+    XmgcjsbbService service;
+
+    /**
+     * 获取结算报备列表
+     *
+     * @return {@link Map}
+     */
+    @RequestMapping(value = "list", method = RequestMethod.POST)
+    public Pages list(Pages page, @UserInfo YhglYwYhyy userInfo, Integer status) {
+        return service.list(userInfo.getGuid().toString(), page, status);
+    }
+
+    /**
+     * 获取合同列表
+     *
+     * @return id:ID HTMC:名称
+     */
+    @RequestMapping(value = "htlist", method = RequestMethod.GET)
+    public Result htList(@UserInfo YhglYwYhyy userInfo, String htId) {
+        List<Map> list = service.htList(userInfo.getGuid().toString(), htId);
+        return new Result(true, list);
+    }
+
+    /**
+     * 获取合同信息
+     *
+     * @return 1. 合同名称(HTMC)，合同内容(HTNR)，项目名称(XMMC)，建设单位(JSDW),主管部门(ZGBM)
+     * 2. 变更明细记录 BGMXJL:[{变更内容(BGNR),变更确认时间（BGQRSJ），涉及增减预算造价（SJZJYSZJ）}]
+     * 3. 工程费用明细：[]
+     */
+    @RequestMapping(value = "htinfo", method = RequestMethod.GET)
+    public Result getHtInfo(@RequestParam Integer htId) {
+        try {
+            Map ht = service.getHtInfo(htId, true);
+            return new Result(true, ht);
+        } catch (ArithmeticException e) {
+            return new Result(false, "合同数据异常！");
+        }
+    }
+
+    @RequestMapping(value = "bainfo")
+    public Result baInfo(@RequestParam Integer baId) {
+        try {
+            Map baInfo = service.getGcjsBa(baId);
+            return new Result(true, baInfo);
+        } catch (ArithmeticException e) {
+            return new Result(false, "合同数据异常！");
+        }
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public Result delete(@RequestBody Map idModel) {
+        ArrayList<Integer> ids = (ArrayList<Integer>) idModel.get("ids");
+        service.delete(ids);
+        return new Result(true, ids);
+    }
+
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public Result save(@RequestBody Map model, @SessionData(StaticData.LOGINUSERINFO) YhglYwYh yhInfo) {
+        try {
+            ZftzXmgcjsba saveModel = JavaBeanUtil.convertMap(ZftzXmgcjsba.class, model, new JavaBeanUtil.CamelCaseConverter());
+            List<ZftzXmgcjsbaFymx> mxSaveModels = new ArrayList<ZftzXmgcjsbaFymx>();
+            for (Map item : (ArrayList<Map>) model.get("gcfymx")) {
+                mxSaveModels.add(JavaBeanUtil.<ZftzXmgcjsbaFymx>convertMap(ZftzXmgcjsbaFymx.class, item, new JavaBeanUtil.UppercaseConverter()));
+            }
+            saveModel.setCzr(yhInfo.getXm());
+            Long id = service.saveOrUpdate(saveModel, mxSaveModels, (ArrayList<Map>) model.get("fj"));
+            return new Result(true, id);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return new Result(false, "账户未登录，请重新登录");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "上传属性类型错误，请检查");
+        }
+    }
+
+    /**
+     * 待办列表
+     *
+     * @param pages
+     * @param userInfo
+     * @return
+     */
+    @RequestMapping(value = "todo/list", method = RequestMethod.POST)
+    public Pages todoList(Pages pages, @UserInfo YhglYwYhyy userInfo) {
+        return service.todoList(userInfo.getGuid(), pages);
+    }
+
+}

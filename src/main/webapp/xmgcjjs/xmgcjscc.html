@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>项目工程结算抽查</title>
+    <meta charset="UTF-8">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <script src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .header-area {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .content {
+            padding: 0 20px;
+        }
+
+        .top-area {
+            height: 40%;
+
+        }
+
+        .bottom-area {
+            height: 50%;
+        }
+
+        .little-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .left-area {
+            width: 50%;
+            height: 100%;
+            float: left;
+        }
+
+        .right-area {
+            position: relative;
+            width: 50%;
+            height: 100%;
+            float: left;
+        }
+
+        .right-area, .left-area {
+            padding: 6px;
+        }
+
+        .right-bottom-area {
+            position: absolute;
+            bottom: -20px;
+            right: 0;
+            margin-top: 30px;
+        }
+
+        .right-bottom-area input {
+            margin-right: 10px;
+        }
+
+        .split-char {
+            margin-left: calc((10% - 15px) / 2);
+        }
+
+        .clear {
+            clear: both;
+            height: 0;
+            line-height: 0;
+            font-size: 0
+        }
+    </style>
+</head>
+<body>
+<div class="header-area"><h3>项目工程结算抽查</h3></div>
+<div class="content">
+    <div class="top-area">
+        <div class="left-area">
+            <div id="gcfw-form"></div>
+        </div>
+        <div class="right-area">
+            <div class="right-top-area">
+                <div id="zjjg-form"></div>
+            </div>
+            <div class="right-bottom-area">
+                <input id="btn-check" value="抽查" class="bootstrap-table-query" type="button"/>
+                <input id="btn-save" value="保存" class="bootstrap-table-save" type="button"/>
+                <input id="btn-print" value="打印" class="bootstrap-table-download" type="button"/>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="bottom-area">
+        <div class="little-title">抽查工程结果清单：</div>
+        <div id="result-table">
+        </div>
+    </div>
+</div>
+</body>
+<script src="../js/common.js"></script>
+
+<script>
+    var api = $.extend({}, API, {
+        xxFormatter: function (list) {
+            var newList = [];
+            $.each(list, function (index, item) {
+                newList.push({
+                    id: item.BM,
+                    text: item.MC
+                })
+            });
+            return newList;
+        },
+        getXmlx: function (callback) {
+            return new Promise(function (resolve, reject) {
+                API.doGet("../common/xx.do", {lx: 'xmlx'}, function (list) {
+                    callback && callback(api.xxFormatter(list));
+                    resolve(list);
+                });
+            });
+        },
+        getJgfl: function (callback) {
+            return new Promise(function (resolve, reject) {
+                API.doGet("../common/xx.do", {lx: 'jgfl'}, function (list) {
+                    callback && callback(api.xxFormatter(list));
+                    resolve(api.xxFormatter(list));
+                });
+            });
+        },
+        check: function (data, callback) {
+            return new Promise(function (resolve, reject) {
+                API.doPost("../xmgcjscc/check.do", JSON.stringify(data), function (list) {
+                    callback && callback(list);
+                    resolve(list);
+                }, {contentType: "application/json"});
+            });
+        },
+        save: function (data, callback) {
+            return new Promise(function (resolve, reject) {
+                API.doPost("../xmgcjscc/save.do", JSON.stringify(data), function (result) {
+                    callback && callback(result);
+                    resolve(result);
+                }, {contentType: "application/json"});
+            });
+        }
+    });
+    var Dom = {};
+
+    function initPageDom() {
+        $(".content").height($("body").height() - $(".header-area").height());
+        // 工程范围
+        $("#gcfw-form").dform({
+            formtitle: "工程范围", //表单标题
+            rownum: 1,   //每行控件数目
+            labelwidth: "120px",
+            inputs: [
+                {title: '报备起始日期', name: 'BBQSRQ', type: 'dateBox'},
+                {title: '报备截止日期', name: 'BBJZRQ', type: 'dateBox'},
+                {
+                    title: '项目类型',
+                    name: 'XMLX',
+                    type: 'comboBox',
+                    multiple: true
+                },
+                {
+                    title: '合同/协议金额范围', name: 'JEFW', type: 'html',
+                    html: '<span class="customInput">' +
+                        '<input type="decimal" name="START_JE"><span class="split-char">---</span><input type="decimal" name="END_JE">' +
+                        '</span>'
+                },
+                {title: '累计变更金额超过', name: 'LJBGJE', type: 'decimal'},
+                {
+                    title: '是否超概算',
+                    name: 'SFCGS',
+                    type: 'comboBox',
+                    localdata: [{id: 1, text: "是"}, {id: 0, text: "否"}],
+                    multiple: true
+                }
+            ]
+        });
+        // 中介机构
+        $("#zjjg-form").dform({
+            formtitle: "中介机构", //表单标题
+            rownum: 1,   //每行控件数目
+            labelwidth: "60px",
+            inputs: [
+                {title: '机构分类', name: 'JGFL', type: 'comboBox', multiple: true},
+                {title: '机构资质', name: 'JGZZ', type: 'decimal'}
+            ]
+        });
+        // 抽查工程结果清单
+        $("#result-table").dtable({
+            columns: [
+                {
+                    field: 'INDEX', title: '序号', width: 100, align: 'center', formatter: function (value, row, index) {
+                        return index + 1;
+                    }
+                },
+                {field: 'XMBH', title: '项目编号', align: 'center', width: 150},
+                {field: 'XMMC', title: '项目名称', align: 'center', width: 150},
+                {field: 'HTMC', title: '工程名称', align: 'center', width: 150},
+                {field: 'CZSJ', title: '报备日期', align: 'center', width: 150},
+                {field: 'HTJE', title: '金额(万元)', align: 'center', width: 150, formatter: numberShowFormatter},
+                {field: 'JGMC', title: '中介机构', align: 'center', width: 150}
+            ]
+        });
+        $(".customInput input").each(function () {
+            var $inp = $(this),
+                dtype = $inp.attr("type"),
+                options = $inp.data();
+            $inp[dtype](options);
+            // $inp.css("float","left");
+        });
+        $(".customInput .ztreeBox_inp").each(function (index) {
+            $(this).css("width", "45%");
+            if (index === 1) {
+                $(this).css("float", "right");
+                // $(this).find("input").css("float", "right");
+            }
+        });
+
+        Dom.gcfw = $("#gcfw-form");
+        Dom.zjjg = $("#zjjg-form");
+        Dom.ccggjg = $("#result-table");
+        if ($.IEVersion() >= 10) {
+            $("input[type=decimal]").attr("type", "number");
+        }
+    }
+
+    function initPageData() {
+        // 初始化项目类型
+        api.getXmlx(function (list) {
+            Dom.gcfw.dform("executeByName", "XMLX", "reload", list);
+        });
+        // 初始化机构分类
+        api.getJgfl(function (list) {
+            Dom.zjjg.dform("executeByName", "JGFL", "reload", list);
+        })
+    }
+
+    function checkBtnClick() {
+        var gcfw = Dom.gcfw.dform("getData");
+        var zjjg = Dom.zjjg.dform("getData");
+        api.check({zjjg: zjjg, gcfw: gcfw}, function (list) {
+            Dom.ccggjg.dtable("load", list);
+        });
+    }
+
+    function saveBtnClick() {
+        var datas = Dom.ccggjg.dtable("getData");
+        if (datas.length === 0) {
+            $.dalert({text: "没有数据保存", icon: 7});
+            return;
+        }
+
+        var postData = [];
+        $.each(datas, function (index, data) {
+            postData.push({
+                id: data.BAID,
+                jgbm: data.JGBM
+            });
+        });
+        api.save(postData, function (result) {
+            $.dalert({text: "保存成功", icon: 1})
+        })
+    }
+
+    function printBtnClick() {
+
+    }
+
+    function initPageEvent() {
+        $(".right-bottom-area").on('click', function (e) {
+            if (e.target.id === 'btn-check') {
+                checkBtnClick();
+            } else if (e.target.id === 'btn-save') {
+                saveBtnClick();
+            } else if (e.target.id === 'btn-print') {
+                printBtnClick();
+            }
+        });
+    }
+
+    $(function () {
+        // 初始化DOM
+        initPageDom();
+        // 初始化页面数据
+        initPageData();
+        // 初始化页面事件
+        initPageEvent();
+    });
+</script>
+</html>

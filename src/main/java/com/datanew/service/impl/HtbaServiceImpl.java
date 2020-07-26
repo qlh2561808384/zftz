@@ -1,0 +1,589 @@
+package com.datanew.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.datanew.dao.BaseDao;
+import com.datanew.dto.Result;
+import com.datanew.model.Htba;
+import com.datanew.model.Htbamx;
+import com.datanew.model.Htyjzfmx;
+import com.datanew.model.YhglYwYhyy;
+import com.datanew.model.ZftzFile;
+import com.datanew.service.HtbaService;
+import com.datanew.service.xmgcjjs.FlowService;
+import com.datanew.service.xmgcjjs.impl.FlowServiceImpl;
+import com.datanew.util.StaticData;
+import com.datanew.util.StringUtil;
+
+@Service("htbaService")
+public class HtbaServiceImpl implements HtbaService {
+	private String SX_CODE = "5";
+	@Autowired
+	private BaseDao baseDao;
+
+	@Autowired
+    FlowService flowService;
+	
+	@Override
+	public Object getHtbaData(String id_zftz_xm, String lchj,HttpSession session) {
+		YhglYwYhyy yhglYwYhyy = (YhglYwYhyy) session.getAttribute(StaticData.LOGINUSER);
+		String hql = " from Htba s where htxybj=0 and zt=1";
+		
+		String xmids = "";
+		String xmidSql = "select id from zftz_xm where " +
+				//"jsdw="+yhglYwYhyy.getSzdwid();
+				"jsdw in(select id from v_zftz_jsdw where id " +
+				"in(select entid from v_zftz_yhtoenter where guid="+yhglYwYhyy.getSzdwid()+"))";
+		List xmidList = baseDao.selectBySql(xmidSql);
+		if(xmidList.size()>0){
+			for(int i=0;i<xmidList.size();i++){
+				xmids+=xmidList.get(i)+",";
+			}
+			hql+=" and s.id_zftz_xm in("+xmids.substring(0, xmids.length()-1)+")";
+		}
+		
+		String lchjSql = "select dqhjbm from zftz_splc where sprfzid in(select " +
+				"qzid from yhgl_gg_ryqzfb where qzval="+yhglYwYhyy.getGuid()+") and sxbm=5";
+		List lchjbm = baseDao.selectBySql(lchjSql);
+		String dqlcbm = "";
+		if(lchjbm.size()>0){
+			dqlcbm = lchjbm.get(0).toString();
+			/*if(dqlcbm.equals("1")){
+				hql+=" and lchj="+dqlcbm;
+			}else if(dqlcbm.equals("2")){
+				hql+=" and lchj="+dqlcbm;
+			}*/
+			hql+=" and s.lchj="+dqlcbm;
+		}
+		
+		String sql = "select id from zftz_xm where xmmc like '%"+id_zftz_xm+"%'";
+		List l = baseDao.selectBySql(sql);
+		String ids = "";
+		if(id_zftz_xm!=""){
+			if(l.size()>0){
+				for(int i=0;i<l.size();i++){
+					//String xmid = l.get(i).toString();
+					if(l.get(i).toString()!=""){
+						//hql += " and s.id_zftz_xm='"+xmid+"'";
+						ids+=l.get(i).toString()+",";
+					}
+				}
+				hql+=" and s.id_zftz_xm in ("+ids.substring(0, ids.length()-1)+")";
+			}else{
+				hql += " and s.id_zftz_xm=-1";
+			}
+		}
+		if(lchj!=""&&lchj!=null){
+			if(lchj.equals("1")){
+				hql += " and s.lchj=-1";
+			}else{
+				hql += " and s.lchj!=-1";
+			}
+		}
+		hql+=" order by s.czsj desc";
+		List<Htba> htbaList = baseDao.selectByHql(hql);
+		if(htbaList.size()>0){
+			for(int i=0;i<htbaList.size();i++){
+				htbaList.get(i).setHtje(htbaList.get(i).getHtje()/10000);
+				htbaList.get(i).setDybdj(htbaList.get(i).getDybdj()/10000);
+			}
+		}
+		return htbaList;
+	}
+
+	@Override
+	public Object selectHtlx() {
+		//String hql = " from Xxb where lx='htlx'";
+		String sql = "select * from zftz_xxb where lx='htlx'";
+		return baseDao.selectMapsBySQL(sql);
+	}
+	
+	@Override
+	public Object selectJsfs() {
+		//String hql = " from Xxb where lx='htlx'";
+		String sql = "select * from zftz_xxb where lx='jsfs'";
+		return baseDao.selectMapsBySQL(sql);
+	}
+
+	@Override
+	public Object selectSgtbamc(String xmid) {
+		String hql = " from Sgtysba";
+		return  baseDao.selectByHql(hql);
+	}
+
+	@Override
+	public Object selHtbamxByHtbaid(String htbaid,String xmid) {
+		/*String hql = " from Htbamx where htbaid="+htbaid;
+		return baseDao.selectByHql(hql);*/
+		List<Map> bglxdList = new ArrayList<Map>();
+		String sql = "select z.id from  zftz_htbamx z where z.id_zftz_htba="+htbaid;
+		List list = baseDao.selectBySql(sql);
+		String bgidString = "select id from zftz_htba z where z.zt=1 and z.id_zftz_xm="+xmid;
+		List bgidList = baseDao.selectBySql(bgidString);
+		String bgids = "";
+		if(bgidList.size()>0){
+			for(int i=0;i<bgidList.size();i++){
+				bgids+=bgidList.get(i).toString()+",";
+			}
+		}
+		if(list.size()>0){
+			for(int i=0;i<list.size();i++){
+				String ysqje =  "";
+				Map<Object,Object> map = new HashMap<Object,Object>();
+				String htmxSql = " from Htbamx where id="+list.get(i).toString();
+				List<Htbamx> htbamxs = baseDao.selectByHql(htmxSql);
+				String gssSql = "select round(sum(v.gstzje)/10000,2) as gss from v_zftz_gcfy v," +
+						" (select mx.* from zftz_htbamx mx where mx.id_zftz_htba = "+htbaid+" and mx.gcfyid="+htbamxs.get(0).getGcfyid()+" and mx.tzefl="+htbamxs.get(0).getTzefl()+") a " +
+						"where v.id_zftz_xm = "+xmid+" and v.gcfyid = a.gcfyid and v.tzefl = a.tzefl";
+				List l = baseDao.selectBySql(gssSql);
+				String ysqSql = "select round(sum(bchtje)/10000,2) as ysqje from zftz_htbamx mx,zftz_htba h " +
+						"where h.id=mx.id_zftz_htba and h.zt=1 and mx.tzefl="+htbamxs.get(0).getTzefl()+" and mx.gcfyid="+htbamxs.get(0).getGcfyid()+" and mx.id_zftz_htba in("+bgids.substring(0, bgids.length()-1)+")";
+				if(baseDao.selectBySql(ysqSql).get(0)!=null){
+					ysqje = baseDao.selectBySql(ysqSql).get(0).toString();
+				}else{
+					ysqje = "0";
+				}
+				
+				map.put("id", htbamxs.get(0).getId());
+				System.out.println("111----"+htbamxs.get(0).getSgtbaid());
+				map.put("sgtbaid", htbamxs.get(0).getSgtbaid());
+				map.put("gcfyid", htbamxs.get(0).getGcfyid());
+				map.put("tzefl",htbamxs.get(0).getTzefl());
+				if(l.size()>0){
+					if(l.get(0)!=null){
+						BigDecimal b1 = new BigDecimal(l.get(0).toString());
+						BigDecimal b2 = new BigDecimal(ysqje);
+						map.put("gss", Double.valueOf(l.get(0).toString()));
+						map.put("ye", b1.subtract(b2).doubleValue());
+					}else{
+						map.put("gss", 0);
+						map.put("ye", 0-Double.valueOf(ysqje));
+					}
+				}
+				map.put("bz", htbamxs.get(0).getBz());
+				map.put("bchtje", Double.valueOf(htbamxs.get(0).getBchtje())/10000);
+				if(Double.valueOf(ysqje)!=0){
+					double d1 = Double.valueOf(htbamxs.get(0).getBchtje()/10000);
+					BigDecimal b1 = new BigDecimal(ysqje);
+					BigDecimal b2 = new BigDecimal(String.valueOf(d1));
+					map.put("ysqje",b1.doubleValue());
+				}else{
+					map.put("ysqje","0");
+				}
+				
+				bglxdList.add(map);
+			}
+		}
+		
+		
+		return bglxdList;
+	}
+
+	@Override
+	public Object selHtyjzfmxByHtbaid(String htbaid) {
+		String hql = " from Htyjzfmx where htbaid="+htbaid;
+		List<Htyjzfmx> htyjzfmxs = baseDao.selectByHql(hql);
+		if(htyjzfmxs.size()>0){
+			for(int i=0;i<htyjzfmxs.size();i++){
+				htyjzfmxs.get(i).setYjzfje(htyjzfmxs.get(i).getYjzfje()/10000);
+			}
+		}
+		return htyjzfmxs;
+	}
+
+	@Override
+	public Result saveHtba(String content1,int htxybj,HttpSession session) {
+		Result result = new Result();
+		// TODO Auto-generated method stub
+		YhglYwYhyy yhglYwYhyy = (YhglYwYhyy) session.getAttribute(StaticData.LOGINUSER);
+		List<Htba> htbalist = JSONArray.parseArray(content1,Htba.class);
+		Htba htba = htbalist.get(0);
+		htba.setCzr(yhglYwYhyy.getGuid().toString());
+		htba.setCzsj(new Date());
+		htba.setHtxybj(htxybj);
+		htba.setDybdj(htba.getDybdj()*10000);
+		htba.setHtje(htba.getHtje()*10000);
+		htba.setLchj(-1);
+		htba.setZt(1);
+		baseDao.saveOrUpdate(htba);
+		if(htbalist.get(0).getId()>0){
+			String delSql = "delete from zftz_htbamx where ID_ZFTZ_HTBA="+htbalist.get(0).getId();
+			baseDao.executeBySql(delSql);
+			/*String delSql2 = "delete from zftz_htyjzfmx where ID_ZFTZ_HTBA="+htbalist.get(0).getId();
+			baseDao.executeBySql(delSql2);*/
+		}
+		//合同备案明细
+		List<Htbamx> htbamxlist = htbalist.get(0).getHtbamx();
+		if(!htbamxlist.isEmpty()){
+			for (int i = 0; i < htbamxlist.size(); i++) {
+				htbamxlist.get(i).setHtbaid(htbalist.get(0).getId());
+				htbamxlist.get(i).setBchtje(htbamxlist.get(i).getBchtje()*10000);
+                baseDao.save(htbamxlist.get(i));
+            }
+		}
+		//合同预计支付明细
+		List<Htyjzfmx> htyjzfmxlist = htbalist.get(0).getHtyjzfmx();
+		if(!htyjzfmxlist.isEmpty()){
+			for (int i = 0; i < htyjzfmxlist.size(); i++) {
+				htyjzfmxlist.get(i).setHtbaid(htbalist.get(0).getId());
+				htyjzfmxlist.get(i).setYjzfje(htyjzfmxlist.get(i).getYjzfje()*10000);
+                baseDao.saveOrUpdate(htyjzfmxlist.get(i));
+            }
+		}
+		//附件信息
+		List<ZftzFile> zfFiles = htbalist.get(0).getZftzfiles();
+		if(!zfFiles.isEmpty()){
+			for(int i=0;i<zfFiles.size();i++){
+				String sql = "update zftz_file set filedl=5,filexl="+zfFiles.get(i).getFilexl()+"," +
+						"filebsid="+htba.getId()+" where guid="+zfFiles.get(i).getGuid();
+				baseDao.executeBySql(sql);
+			}
+		}
+		result.setContent(htba.getId());
+		result.setSuccess(true);
+		return result;
+	}
+
+	@Override
+	public Result deleteHtba(String ids) {
+		Result result = new Result();
+		/*String htba_sql = "delete from ZFTZ_HTBA where id in ("+ids+")";
+		String htbamx_sql = "delete from zftz_htbamx where ID_ZFTZ_HTBA in ("+ids+")";
+		String htyjzfmx_sql = "delete from zftz_htyjzfmx where ID_ZFTZ_HTBA in ("+ids+")";
+		baseDao.executeBySql(htba_sql);
+		baseDao.executeBySql(htbamx_sql);
+		baseDao.executeBySql(htyjzfmx_sql);*/
+		String sql = "update zftz_htba set zt=0 where id in ("+ids+")";
+		baseDao.executeBySql(sql);
+		result.setSuccess(true);
+		return result;
+	}
+
+	@Override
+	public Object getXybaData(String id_zftz_xm, String lchj,HttpSession session) {
+		YhglYwYhyy yhglYwYhyy = (YhglYwYhyy) session.getAttribute(StaticData.LOGINUSER);
+		String hql = " from Htba s where htxybj=1 and zt!=0";
+		
+		String xmids = "";
+		String xmidSql = "select id from zftz_xm where " +
+				//"jsdw="+yhglYwYhyy.getSzdwid();
+				"jsdw in(select id from v_zftz_jsdw where id " +
+				"in(select entid from v_zftz_yhtoenter where guid="+yhglYwYhyy.getSzdwid()+"))";
+		List xmidList = baseDao.selectBySql(xmidSql);
+		if(xmidList.size()>0){
+			for(int i=0;i<xmidList.size();i++){
+				xmids+=xmidList.get(i)+",";
+			}
+			hql+=" and s.id_zftz_xm in("+xmids.substring(0, xmids.length()-1)+")";
+		}
+		
+		String lchjSql = "select dqhjbm from zftz_splc where sprfzid in(select " +
+				"qzid from yhgl_gg_ryqzfb where qzval="+yhglYwYhyy.getGuid()+") and sxbm=6";
+		List lchjbm = baseDao.selectBySql(lchjSql);
+		String dqlcbm = "";
+		if(lchjbm.size()>0){
+			dqlcbm = lchjbm.get(0).toString();
+			/*if(dqlcbm.equals("1")){
+				hql+=" and lchj="+dqlcbm;
+			}else if(dqlcbm.equals("2")){
+				hql+=" and lchj="+dqlcbm;
+			}*/
+			hql+=" and lchj="+dqlcbm;
+		}
+		
+		String sql = "select id from zftz_xm where xmmc like '%"+id_zftz_xm+"%'";
+		List l = baseDao.selectBySql(sql);
+		System.out.println(id_zftz_xm);
+		String ids = "";
+		if(id_zftz_xm!=""){
+			if(l.size()>0){
+				for(int i=0;i<l.size();i++){
+					//String xmid = l.get(i).toString();
+					if(l.get(i).toString()!=""){
+						//hql += " and s.id_zftz_xm='"+xmid+"'";
+						ids+=l.get(i).toString()+",";
+					}
+				}
+				hql+=" and s.id_zftz_xm in ("+ids.substring(0, ids.length()-1)+")";
+			}else{
+				hql += " and s.id_zftz_xm=-1";
+			}
+		}
+		if(lchj!=""&&lchj!=null){
+			if(lchj.equals("1")){
+				hql += " and s.lchj=-1";
+			}else{
+				hql += " and s.lchj!=-1";
+			}
+		}
+		hql+=" order by s.czsj desc";
+		List<Htba> htbaList = baseDao.selectByHql(hql);
+		if(htbaList.size()>0){
+			for(int i=0;i<htbaList.size();i++){
+				htbaList.get(i).setHtje(htbaList.get(i).getHtje()/10000);
+				htbaList.get(i).setDybdj(htbaList.get(i).getDybdj()/10000);
+			}
+		}
+		return htbaList;
+		//return baseDao.selectByHql(hql);
+	}
+
+	@Override
+	public Object selectHtmc(HttpSession session) {
+		YhglYwYhyy yhglYwYhyy = (YhglYwYhyy) session.getAttribute(StaticData.LOGINUSER);
+		String sql = "Select id,htmc,gcmc from zftz_htba where zt=1";
+		String xmids = "";
+		String xmidSql = "select id from zftz_xm where jsdw="+yhglYwYhyy.getSzdwid();
+		List xmidList = baseDao.selectBySql(xmidSql);
+		if(xmidList.size()>0){
+			for(int i=0;i<xmidList.size();i++){
+				xmids+=xmidList.get(i)+",";
+			}
+			sql+=" and id_zftz_xm in("+xmids.substring(0, xmids.length()-1)+")";
+		}
+		
+		return baseDao.selectMapsBySQL(sql);
+	}
+
+	@Override
+	public Object selectHtmcByXmid(String xmid) {
+		String sql = "select id,htmc from zftz_htba where zt=1 and lchj!=-1 and id_ZFTZ_XM="+xmid;
+		return baseDao.selectMapsBySQL(sql);
+	}
+
+	@Override
+	public Object selectHtbagcmc(String htbaid) {
+		String hql = " from Htba where id="+htbaid;
+		return baseDao.selectByHql(hql);
+	}
+
+	@Override
+	public Object selectDygcfy(String sgtbaid) {
+		String sql = "select distinct(gcfyid) as gcfyid from zftz_sgtbamx mx where mx.id_zftz_sgtba=4";
+		List l = baseDao.selectBySql(sql);
+		String gcfyids = "";
+		if(l.size()>0){
+			for(int i=0;i<l.size();i++){
+				gcfyids+=l.get(i).toString()+",";
+			}
+		}
+		String gcfysql = "select * from zftz_xxb where lx='fylx' and bm in("+gcfyids.substring(0, gcfyids.length()-1)+")";
+		
+		return StringUtil.lowList(baseDao.selectMapsBySQL(gcfysql));
+	}
+
+	@Override
+	public Object selectTzeflBySgtid(String sgtbaid) {
+		String sql = "select distinct(tzefl) as tzefl from zftz_sgtbamx mx where mx.id_zftz_sgtba="+sgtbaid;
+		List l = baseDao.selectBySql(sql);
+		String tzefls = "";
+		if(l.size()>0){
+			for(int i=0;i<l.size();i++){
+				tzefls+=l.get(i).toString()+",";
+			}
+		}
+		String tzeflsql = "select * from zftz_xxb where lx='tzefl' and bm in("+tzefls.substring(0, tzefls.length()-1)+")";
+		
+		return baseDao.selectMapsBySQL(tzeflsql);
+	}
+
+	@Override
+	public Object selectSgtbamcById(String xmid) {
+		String hql = " from Sgtysba where zt=1 and id_zftz_xm="+xmid;
+		return  baseDao.selectByHql(hql);
+	}
+
+	@Override
+	public Object selectGcfymcBySgtid(String sgtbaid) {
+		/*String sql = "select s.id_zftz_xm as xmid from zftz_sgtba s where s.id=4";
+		List l = baseDao.selectBySql(sql);
+		String gcfyids = "";
+		if(l.size()>0){
+			for(int i=0;i<l.size();i++){
+				gcfyids+=l.get(i).toString()+",";
+			}
+		}
+		String gcfysql = "select * from zftz_xxb where lx='fylx' and bm in("+gcfyids.substring(0, gcfyids.length()-1)+")";*/
+
+		String gcfysql = "select distinct t.gcfyid bm,t.gcfymc mc from " +
+				"v_zftz_gcfy t where t.id_zftz_xm="+sgtbaid;
+		return baseDao.selectMapsBySQL(gcfysql);
+	}
+
+	@Override
+	public Object submitSgtba(String idStr, String isHt,HttpSession session) {
+		Result result = new Result();
+		YhglYwYhyy yhglYwYhyy = (YhglYwYhyy) session.getAttribute(StaticData.LOGINUSER);
+		long yhId = yhglYwYhyy.getGuid();
+		List<String> idList = Arrays.asList(idStr.subSequence(1, idStr.length()-1).toString().split(","));
+		List<Integer> ids = new ArrayList<Integer>();
+		for(int i=0;i<idList.size();i++){
+			System.out.println("282----"+idList.get(i));
+			ids.add(Integer.valueOf((idList.get(i).toString())));
+		}
+		//JSONArray jsonArray = JSONArray.parseArray(idStr);
+		List<String> lchjs = new ArrayList<String>();
+        for (Integer id1 : ids) {
+        	String dqhjSql = "select lchj from zftz_htba where id="+id1;
+        	List dqlcList = baseDao.selectBySql(dqhjSql);
+        	if(dqlcList.size()>0){
+        		lchjs.add(dqlcList.get(0).toString());
+        	}else{
+        		lchjs.add("-1");
+        	}
+        }
+        Map<Object,Object> map = new HashMap<Object,Object>();
+        map.put(1, ids.get(0));
+        List<String> list = new ArrayList<String>();
+        list.add("退回流程");
+        try {
+			this.nextFlow(yhId, ids, lchjs, list,isHt);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		result.setSuccess(true);
+		return result;
+	}
+	public void nextFlow(Long yhId, List<Integer> ids, final List<String> lchjs, final List<String> comment,String isHt) throws Exception {
+        if(isHt!="1"){
+        	SX_CODE = "6";
+        }
+		flowService.submit(yhId, ids, SX_CODE,
+                FlowServiceImpl.OperateCode.NEXT, comment, getSubmitEvent(lchjs));
+    }
+	private FlowService.SubmitEvent getSubmitEvent(final List<String> lchjs) {
+        return new FlowService.SubmitEvent() {
+            public String onPrepare(Integer ywId, int index) {
+                // 返回当前环节编码
+                String realLchj = getDqLchj(ywId);
+                // 校验流程编码，判断是否已经被处理
+                if (!realLchj.equals(lchjs.get(index))) {
+                    throw new IllegalArgumentException("流程已被处理！请刷新页面");
+                }
+                return realLchj;
+            }
+
+            public Long onSubmit(Integer id, String nextFlowCode,String comment) {
+                // 更新环节编码并且返回项目ID
+                return updateSubmitModel(id, nextFlowCode, comment);
+            }
+        };
+    }
+	
+	private String getDqLchj(Integer ywId) {
+        String sql = "select LCHJ from ZFTZ_HTBA where ID=" + ywId;
+        //List<Map> list = baseDao.selectMapsBySQL(sql);
+        List l = baseDao.selectBySql(sql);
+        return l.get(0).toString();
+    }
+	
+	private Long updateSubmitModel(Integer id, String lcbm, String comment) {
+        String updateSql = "update ZFTZ_HTBA set LCHJ='" + lcbm + "' where ID=" + id;
+        baseDao.executeBySql(updateSql);
+        return Long.parseLong(String.valueOf(id));
+    }
+
+	@Override
+	public Result returnback(String id, String isHt,HttpSession session) {
+		Result result = new Result();
+		YhglYwYhyy yhglYwYhyy = (YhglYwYhyy) session.getAttribute(StaticData.LOGINUSER);
+		long yhId = yhglYwYhyy.getGuid();
+		List<String> idList = Arrays.asList(id.subSequence(1, id.length()-1).toString().split(","));
+		List<Integer> ids = new ArrayList<Integer>();
+		for(int i=0;i<idList.size();i++){
+			System.out.println("282----"+idList.get(i));
+			ids.add(Integer.valueOf((idList.get(i).toString())));
+		}
+		
+		List<String> lchjs = new ArrayList<String>();
+        for (Integer id1 : ids) {
+        	String dqhjSql = "select lchj from zftz_htba where id="+id1;
+        	List dqlcList = baseDao.selectBySql(dqhjSql);
+        	if(dqlcList.size()>0){
+        		lchjs.add(dqlcList.get(0).toString());
+        	}
+        }
+        List<String> list = new ArrayList<String>();
+        list.add("退回流程");
+		try {
+			this.backFlow(yhId, ids, lchjs, list,isHt);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		result.setSuccess(true);
+		return result;
+	}
+	public void backFlow(Long yhId, List<Integer> ids, List<String> lchjs, List<String> comment,String isHt) throws Exception {
+		if(isHt!="1"){
+        	SX_CODE = "6";
+        }
+		flowService.submit(yhId, ids, SX_CODE,
+                FlowServiceImpl.OperateCode.BACK, comment, getSubmitEvent(lchjs));
+    }
+
+	@Override
+	public Object selHtbaFilesById(String htid) {
+		String sql = "select guid,filebstype,filebsid,filename,filesize from zftz_file where filebstype=5 and filebsid="+htid;
+		return StringUtil.lowList(baseDao.selectMapsBySQL(sql));
+	}
+
+	@Override
+	public Object selGsxxByFyidAndTzefl(String xmid, String gcfyid,
+			String tzefl, String isEdit, String sgtbaid) {
+		Map<Object,Object> map = new HashMap<Object,Object>();
+		String sql = "select round(sum(gstzje)/10000,2) sumje from v_zftz_gcfy where " +
+				//"id_zftz_xm="+xmid+
+				" gcfyid="+gcfyid+
+				" and TZEFL="+tzefl;
+		List list = baseDao.selectBySql(sql);
+		if(list.get(0)!=null){
+			map.put("gss",Double.valueOf(list.get(0).toString()));
+		}else{
+			map.put("gss",0);
+		}
+
+		String ysqsql = "";
+		
+		ysqsql = "select round(sum(s.bchtje)/10000,2) as ysqje from zftz_htbamx s,zftz_htba z " +
+				"where s.id_ZFTZ_HTBA=z.id and z.zt=1 and z.ID_ZFTZ_XM="+xmid+" and s.tzefl="+tzefl+" and s.gcfyid="+gcfyid;
+		List ysqjelist = baseDao.selectBySql(ysqsql);
+		if(ysqjelist.get(0)!=null){
+			map.put("ysqje",Double.valueOf(ysqjelist.get(0).toString()));
+		}else{
+			map.put("ysqje","0");
+		}
+		return map;
+	}
+
+	@Override
+	public Object selectSgtbaIds(String xmid) {
+		String sql = //"select 0 id,'全部' name,-1 pid from dual union " +
+				"select s.id as id,s.bcbagcmc as name from zftz_sgtba s ";
+		if(xmid!=""&&xmid!=null){
+			sql+=" where s.id_zftz_xm="+xmid;
+		}
+		return StringUtil.lowList(baseDao.selectMapsBySQL(sql));
+	}
+
+	@Override
+	public Object getGcmcAndFylx(String ids) {
+		String sql = "select distinct(to_char(gcfyid)||to_char(tzefl)),gcfyid,tzefl " +
+				"from zftz_sgtbamx mx where mx.id_zftz_sgtba in("+ids+")";
+		return StringUtil.lowList(baseDao.selectMapsBySQL(sql));
+	}
+}

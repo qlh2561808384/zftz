@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>comboBox</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+</head>
+<script>
+    $(function(){
+        $("#select").comboBox({
+            selected:1,
+            searchOption:true,
+            width:200,
+            required:true,
+            multiple:false,
+            localdata:localdata,
+            panelHeight:200,
+            onChange:function(newValue,oldValue,optionObj){
+                //console.log("newValue:"+newValue+" oldValue:"+oldValue)
+                //console.log(optionObj)
+            },
+            onShowPanel:function($p){//当显示下拉面板的时候触发。
+            }
+        });
+
+    });
+    window.onload = function () {
+        var loadTime = window.performance.timing.domComplete  -window.performance.timing.domInteractive ;
+        //console.log('Page load time is '+ loadTime);
+    }
+
+
+    var localdata = [
+        {id:1,text:'79962450@qq.com'}];
+    var localdefdata = {id:1,text:'79962450@qq.com'};
+    var time = 1000;   //数据条数
+
+
+    for(var i=1;i<time;i++){
+        localdata.push(localdefdata);
+    }
+
+</script>
+<body>
+    <section class="parser">
+        <h4>案例</h4>
+    </section>
+    <div class="outbackframe">
+        <input id="select" name="test"/>
+    </div>
+    <section class="parser spacetop">
+        <table class="table-border">
+            <thead>
+            <tr><th>浏览器</th><th>数据条数</th><th>时间(ms)</th></tr>
+            </thead>
+            <tbody>
+            <tr><td rowspan="3">chrome</td><td>1000</td><td>237</td></tr>
+            <tr><td>10000</td><td>1564</td></tr>
+            <tr><td>100000</td><td>108619</td></tr>
+            <tr><td rowspan="3">ie8</td><td>1000</td><td>740</td></tr>
+            <tr><td>10000</td><td>18571</td></tr>
+            <tr><td>100000</td><td>页面未响应</td></tr>
+            <tr><td colspan="3">数据仅供参考，以实际运行为准</td></tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+
+</html>
+<style>
+    .spacetop{margin-top: 10px;}
+    .ztreeBox_down{margin:10px 0;}
+    .btn-primary { background-color: #428BCA;border:1px solid #2E6DA4;}
+    .btn-primary:hover{background-color: #3276b1;border:1px solid #125590;}
+</style>

@@ -1,0 +1,104 @@
+package com.datanew.action;
+
+import com.datanew.dto.Page;
+import com.datanew.dto.Pages;
+import com.datanew.dto.Result;
+import com.datanew.model.ZftzXm;
+import com.datanew.model.ZftzXmqqch;
+import com.datanew.model.ZftzXmzjlydj;
+import com.datanew.service.XmqqshService;
+import com.datanew.service.XmzjlydjService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
+
+/**
+ * Created by admin on 2019/5/29.
+ */
+@Controller
+@RequestMapping("/xmzjlydj")
+public class XmzjlydjController {
+    @Autowired
+    private XmzjlydjService xmzjlydjService;
+
+
+    //保存资金来源
+    @RequestMapping("/saveZjly")
+    @ResponseBody
+    public Result saveZjly(String id, ZftzXm zx, ZftzXmzjlydj zjly,String fileId, HttpSession session){
+        return xmzjlydjService.saveZjly(id,zx,zjly,fileId,session);
+    }
+
+    @RequestMapping("/getZjly")
+    @ResponseBody
+    public Pages getZjly(Pages page, String id, HttpSession session){
+        return  xmzjlydjService.getZjly(page,id,session);
+    }
+
+
+    @RequestMapping("/selectXmmc")
+    @ResponseBody
+    public Object selectXmmc(HttpSession session){
+        return  xmzjlydjService.selectXmmc(session);
+    }
+
+    @ResponseBody
+    @RequestMapping("/getGsxxByXmid")
+    public Object getGsxxByXmid(String xmid){
+        return xmzjlydjService.getGsxxByXmid(xmid);
+    }
+
+    @RequestMapping("/delXmzjlydj")
+    @ResponseBody
+    public Result delXmzjlydj(String ids, HttpSession session){
+        return  xmzjlydjService.delXmzjlydj(ids,session);
+    }
+
+    //获得建设单位
+    @RequestMapping("/selectJsdw")
+    @ResponseBody
+    public List selectJsdw(HttpSession session) {
+        return xmzjlydjService.selectJsdw(session);
+    }
+    //批次建设单位
+    @RequestMapping("/getJSDWTree")
+    @ResponseBody
+    public List getJSDWTree(HttpSession session) {
+        return xmzjlydjService.getJSDWTree(session);
+    }
+    @RequestMapping("/getXmqqsh")
+    @ResponseBody
+    public List getXmqqsh(String id){
+        return  xmzjlydjService.getXmqqsh(id);
+    }
+
+    @RequestMapping("/xmqqchFileById")
+    @ResponseBody
+    public Object xmqqchFileById(String id){
+        return  xmzjlydjService.xmqqchFileById(id);
+    }
+
+    @RequestMapping("/getXmqqchfj")
+    @ResponseBody
+    public Object getXmqqchfj(String guid){
+        return  xmzjlydjService.getXmqqchfj(guid);
+    }
+
+    @RequestMapping("/getXmqqch")
+    @ResponseBody
+    public Object getXmqqch(String xmid){
+        return  xmzjlydjService.getXmqqch(xmid);
+    }
+    
+    @RequestMapping("/getXmqqshzjlyxm")
+    @ResponseBody
+    public List getXmqqshzjlyxm(String id){
+        return  xmzjlydjService.getXmqqshzjlyxm(id);
+    }
+    
+}

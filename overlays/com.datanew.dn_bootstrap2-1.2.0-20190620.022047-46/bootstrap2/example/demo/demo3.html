@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo3</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="../../js/jquery.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#form1").dform({
+                rownum: 2,
+                labelwidth: "130px",
+                inputs: [
+                    {
+                        title: "项目实施单位(盖章)",
+                        name: "",
+                        type: "textBox",
+                        colspan: 2
+                    }, {
+                        title: "项目名称",
+                        name: "",
+                        type: "textBox",
+                        colspan: 2
+                    }, {
+                        title: "项目负责人",
+                        name: "",
+                        type: "textBox"
+                    }, {
+                        title: "项目起止日期",
+                        name: "",
+                        type: "dateBox",
+                        range: true
+                    }, {
+                        title: "联系电话",
+                        name: "",
+                        type: "textBox"
+                    }, {
+                        title: "地址",
+                        name: "",
+                        type: "textBox"
+                    }, {
+                        title: "项目实施情况",
+                        name: "",
+                        type: "textBox",
+                        multiline: true,
+                        colspan: 2,
+                        height: 50,
+                        required: true
+                    }, {
+                        title: "计划安排资金(万元)",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "实际到位资金(万元)",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "其中：中央财政资金",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "其中：中央财政资金",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "&emsp;&emsp;&emsp;省财政资金",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "&emsp;&emsp;&emsp;省财政资金",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "&emsp;&emsp;&emsp;市县财政资金",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "&emsp;&emsp;&emsp;市县财政资金",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "&emsp;&emsp;&emsp;其它",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "&emsp;&emsp;&emsp;其它",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }, {
+                        title: "实际支出(万元)",
+                        name: "",
+                        type: "textBox",
+                        required: true
+                    }
+                ]
+            });
+
+            $("#table1").dtable({
+                height: 140,
+                data: [
+                    {zcnr:"消费消费消费消费消费消费消费", jhzcs:"232.23", sjzcs:"993.00"},
+                    {zcnr:"利息利息", jhzcs:"63.00", sjzcs:"100.56"},
+                    {zcnr:"&emsp;", jhzcs:"", sjzcs:""}
+                ],
+                columns: [
+                    {field:'zcnr', title:'支出内容(按经济科目详列)', width:200, align:'center', footerFormatter:"支出合计"},
+                    {field:'jhzcs', title:'计划支出数', width:100, align:'right', footerFormatter: function (value) {
+                            var total = 0;
+                            $.each(value, function (i) {
+                                total += parseFloat(value[i].jhzcs ? value[i].jhzcs : 0)
+                            });
+                            return total.toFixed(2);
+                        }},
+                    {field:'sjzcs', title:'实际支出数', width:100, align:'right', footerFormatter: function (value) {
+                            var total = 0;
+                            $.each(value, function (i) {
+                                total += parseFloat(value[i].sjzcs ? value[i].sjzcs : 0)
+                            });
+                            return total.toFixed(2);
+                        }}
+                ],
+                showRefresh: false,
+                showFooter: true,
+                pagination: false
+            });
+
+            //初始化table2
+            var tableInputs = $("#table2").find("[data-type]");
+            var evalLevel = [{id:1, text:'好'},{id:2, text:'较好'},{id:3, text:'一般'},{id:4, text:'差'}];
+            $.each(tableInputs, function () {
+                var $input = $(this),
+                    type = $input.data("type"),
+                    options = $input.data();
+                if(type === "textBox"){
+                    var limit = options.limit;
+                    delete options.limit;
+                    if(limit == 0){
+                        options.required = true;
+                    }else{
+                        options.validate = function(value){
+                            if(value.length < limit){
+                                return {result:false, msg:'至少'+ limit +'字'}
+                            }
+                        }
+                    }
+                }
+                if(options.localdata) options.localdata = eval('('+options.localdata+')');
+                $input[type](options);
+            });
+            $("#table2_table").dtable({
+                height: 120,
+                columns: [
+                    {field:'xm', title:'姓名', width:80, align:'center'},
+                    {field:'zw', title:'职务/职称', width:150, align:'center'},
+                    {field:'dw', title:'单位', width:200, align:'center'}
+                ],
+                data: [
+                    {xm:"&emsp;", zw:"", dw:""},
+                    {xm:"&emsp;", zw:"", dw:""},
+                    {xm:"&emsp;", zw:"", dw:""}
+                ],
+                showRefresh: false,
+                pagination: false
+            })
+        });
+        function getTableData(table){
+            var tableInputs = table.find("[data-type]"),
+                tableData = {};
+            $.each(tableInputs, function () {
+                var $input = $(this),
+                    type = $input.data("type");
+                tableData[$input.data("name")] = $input[type]("getValue");
+            });
+            return tableData;
+        }
+        function getData(){
+            var tableData = getTableData($("#table2"));
+            $.dalert(JSON.stringify(tableData));
+        }
+    </script>
+</head>
+<body>
+    <div><b>&ensp;三门县财政支出项目绩效自评报告</b></div>
+    <form id="form1"></form>
+    <table id="table1"></table>
+    <br>
+    <div class="bootstrap-table">
+        <div class="fixed-table-container">
+            <div class="fixed-table-body">
+                <table id="table2" class="table table-bordered text-center">
+                    <thead>
+                    <tr>
+                        <th width="250" colspan="5" class="text-center">评价内容</th>
+                        <th width="100" class="text-center">2019年底绩效目标实现效果<br>（项目执行情况）</th>
+                        <th width="80" class="text-center">权重</th>
+                        <th width="80" class="text-center">自评得分</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td colspan="5">（1）项目内部控制（项目责任是否明确,有无设立相关经办人及风险点）</td>
+                        <td><input data-type="textBox" data-name="n1" data-limit="50" data-multiline="true" data-height="40" /></td>
+                        <td>10分</td>
+                        <td><input data-type="textBox" data-name="n2" data-limit="0" /></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4"><div style="white-space:normal;">（2）2019年度预算绩效目标设定情况</div></td>
+                        <td rowspan="2">产出目标</td>
+                        <td>数量</td>
+                        <td colspan="2"><input data-type="textBox" data-name="n3" data-limit="20" data-multiline="true" data-height="40" /></td>
+                        <td><input data-type="textBox" data-name="n4" data-limit="50" data-multiline="true" data-height="40" /></td>
+                        <td rowspan="2">30分</td>
+                        <td rowspan="2"><input data-type="textBox" data-name="n5" data-limit="0" /></td>
+                    </tr>
+                    <tr>
+                        <td>质量</td>
+                        <td colspan="2"><input data-type="textBox" data-name="n6" data-limit="20" data-multiline="true" data-height="40" /></td>
+                        <td><input data-type="textBox" data-name="n7" data-limit="50" data-multiline="true" data-height="40" /></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">效益目标</td>
+                        <td>数量</td>
+                        <td colspan="2"><input data-type="textBox" data-name="n8" data-limit="20" data-multiline="true" data-height="40" /></td>
+                        <td><input data-type="textBox" data-name="n9" data-limit="50" data-multiline="true" data-height="40" /></td>
+                        <td rowspan="2">30分</td>
+                        <td rowspan="2"><input data-type="textBox" data-name="n10" data-limit="0" /></td>
+                    </tr>
+                    <tr>
+                        <td>质量</td>
+                        <td colspan="2"><input data-type="textBox" data-name="n11" data-limit="20" data-multiline="true" data-height="40" /></td>
+                        <td><input data-type="textBox" data-name="n12" data-limit="50" data-multiline="true" data-height="40" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">（3）执行率</td>
+                        <td><input data-type="textBox" data-name="n13" data-limit="0" /></td>
+                        <td>30分</td>
+                        <td><input data-type="textBox" data-name="n14" data-limit="0" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">合计</td>
+                        <td colspan="2">100分</td>
+                        <td><input data-type="textBox" data-name="n15" data-limit="0" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">评价等级<br>[ 好（S≥95）、较好（95＞S≥85）、一般（85＞S≥60）、差（S＜60）]</td>
+                        <td><input data-type="comboBox" data-name="n16" data-localdata="evalLevel" data-parent="true" /></td>
+                    </tr>
+                    <tr>
+                        <td>存在的问题</td>
+                        <td colspan="7"><input data-type="textBox" data-name="n17" data-limit="50" data-multiline="true" data-height="40" /></td>
+                    </tr>
+                    <tr>
+                        <td>整改措施</td>
+                        <td colspan="7"><input data-type="textBox" data-name="n18" data-limit="50" data-multiline="true" data-height="40" /></td>
+                    </tr>
+                    <tr>
+                        <td>绩效评价人员</td>
+                        <td colspan="7"><table id="table2_table"></table></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix">
+        <div class="col-xs-4">填报人：</div>
+        <div class="col-xs-4">评价负责人：</div>
+        <div class="col-xs-4">联系电话：</div>
+    </div>
+    <br>
+    <div class="pull-right"><button class="btn bootstrap-table-review" type="button" onclick="getData()">获取table2数据</button></div>
+    <br><br>
+</body>
+</html>

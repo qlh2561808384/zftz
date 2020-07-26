@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>comboTree</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+</head>
+<script>
+    window.onload = function () {
+        var loadTime = window.performance.timing.domComplete  -window.performance.timing.domInteractive ;
+        //console.log('Page load time is '+ loadTime);
+    }
+
+    var zNodes =[
+        { id:1, pId:0, name:"节点搜索演示 1", open:true, ISLEAF:0},
+        { id:11, pId:1, name:"关键字可以是名字", test:123,ISLEAF:1},
+        { id:12, pId:1, name:"关键字可以是level", ISLEAF:1},
+        { id:13, pId:1, name:"关键字可以是id", ISLEAF:1},
+        { id:14, pId:1, name:"关键字可以是各种属性", ISLEAF:1},
+        { id:2, pId:0, name:"节点搜索演示 2", open:true, ISLEAF:0},
+        { id:21, pId:2, name:"可以只搜索一个节点", ISLEAF:1},
+        { id:22, pId:2, name:"可以搜索节点集合", ISLEAF:1},
+        { id:23, pId:2, name:"搜我吧", ISLEAF:1},
+        { id:3, pId:0, name:"节点搜索演示 3", open:true, ISLEAF:0},
+        { id:31, pId:3, name:"我的 id 是: 31", ISLEAF:0},
+        { id:32, pId:31, name:"我的 id 是: 32", ISLEAF:0},
+        { id:33, pId:32, name:"我的 id 是: 33", ISLEAF:1}
+    ];
+    var zNodes1 = [
+        {id:1, pId:0, name:"北京", ISLEAF:1},
+        {id:2, pId:0, name:"天津", ISLEAF:1},
+        {id:3, pId:0, name:"上海", ISLEAF:1},
+        {id:4, pId:0, name:"河北省", ISLEAF:0},
+        {id:41, pId:4, name:"石家庄", ISLEAF:0},
+        {id:411, pId:41, name:"dd", ISLEAF:1},
+        {id:42, pId:4, name:"保定", ISLEAF:1},
+        {id:43, pId:4, name:"邯郸", ISLEAF:1},
+        {id:44, pId:4, name:"承德", ISLEAF:1},
+        {id:5, pId:0, name:"广东省", ISLEAF:0},
+        {id:51, pId:5, name:"广州", ISLEAF:1},
+        {id:52, pId:5, name:"深圳", ISLEAF:1},
+        {id:53, pId:5, name:"东莞", ISLEAF:1},
+        {id:54, pId:5, name:"佛山", ISLEAF:1},
+        {id:6, pId:0, name:"福建省", ISLEAF:0},
+        {id:61, pId:6, name:"福州", ISLEAF:1},
+        {id:62, pId:6, name:"厦门", ISLEAF:1},
+        {id:63, pId:6, name:"泉州", ISLEAF:1},
+        {id:64, pId:6, name:"三明", ISLEAF:1}
+    ];
+
+
+    var localdata = [
+        { id:1, pId:0, name:"节点搜索演示 1", open:true, ISLEAF:0}];
+    var localdefdata = { id:1, pId:0, name:"节点搜索演示 1", open:true, ISLEAF:0};
+    var time = 1000;   //数据条数
+
+    for(var i=1;i<time;i++){
+        localdata.push(localdefdata);
+    }
+
+    $(function(){
+        $("#combotree").comboTree({
+            defaultValue:'1',
+            checkType:"radio",
+            ISLEAF: true,
+            width:200,
+            panelHeight:150,
+            multiple:false,
+            required:true,
+            validText:'测试',
+            localdata: localdata,
+            //url:'./json/treeData.json',
+            rootElement:false,
+            onlyLeaf:false,
+            onChange:function(newValue,oldValue,optionObj){
+            }
+        });
+
+    });
+
+</script>
+</head>
+<body>
+<section class="parser">
+    <h4>案例</h4>
+</section>
+<div class="outbackframe">
+    <input id="combotree"/>
+</div>
+<section class="parser spacetop">
+    <table class="table-border">
+        <thead>
+        <tr><th>浏览器</th><th>数据条数</th><th>时间(ms)</th></tr>
+        </thead>
+        <tbody>
+        <tr><td rowspan="3">chrome</td><td>1000</td><td>236</td></tr>
+        <tr><td>10000</td><td>1065</td></tr>
+        <tr><td>100000</td><td>8292</td></tr>
+        <tr><td rowspan="3">ie8</td><td>1000</td><td>1533</td></tr>
+        <tr><td>10000</td><td>8154</td></tr>
+        <tr><td>100000</td><td>37741</td></tr>
+        <tr><td colspan="3">数据仅供参考，以实际运行为准</td></tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>
+<style>
+    .spacetop{margin-top: 10px;}
+    .ztreeBox_down{margin:10px 0;}
+    .btn-primary { background-color: #428BCA;border:1px solid #2E6DA4;}
+    .btn-primary:hover{background-color: #3276b1;border:1px solid #125590;}
+</style>

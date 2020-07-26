@@ -1,0 +1,168 @@
+function openProj($el,callback,type){
+    $el.on("click", function(){
+        $.dopen({
+            title: "请选择项目",
+            area: ["50%", "70%"],
+            content: "<div id='proj_open_div'></div>",
+            btn: ["新增项目","确认", "取消"],
+            btn1: function(index){
+                openProj_add(callback,index);
+            },
+            btn2: function(index){
+                var nodes = $("#proj_open_div").tree("getCheckedNodes");
+                if(nodes.length!=1){
+                    $.dalert({text: "请先选择一条项目", icon: 2});
+                    return;
+                }
+                callback(nodes[0]);
+                layer.close(index);
+            }
+        });
+        if ("Xmgsbadj" == type) {
+            $("#proj_open_div").tree({
+                // openSearch: true,
+                onlyLeaf:true,
+                // rootElement:true,
+                url : 'pro/getXmgsmcTree.do',
+                checkType: 'radio'
+            })
+        }else if ("Xmgsyjzx" == type) {
+            $("#proj_open_div").tree({
+                // openSearch: true,
+                onlyLeaf:true,
+                // rootElement:true,
+                url : 'pro/getXmmcTree.do',
+                checkType: 'radio'
+            })
+        }else if ("Xmtzwh" == type) {
+            $("#proj_open_div").tree({
+                // openSearch: true,
+                onlyLeaf:true,
+                // rootElement:true,
+                url: 'pro/getXmtzwhTree.do',
+                checkType: 'radio'
+            });
+        }else if("Zjlydj" == type){
+        	$("#proj_open_div").tree({
+                openSearch: true,
+                onlyLeaf:true,
+                rootElement:false,
+                url: 'pro/getXmZjlymcTree.do',
+                checkType: 'radio'
+            });
+        }
+    })
+
+
+}
+
+function openProj_add(callback,pindex){
+    var dopenJson = [
+        {
+            "plug": [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "dtype": "dform",
+                                    "id": "openProj_add",
+                                    "classes": "tableForm",
+                                    "rownum": 1,
+                                    "labelwidth": "100px",
+                                    "labelAlign": "center",
+                                    "inputs": [
+                                        {title: "项目id", name: "id", type: "hidden"},
+                                        {title: "项目名称",required:true, name: "xmmc", type: "textBox"},
+                                        {title: "项目赋码",required:true, name: "xmfm", type: "textBox"},
+                                        {
+                                            title: '项目类型',//表单lable显示名
+                                            required:true,
+                                            type: 'dsearchtree',//表单类型：目前支持 select/text
+                                            placeholder: '请选择项目类型',
+                                            searchOption:true,
+                                            name:'xmlx',
+                                            checkType:'radio',
+                                            url : 'xmqqch/getXMLXTree.do'
+                                        },{
+                                            title: '建设单位',//表单lable显示名
+                                            required:true,
+                                            type: 'dsearchtree',//表单类型：目前支持 select/text
+                                            placeholder: '请选择建设单位',
+                                            searchOption:true,
+                                            onlyLeaf:true,
+                                            name:'jsdw',
+                                            checkType:'radio',
+                                            url : 'xmqqch/getJSDWTree.do'
+                                        },
+
+                                        {
+                                            title: '项目主管部门',//表单lable显示名
+                                            required:true,
+                                            type: 'dsearchtree',//表单类型：目前支持 select/text
+                                            placeholder: '请选择主管部门',
+                                            searchOption:true,
+                                            name:'zgbm',
+                                            checkType:'radio',
+                                            url : 'xmqqch/getZGBMTree.do'
+                                        }/*,
+                                        {
+                                            title: '项目阶段',//表单lable显示名
+                                            required:true,
+                                            type: 'dsearchtree',//表单类型：目前支持 select/text
+                                            placeholder: '请选择项目阶段',
+                                            searchOption:true,
+                                            id:'xmjd',
+                                            name:'xmjd',
+                                            checkType:'radio',
+                                            url : 'pro/getXMJDTree.do',
+                                        },*/
+
+                                    ]
+                                }
+                            ],
+                            "colspan": "12",
+                            "dtype": "column"
+                        }
+                    ],
+                    "dtype": "row"
+                }
+            ],
+            "dtype": "body"
+        }
+    ];
+    $.dopen({
+        type: 6,
+        title: "添加项目",
+        area: ["50%", "50%"],
+        content: dopenJson,
+        btn: ["保存","关闭"],
+        btn1:function(index){
+            if($("#openProj_add").dform("validate")){
+                $("#openProj_add").dform("submit", {
+                    url: 'pro/savePro.do',
+                    success: function (data) {
+                        if (data.success) {
+                            layer.close(index);
+                            layer.close(pindex);
+
+                            $.dalert({text: "保存成功", icon: 1});
+                            var da = {};
+                            da.id = data.content.id;
+                            da.name = data.content.xmmc;
+                            callback(da);
+                        } else {
+                            $.dalert({text: "保存失败", icon: 2});
+                        }
+                    }
+                });
+            }
+        },
+        btn2:function(index){
+            layer.close(index);
+
+        },
+    });
+
+
+}

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <script>
+        var date = new Date();
+        var year;
+        var sxmztz;
+        var iIndex;
+        // var jszt;
+        $(function () {
+            year = date.getFullYear();
+            $("input[name='ndname']").val(year);
+
+            $("#table").dtable({
+                height: 480,
+                url: "../xmzjgl/getNdjhglInfo.do?",//geturl(),
+                columns: [
+                    [
+                        {field:'checkType', checkbox: true,rowspan:2},
+                        {field: 'SID', title: '序号', align: 'center', rowspan: 2, visible: false},
+                        {field: 'ID', title: '项目id', align: 'center', rowspan: 2, visible: false},
+                        {field: 'DWBM', title: '单位编码', align: 'center', rowspan: 2},
+                        {field: 'DWMC', title: '单位名称', align: 'center', rowspan: 2},
+                        {
+                            field: 'XMMC', title: '项目名称', align: 'center', rowspan: 2,clickToSelect:true,
+                            editor: {
+                                // type: "comboBox",
+                                // required: true,
+                                // multiple: false,
+                                // clickToReload:true,
+                                // localdata: [{id: 1, text: "单位"}, {id: 2, text: "角色"}, {id: 3, text: "用户"}, {id: 3, text: "sql查询"}]
+                                type: "searchTree",
+                                rootElement:true,
+                                modalTitle: "请选择项目名称",
+                                checkType: "radio",
+                                url:"../xmzjgl/getXmmc.do?jszt = "+"",
+                                onChange:function(n,o,aa){
+                                    $("#table").tableEditor("updateAll");
+                                    if (n!=undefined&&n!=null&&n!=""){
+                                        //获取到总投资
+                                        var rid = aa.type;
+                                        var xmmc = aa.text;
+                                        // var dataAll = $("#table").dtable("getData");
+                                        // var dataSel = $("#table").dtable("getSelections");
+                                        // var iIndex = dataAll.indexOf(dataSel[0]);
+                                        $.dajax({
+                                            url:"../xmzjgl/getXmztz.do",
+                                            async:false,
+                                            type:"post",
+                                            dataType:"text",
+                                            data:{xmid:aa.type},
+                                            success:function (data) {
+                                                sxmztz = data;
+
+                                                $("#table").dtable("updateCell",{index:iIndex,field:"XMZTZ",value:sxmztz});
+                                            }
+                                        })
+                                        $("#table").dtable("updateCell",{index:iIndex,field:"ID",value:rid});
+                                        $("#table").tableEditor("initAll");
+                                    }
+                                }
+                            }
+                        },
+                        {field: 'XMZTZ', title: '总投资', halign:'center',align: 'right', rowspan: 2,width: 80,},
+                        {
+                            field: 'ND', title: '年度', align: 'center', width: 80, rowspan: 2,clickToSelect:true,validate:function(value){
+                              if(value == ""){
+                                  return '年度不能为空！';
+                              }
+                            },
+                            editor: {
+                                title: "文本框-单行",
+                                required: true,
+                                type: 'dateBox',
+                                format:"yyyy",
+                                minView:4,
+                                defaultValue : year
+                            }
+                        },
+                        {field: 'NDZTZ', title: '年度总投资',width: 80, align: 'center', rowspan: 2,editor: {
+                                title: "文本框-单行",
+                                required: true,
+                                textAlign:"right",
+                                type: "decimal",
+                                decimalPlaces: 2
+                                // defaultValue : year
+                            }},
+                        {field: 'ZJLY', title: '资金来源', align: 'center', colspan: 7,clickToSelect:true}
+                    ], [
+                        {field: 'ZJLY1', title: '合计', width: 70, halign:'center',align: 'right'},
+                        {
+                            field: 'ZJLY2', title: '一般公共预算', width: 40, align: 'center',
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,aa) {
+                                    if (n!=undefined&&n!=""&&n!=null){
+                                        // calcCount();
+                                        // $("#table").dtable("updateCell",{index:iIndex,field:"ZJLY2",value:n});
+                                        // $("#table").tableEditor("initAll");
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            field: 'ZJLY3', title: '盘活资源/政府性基金', width: 40, align: 'center',
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,aa) {
+                                    if (n!=undefined&&n!=""&&n!=null){
+                                        // calcCount();
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            field: 'ZJLY4', title: '盘活资产', width: 40, align: 'center',
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,aa) {
+                                    if (n!=undefined&&n!=""&&n!=null){
+                                        // calcCount();
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            field: 'ZJLY5', title: '区县分担', width: 40, align: 'center',
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,aa) {
+                                    if (n!=undefined&&n!=""&&n!=null){
+                                        // calcCount();
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            field: 'ZJLY6', title: 'PPP社会资本', width: 40, align: 'center',
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,aa) {
+                                    if (n!=undefined&&n!=""&&n!=null){
+                                        // calcCount();
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            field: 'ZJLY7', title: '其他(自筹)', width: 40, align: 'center',
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,aa) {
+                                    if (n!=undefined&&n!=""&&n!=null){
+                                        // calcCount();
+                                    }
+                                }
+                            }
+                        },
+                    ]
+                ],
+                resizable: true, //单元格手动拉伸
+                pageNumber: 1,//起始页
+                pageSize: 20,//页面大小
+                height:$(window).height() - 80,
+                // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                pagination: true,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                clickToSelect:true,
+                searchbar: {
+                    rownum: 3,//搜索栏表单列数  最大支持3
+                    inputs: [//搜索栏表单参数
+                         {
+                            title: '年度',
+                            name: 'nd',
+                            type: 'dateBox',
+                            format:"yyyy",
+                            minView:4,
+                            // decimalPlaces: 0,
+                            defaultValue:date.getFullYear(),
+                            onChange:function (n,o) {
+                                if (n!=undefined&&n!=""&&n!=null){
+                                    year = n;
+                                }
+                            }
+//                        url:'',//远程加载请求地址
+                        }, {
+                            type:'textBox',
+                            title:'项目名称',
+                            name:'xmmc'
+//                          isLeafCheck: false //checkType为checkbox或radio时，非叶子节点是否有选择框，false为不可选
+                        },
+                        {
+                            name: 'jszt',
+                            title: '决算状态',
+                            id:'jsztid',
+                            type: 'comboBox',
+                            localdata:[{id:1,text:"未决算"}, {id:2,text:"已决算"}],
+                            defaultValue:1
+                            // onChange:function (a,b,c) {
+                            //     if(a!=null&&a!=""&&a!=undefined) {
+                            //         jszt = a;
+                            //     }
+                            // }
+//                          isLeafCheck: false //checkType为checkbox或radio时，非叶子节点是否有选择框，false为不可选
+                        }
+                    ]
+                },
+                onClickRow:function (a,b,c) {
+                    var rowdata = a;
+                    var tabledata = $("#table").dtable("getData");
+                    iIndex = tabledata.indexOf(rowdata);
+                }
+                // onLoaded:function () {
+                //     $("#table").tableEditor("initAll")
+                // }
+            });
+            $("#btn_query").on("click",function () {
+                var jszt = $("#jsztid").comboBox("getValue");
+                if (jszt == "2"||jszt == ""){
+                    $("#btnadd").hide();
+                    $("#btndel").hide();
+                    $("#btndown").hide();
+                    $("#btnsave").hide();
+                    // $("#xmmcid")["searchTree"]("clear");
+                    // $("#xmmcid").searchTree("reload",{url:"../xmzjgl/getXmmc.do?jszt="+"2"});
+                }else
+                {
+                    $("#btnadd").show();
+                    $("#btndel").show();
+                    $("#btndown").show();
+                    $("#btnsave").show();
+                    setTimeout(function () {
+                        $("#table").tableEditor("initAll")},200);
+                }
+            })
+            setTimeout(function () {
+            $("#table").tableEditor("initAll")},200);
+        })
+
+        // function getXmmc1(a,b,c) {
+        //     var xmmc = "";
+        //
+        //     $.dajax({
+        //         url: "../xmzjgl/getXmmc1.do",
+        //         async: false,
+        //         type: "post",
+        //         data: {xmid: b.ID},
+        //         success: function (data) {
+        //             xmmc = data.xmmc;
+        //         }
+        //     })
+        //     console.log(xmmc);
+        //     return xmmc;
+        // }
+
+        function downloadFile(url) {
+            var a = $("<a><span id='_download'><span></a>").attr("href", url);
+            a.appendTo('body');
+            $("#_download").click().parent("a").remove();
+        }
+
+        function geturl() {
+            var sFilter='';
+            if ($("jsdw").val()!=undefined){
+                sFilter = sFilter+"jsdw="+$("jsdw").val();
+            }else{
+                sFilter = sFilter+"jsdw=";
+            }
+            if ($("input[name='ndname']").val()!=undefined){
+                sFilter = sFilter+"&nd="+$("input[name='ndname']").val();
+            }else{
+                sFilter = sFilter+"&nd=";
+            }
+            if ($("xmmc").val()!=undefined){
+                sFilter = sFilter+"&xmmc="+$("xmmc").val();
+            }else{
+                sFilter = sFilter+"&xmmc=";
+            }
+            var url = "../xmzjgl/getNdjhglInfo.do?"+sFilter;
+            return url;
+        };
+
+        function calcCount() {
+            // $("#table").tableEditor("updateAll");
+            // $("#table").tableEditor("initAll");
+            var dataSel = $("#table").dtable("getEditRows");
+            // var dataAll = $("#table").dtable("getData");
+            // var iIndex = dataAll.indexOf(dataSel[0]);
+            var icount = 0;
+            if (dataSel[iIndex].ZJLY2!=""){
+                icount += parseFloat(dataSel[0].ZJLY2);
+            }
+            if (dataSel[iIndex].ZJLY3!=""){
+                icount += parseFloat(dataSel[0].ZJLY3);
+            }
+            if (dataSel[iIndex].ZJLY4!=""){
+                icount += parseFloat(dataSel[0].ZJLY4);
+            }
+            if (dataSel[iIndex].ZJLY5!=""){
+                icount += parseFloat(dataSel[0].ZJLY5);
+            }
+            if (dataSel[iIndex].ZJLY6!=""){
+                icount += parseFloat(dataSel[0].ZJLY6);
+            }
+            if (dataSel[iIndex].ZJLY7!=""){
+                icount += parseFloat(dataSel[0].ZJLY7);
+            }
+            // var icount = parseFloat(dataSel[0].ZJLY2)+parseFloat(dataSel[0].ZJLY3)+parseFloat(dataSel[0].ZJLY4)+parseFloat(dataSel[0].ZJLY5)+parseFloat(dataSel[0].ZJLY6)+parseFloat(dataSel[0].ZJLY7);
+            $("#table").dtable("updateCell",{index:iIndex,field:"ZJLY1",value:icount});
+            $("#table").tableEditor("initAll");
+        }
+
+        function searchData() {
+        //     $("#table").dtable("refresh");
+        //     var dataLen = $("#table").dtable("getData")
+        //     var dataArr = $("#table").dtable("getSelections");
+        //     year = $("input[name='ndname']").val();
+        //     $("#table").dtable("refresh");
+        }
+
+        function addRow() {
+            var dataLen = $("#table").dtable("getData").length;
+            // rowIndex = $("#table").find("tr.editing").data("index");
+            // $("#table").tableEditor("update",rowIndex);
+            $("#table").tableEditor("updateAll");
+            $("#table").dtable("insertRow", {index:dataLen, row:{}});
+            $("#table").tableEditor("initAll");
+        };
+
+        function update() {
+            var $table = $("#table"),
+                rowIndex = $table.find("tr.editing").data("index");
+            $table.tableEditor("update", rowIndex);
+            cancel();
+        };
+
+        function updateAll() {
+            var $table = $("#table");
+            $table.tableEditor("updateAll");
+
+            var sdate = $("#table").dtable("getData");
+            if (sdate.length == 0){
+                $.dalert({text:"没有可保存数据"});
+                return;
+            }
+            $.dajax({
+                url: "../xmzjgl/updateNdjhglInfo.do",
+                async:false,
+                type:"post",
+                data: {sdate:JSON.stringify(sdate)},
+                success: function (data) {
+                    if (data.success) {
+                        // alert(data.content);
+                        $.dalert({text:"提交数据成功"});
+                        $("#table").dtable("refresh");
+                    } else {
+                        if (data.content!=null&&data.content!="")
+                        {
+                            $.dalert({text:data.content});
+                        }else {
+                            $.dalert({text:"编辑失败"});
+                        }
+
+                        // alert('编辑失败');
+                    }
+                }
+            })
+            setTimeout(function () {
+            $("#table").tableEditor("initAll")},200);
+            // $("#table").dtable("refresh");
+        }
+
+
+        function cancel() {
+            var $table = $("#table"),
+                rowIndex = $table.find("tr.editing").data("index");
+            $table.tableEditor("cancel", rowIndex);
+        }
+
+        function remov() {
+            // if (jszt == 21){
+            //     $.dalert({text: "已决算项目不允许删除！"});
+            //     return;
+            // }
+
+            var $table = $("#table");
+            var selectData = getselectdata();
+            var tableData = $table.dtable("getData");
+            $("#table").tableEditor("updateAll");
+            layer.confirm('确定删除吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function() {
+                $.dajax({
+                    url: "../xmzjgl/deleteNdjhglInfo.do",
+                    async: false,
+                    type: "post",
+                    data: {sdate: JSON.stringify(selectData)},
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: "删除数据成功"});
+                            $.each(selectData, function(i){
+                                var dataIndex = tableData.indexOf(selectData[i]);
+                                $table.dtable("removeByRowIndex", dataIndex);
+                            });
+                            setTimeout(function () {
+                                $("#table").tableEditor("initAll")},200);
+                            // $("#table").tableEditor("updateAll");
+                        } else {
+                            $.dalert({text: "删除失败"});
+                        }
+                        // $("#table").dtable("refresh");
+                    }
+                });
+            });
+            // }
+        }
+
+        function getselectdata() {
+            var dataArr = $("#table").dtable("getSelections");
+            if (dataArr.length === 0) {
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+            return dataArr;
+        }
+
+        function importExcel(){
+            $.dopen({
+                title : "excle导入",
+                content:'<div style="padding:40px 10px">' +
+                    '<form  id="fileForm"></form>'+
+                    '</div>',
+                area: ['400px','200px'],
+                btn: ['关闭'],
+                btn1:function(index){
+                    setTimeout(function () {
+                        $("#table").dtable("refresh");
+
+                        setTimeout(function () {
+                            $("#table").tableEditor("initAll");
+                        },200)
+                    },200)
+                    layer.close(index);
+                }
+            })
+
+
+            var fileObj= {
+                rownum: 1,
+                labelwidth: "100px",
+                "inputs": [
+                    {
+                        type: "webupload",
+                        title: "附件:",
+                        name: "file1",
+                        isDownload:false,
+                        isDel:false,
+                        auto:true,
+                        singleMode:true,
+                        onFileQueued:function(File){
+
+                        },
+                        onFileDequeued:function(File){
+
+                        }/*,onLoaded: function (obj) {
+                        $(this).webupload("loadData", obj.options.url + "?uuid=" + row.FJUUID)
+                    }*/,onUploadBeforeSend: function (object, data, headers) {
+                            data.token = $.dcookie('token');
+                        },onUploadSuccess:function (file,response) {
+                            if (response.success){
+                                $.dalert({text:"导入成功"});
+                            }else {
+                                $.dalert({text:response.error});
+                            }
+                        },
+                        server: "../xmzjgl/webupload.do",
+                        thumbnailWidth	:80,
+                        thumbnailHeight:50
+                        // colspan:"3"
+                    }
+                ]
+            };
+
+            $('#fileForm').dform(fileObj);
+        }
+
+        function exportExcel() {
+            // $.dopen({
+            //     content: '<form  id="fileForm"></form>',
+            // })
+            //
+            // var fileObj= {
+            //     rownum: 1,
+            //     labelwidth: "100px",
+            //     "inputs": [
+            //         {
+            //             type: "webupload",
+            //             title: "附件:",
+            //             name: "file1",
+            //             isDownload:false,
+            //             isDel:false,
+            //             auto:true,
+            //             singleMode:true,
+            //             onUploadBeforeSend: function (object, data, headers) {
+            //                 data.token = $.dcookie('token');
+            //             },onUploadSuccess:function (file,response) {
+           
+            //                 if (response.success){
+            //                     alert('导入成功');
+            //                 }else {
+            //                     alert('导入失败');
+            //                 }
+            //             },
+            //             server: "../xmzjgl/webupload.do",
+            //             thumbnailWidth	:80,
+            //             thumbnailHeight:50
+            //             // colspan:"3"
+            //         }
+            //     ]
+            // };
+            //
+            // $('#fileForm').dform(fileObj);
+
+            $.dajax({
+                url: "../xmzjgl/parseExcel.do",
+                async:false,
+                type:"post",
+                data: {nd:year},
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text:"导出数据成功"});
+                    } else {
+                        $.dalert({text:"导出失败"});
+                    }
+                    // $("#table").dtable("refresh");
+                }
+            });
+        }
+
+        $("nd").blur(function () {
+            if ($("nd").val() == ""){
+                $("#nd").focus();
+            }
+        })
+
+    </script>
+</head>
+<body>
+    <div style="width:100%">
+        <h4 class='text-center'><b>年度计划管理</b></h4>
+        <button id="btnadd" type="button"></button>
+        <button id="btndel" type="button"></button>
+        <button id="btndown" type="button"></button>
+        <button id="btnup" type="button"></button>
+        <button id="btnsave" type="button"></button>
+        <label style="float: right!important;">万元</label>
+    </div>
+    <!--<div>-->
+        <!--<span>建设单位:&nbsp;</span><input id="jsdw" type="textBox">-->
+        <!--<span>年度:&nbsp;</span><input id="nd" name="ndname" type="textBox">-->
+        <!--<span>项目名称:&nbsp;</span><input id="xmmc" type="textBox">-->
+        <!--<button id="btnquery" type="button"></button>-->
+    <!--</div>-->
+    <div>
+        <table id="table"></table>
+    </div>
+</body>
+<script>
+    $(function () {
+        $("#btnadd").dbutton({
+            text:" 增加",
+            icon:'bootstrap-table-add',
+            size:"xs",
+            type:'primary',
+            handler:function(){
+                addRow();
+            }
+        });
+        $("#btndel").dbutton({
+            text:" 删除",
+            icon:'bootstrap-table-delete',
+            size:"xs",
+            type:'primary',
+            handler:function(){
+                remov();
+            }
+        });
+        $("#btndown").dbutton({
+            text:" 导入",
+            icon:'bootstrap-table-download',
+            size:"xs",
+            type:'primary',
+            handler:function(){
+                importExcel();
+            }
+        });
+        $("#btnup").dbutton({
+            text:" 导出",
+            icon:'bootstrap-table-upload',
+            size:"xs",
+            type:'primary',
+            handler:function(){
+                // exportExcel();
+                downloadFile("../xmzjgl/parseExcel.do?nd="+year);
+            }
+        });
+        $("#btnsave").dbutton({
+            text:" 保存",
+            icon:'bootstrap-table-submit',
+            size:"xs",
+            type:'primary',
+            handler:function(){
+                updateAll();
+            }
+        });
+    })
+</script>
+</html>

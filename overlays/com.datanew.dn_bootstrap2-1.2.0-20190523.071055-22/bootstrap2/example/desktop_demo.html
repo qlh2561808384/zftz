@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>desktop</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#desktop").desktop({
+                url: './json/indexTreeData.json',
+                showFullscreen:true, //是否显示全屏
+                dopenResize:true,  //窗口是否可以拖动拉伸
+                leaveTip:false, //离开或者刷新提示
+                contextMenu:true,
+                // systemName:"系统名称",
+                // showSearchBar:true,
+                // fixedMenu:true,
+                windowFullscreen:true,
+                windowSizeArea: ["80%", "60%"],
+                // fixedMenu:true,
+                // deskBtmPos:"top"
+                onDeskLoaded: function(obj){
+                    obj.desktop("addShortcut", {id:121, name:"11dsfasdfdaddfv1231dfv1231dfv1231", url:"./table_desk_layer.html", icon:""});
+                    obj.desktop("addShortcut", {id:122, name:"关于组织架构的调整的调整", url:"./table_desk_layer.html", icon:""});
+                    obj.desktop("addShortcut", {id:123, name:"33", url:"./table_desk_layer.html", icon:"../plugins/desktop/images/icon_desk1.png"});
+                    obj.desktop("addShortcut", {id:124, name:"44", url:"./table_desk_layer.html", icon:""});
+                    obj.desktop("addShortcut", {id:126, name:"55", url:"./table_desk_layer.html", icon:""});
+                    obj.desktop("addShortcut", {id:125, name:"66", url:"./table_desk_layer.html", icon:"../plugins/desktop/images/icon_desk2.png"});
+                    obj.desktop("addShortcut", {id:127, name:"877", url:"./table_desk_layer.html", icon:"../plugins/desktop/images/icon_desk3.png"});
+
+                    obj.desktop("addIframe", {
+                        src: "./desktop_exdemo.html",
+                        title:"iframe",
+                        icon:"../plugins/desktop/images/icon_desk4.png",
+                        width: 300,
+                        height: 400,
+                        right: 100,
+                        top: 100,
+                        rightTopLink: '<a href="">全部</a>',
+                        isCollapse: true,
+                        isClose: true
+                    });
+                    obj.desktop("addBtmMenu", {
+                        menuTitle: "新建",
+                        menuFunc: "newadd",
+                        menuIcon: ""
+                    });
+                }
+            })
+        });
+
+        function newadd(){
+            alert(0)
+        }
+        function updatePassword(){
+            $.dopen({
+                title:"修改密码",
+                content:"",
+                shade:false,
+                area:["300px", "400px"],
+                btn:["关闭"]
+            })
+        }
+    </script>
+</head>
+<body>
+    <div id="desktop"></div>
+</body>
+</html>

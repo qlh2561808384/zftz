@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <script>
+        var iIndex;
+        var date = new Date();
+        var year = date.getFullYear();
+        var selectxmid;
+        var selectbm;
+        $(function () {
+            $("#table").dtable({
+                height: 300,
+                url: "../xmzjgl/getXmglInfo.do",//geturl(),
+                columns: [
+                    [
+                        {field:'checkType', radio: true,rowspan:3},
+                        // {field: 'SID', title: '序号', align: 'center', rowspan: 3, visible: false},
+                        {field: 'ID', title: '项目代码', align: 'center', rowspan: 3, visible: false},
+                        {field: 'YEAR', title: '年度', align: 'center', rowspan: 3, visible: false},
+                        {field: 'XMMC', title: '项目名称', align: 'center', rowspan: 3},
+                        {field: 'XMZTZ', title: '总投资', halign:'center',align: 'right', rowspan: 3},
+                        {field: 'YSAP', title: '预算安排', align: 'center', colspan: 3},
+                        {field: 'ZJDW', title: '资金到位', align: 'center', colspan: 3},
+                        {field: 'YKJH', title: '用款金额', align: 'center', colspan: 4},
+                        {field: 'YE', title: '余额', halign:'center',align: 'right', rowspan: 3},
+                        {field: 'ZXL', title: '执行率', align: 'center', rowspan: 3}
+                    ], [
+                        {field: 'YSAP1', title: '合计', width: 70, halign:'center',align: 'right',rowspan:2},
+                        {field: 'YSAP2', title: '历年', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'YSAP3', title: '当年', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'ZJDW1', title: '合计', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'ZJDW2', title: '历年', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'ZJDW3', title: '当年', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'YKJH1', title: '合计', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'YKJH2', title: '历年', width: 40, halign:'center',align: 'right',rowspan:2},
+                        {field: 'YKJH3', title: '当年', width: 40, halign:'center',align: 'center',colspan:2}
+                    ],[
+                        {field: 'YKJH31', title: '历年到位', width: 70, halign:'center',align: 'right'},
+                        {field: 'YKJH32', title: '当年到位', width: 70, halign:'center',align: 'right'},
+                    ]
+                ],
+                resizable: true, //单元格手动拉伸
+                pageNumber: 1,//起始页
+                pageSize: 20,//页面大小
+                // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                pagination: true,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                clickToSelect: true,//点击选中
+                searchbar: {
+                    rownum: 2,//搜索栏表单列数  最大支持3
+                    inputs: [//搜索栏表单参数
+                        {
+                            title: '年度',
+                            name: 'nd',
+                            type: 'dateBox',
+                            format:"yyyy",
+                            minView:4,
+                            defaultValue:date.getFullYear(),
+                            onChange:function (n,o) {
+                                if (n!=undefined&&n!=""&&n!=null){
+                                    year = n;
+                                }
+                            }
+//                        url:'',//远程加载请求地址
+                        }, {
+                            type:'textBox',
+                            title:'项目名称',
+                            name:'xmmc',
+//                          isLeafCheck: false //checkType为checkbox或radio时，非叶子节点是否有选择框，false为不可选
+                        }
+                    ]
+                },
+                onClickRow:function (a,b,c) {
+                    selectxmid = a.ID;
+                    if(a.YEAR!=""&&a.YEAR!=null&&a.YEAR!=undefined){
+                        // year = a.YEAR;
+                    }
+                    $("#table2").dtable("refresh",{query:{nd:year,xmid:selectxmid}});
+                }
+            });
+            $("#table2").dtable({
+                height: 300,
+                url:"../xmzjgl/getZjapmxInfo.do",
+                columns: [
+                    [
+                        {field:'checkType', radio: true,rowspan:2},
+                        {field: 'ZJLY', title: '资金来源', align: 'center', rowspan: 2},
+                        {field: 'YSAP', title: '预算安排', align: 'center',colspan:3},
+                        {field: 'BM', title: '当年资金计划', align: 'center', rowspan: 2,visible:false},
+                        {field: 'DNZJJH', title: '当年资金计划', align: 'center', rowspan: 2},
+                        {field: 'ZJDW', title: '资金到位', align: 'center',colspan:3}
+                    ], [
+                        {field: 'YSAP1', title: '合计', width: 70, halign:'center',align: 'right'},
+                        {field: 'YSAP2', title: '历年', width: 40, halign:'center',align: 'right'},
+                        {field: 'YSAP3', title: '当年', width: 40, halign:'center',align: 'right', formatter:function(value,row,index){
+                            if (row.BM == 1||row.BM == 2||row.BM == 4){
+                                return '<a href="javascript:void(0)" onclick="selectzb('+row.BM+')">'+value+'</a>';
+                            }else {
+                                return '<input name ="ysapval'+index+'" type="decimal" style="text-align: right;width: 100%" value="'+value+'">';
+                            }
+                            }},
+                        {field: 'ZJDW1', title: '合计', width: 40, halign:'center',align: 'right'},
+                        {field: 'ZJDW2', title: '历年', width: 40, halign:'center',align: 'right'},
+                        {field: 'ZJDW3', title: '当年', width: 40, halign:'center',align: 'right',formatter:function(value,row,index){
+                                if (row.BM == 3||row.BM == 5||row.BM == 6){
+                                    return '<a href="javascript:void(0)" onclick="selectmx('+row.BM+')">'+value+'</a>';
+                                }else {
+                                    return value;
+                                }
+                            }}
+                    ]
+                ],
+                clickToSelect: true,
+                queryParams:{nd:year,xmid:selectxmid}
+            })
+        });
+
+        function selectzb(bm) {
+            selectbm = bm;
+            savezjap();
+            var dopenJson = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": "<h4 class='text-center'><b>预算安排对应指标明细</b></h4>"
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                                '<button class="bootstrap-table-save" type="button" onclick="updatezb()">保存</button>' +
+                                                // '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                '<span class="pull-right">单位：元</span>' +
+                                                '</div>'
+                                        },
+                                        {
+                                            "id":"zbtable",
+                                            "dtype": "dtable",
+                                            "height": 300,
+                                            "url": "../xmzjgl/getXMzbmx.do",
+                                            "columns": [
+                                                {field:'FLAG', checkbox: true},
+                                                {field: "ID", title: "ID", width: 50, align: "center",visible:false},
+                                                {field: "XH", title: "序号", width: 50, align: "center"},
+                                                {field: "ZJLY", title: "资金来源", width: 200, align: "center"},
+                                                {field: "BUDGETID", title: "指标id", width: 140, align: "center"},
+                                                {field: "IN_CODE", title: "指标id", width: 140, align: "center",visible: false},
+                                                {field: "GNKMMC", title: "功能科目", width: 240, align: "center"},
+                                                {field: "JE", title: "金额", width: 100, halign:'center',align: "right"}
+                                            ],
+                                            "resizable": true, //单元格手动拉伸
+                                            // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                                            "pagination":false,
+                                            "queryParams":{nd:year,xmid:selectxmid,bm:selectbm},
+                                            "clickToSelect":"true"
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+
+            iIndex = $.dopen({
+                type: 6,
+                area: ["95%", "100%"],
+                title :"预算安排对应指标明细",
+                content: dopenJson,
+                btn: ["关闭"],
+                btn1:function(index){
+                    closeDopen();
+                    // layer.close(index);
+                    // $("#table").bootstrapTable("refresh");
+                }
+            })
+        }
+        
+        function savezjap() {
+            // updatednje();
+            var sdata = $("#table2").dtable("getData");
+                $.dajax({
+                url: "../xmzjgl/updateZjap.do",
+                async:false,
+                type:"post",
+                data: {sdata:JSON.stringify(sdata),xmid:selectxmid,nd:year},
+                success: function (data) {
+                    if (!data.success) {
+                        $.dalert({text:"资金安排保存失败"});
+                    }
+                }
+            })
+        }
+
+        function updatezb() {
+            var sl = $("#zbtable").dtable("getData");
+            $.dajax({
+                url: "../xmzjgl/updateXMzbmx.do",
+                async:false,
+                type:"post",
+                data: {sdata:JSON.stringify(sl),xmid:selectxmid,nd:year,zjly:selectbm},
+                success: function (data) {
+                    if (data.success) {
+                        updatednje(0);
+                        $.dalert({text:"指标保存成功"});
+                    }else {
+                        $.dalert({text:"指标保存失败"});
+                    }
+                }
+            })
+
+            setTimeout(function () {
+                $("#zbtable").dtable("refresh"),$("#table2").dtable("refresh"),$("#table").dtable("refresh")
+            },200)
+
+        }
+
+        function updatednje(flag) {
+            savezjap();
+            // setTimeout(function () {
+                var sl = $("#table2").dtable("getData");
+                for (var i=0;i<sl.length;i++){
+                    if (sl[i].BM == '3'||sl[i].BM == '5'||sl[i].BM == '6') {
+                        sl[i].YSAP3 = parseFloat($("input[name='ysapval"+i+"']").val());
+                    }
+                }
+
+                $.dajax({
+                    url: "../xmzjgl/updateDnje.do",
+                    async: false,
+                    type: "post",
+                    data: {sdata: JSON.stringify(sl), xmid: selectxmid, nd: year},
+                    success: function (data) {
+                        if (data.success) {
+                            if (flag == 1){
+                                $.dalert({text:"资金保存成功"});
+                            }
+                            $("#table2").dtable("refresh");
+                        } else {
+                            $.dalert({text:"资金保存失败"});
+                        }
+                    }
+                })
+            // },100);
+            setTimeout(function () {
+                $("#table2").dtable("refresh"),$("#table").dtable("refresh")},200);
+            setTimeout(function () {
+                $("#table2").tableEditor("initAll")},200);
+        }
+
+        function selectmx(bm) {
+            selectbm = bm;
+            savezjap();
+            var dopenJson2 = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": "<h4 class='text-center'><b>资金到位明细(PPP社会资本)</b></h4>"
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                                '<button class="bootstrap-table-add" type="button" onclick="addrow()">增加行</button>' +
+                                                '<button class="bootstrap-table-delete" type="button" onclick="remov()">删除</button>' +
+                                                '<button class="bootstrap-table-save" type="button" onclick="updateAll()">保存</button>' +
+                                                // '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                '<span class="pull-right">单位：元</span>' +
+                                                '</div>'
+                                        },
+                                        {
+                                            "id":"tablezjdw",
+                                            "dtype": "dtable",
+                                            "height": 300,
+                                            "url": "../xmzjgl/getZjdwmxInfo.do",
+                                            "columns": [
+                                                {field:'checkType', radio: true},
+                                                {field: "ID", title: "资金到位ID", width: 50, align: "center",visible:false},
+                                                {field: "xh", title: "序号", width: 50, align: "center",formatter:function(value,row,index){return index+1;}},
+                                                {field: "DZRQ", title: "到账日期", width: 200, align: "center",
+                                                editor:{
+                                                    title: "日期",
+                                                    required: true,
+                                                    type: "dateBox",
+                                                    decimalPlaces: 0,
+                                                    defaultValue : date.getFullYear()+'-'+((date.getMonth()+1) > 10 ? (date.getMonth() + 1):"0"+(date.getMonth()+1))+'-'+(date.getDate()<10 ? "0"+date.getDate():date.getDate())
+                                                }},
+                                                {field: "DZJE", title: "金额", width: 100, halign:'center',align: "center",
+                                                editor:{
+                                                    title: "小数",
+                                                    type: "decimal",
+                                                    textAlign:"right",
+                                                    decimalPlaces: 2
+                                                }}
+                                            ],
+                                            "resizable": true, //单元格手动拉伸
+                                            // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                                            "pagination":false,
+                                            "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                                            "clickToSelect":"true"
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+
+            iIndex = $.dopen({
+                type: 6,
+                area: ["40%", "90%"],
+                title :"资金到位明细明细",
+                content: dopenJson2,
+                btn: ["关闭"],
+                btn1:function(index){
+                    closeDopen();
+                    // layer.close(index);
+                    // $("#table").bootstrapTable("refresh");
+                }
+            })
+
+            setTimeout(function () {
+                $("#tablezjdw").tableEditor("initAll")},200);
+        }
+
+        function addrow() {
+            var dataLen = $("#tablezjdw").dtable("getData").length;
+            $("#tablezjdw").tableEditor("updateAll");
+            $("#tablezjdw").dtable("insertRow", {index:dataLen, row:{}});
+            $("#tablezjdw").tableEditor("initAll");
+        }
+
+        function remov() {
+            var $table = $("#tablezjdw");
+            var selectData = getselectdata();
+            var tableData = $table.dtable("getData");
+            $("#tablezjdw").tableEditor("updateAll");
+            if (!selectData[0].ID){
+                $.each(selectData, function(i){
+                    var dataIndex = tableData.indexOf(selectData[i]);
+                    $table.dtable("removeByRowIndex", dataIndex);
+                });
+            }else {
+                layer.confirm('确定删除吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function() {
+                    $.dajax({
+                        url: "../xmzjgl/deleteZjdwmx.do",
+                        async: false,
+                        type: "post",
+                        data: {sid: selectData[0].ID},
+                        success: function (data) {
+                            if (data.success) {
+                                $.dalert({text: "删除数据成功"});
+                                $.each(selectData, function (i) {
+                                    var dataIndex = tableData.indexOf(selectData[i]);
+                                    $table.dtable("removeByRowIndex", dataIndex);
+                                });
+                                $("#tablezjdw").tableEditor("updateAll");
+                                setTimeout(function () {
+                                    $("#tablezjdw").tableEditor("initAll")},200);
+                            } else {
+                                $.dalert({text: "删除失败"});
+                            }
+                            // $("#table").dtable("refresh");
+                        }
+                    });
+                });
+            }
+        }
+
+        function updateAll() {
+            var $table = $("#tablezjdw");
+            $table.tableEditor("updateAll");
+
+            var sdata = $("#tablezjdw").dtable("getData");
+            if (sdata.length == 0){
+                $.dalert({text:"没有可保存数据"});
+                return;
+            }
+            $.dajax({
+                url: "../xmzjgl/updateZjdwmx.do",
+                async:false,
+                type:"post",
+                data: {sdata:JSON.stringify(sdata),xmid:selectxmid,nd:year,zjly:selectbm},
+                success: function (data) {
+                    if (data.success) {
+                        updatednje(0);
+                        $.dalert({text:"提交数据成功"});
+                    } else {
+                        $.dalert({text:"编辑失败"});
+                    }
+                    $("#tablezjdw").dtable("refresh");
+                    setTimeout(function () {
+                        $("#tablezjdw").tableEditor("initAll");
+                    },200)
+                }
+            })
+
+            setTimeout(function () {
+                $("#tablezjdw").tableEditor("initAll"),$("#table2").dtable("refresh"),$("#table").dtable("refresh")},200);
+            // $("#table").dtable("refresh");
+        }
+
+        function getselectdata() {
+            var dataArr = $("#tablezjdw").dtable("getSelections");
+            if (dataArr.length === 0) {
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+            return dataArr;
+        }
+
+        function closeDopen() {
+            layer.close(iIndex);
+        }
+
+    </script>
+</head>
+<body>
+    <!--<div>-->
+        <!--<span>建设单位:&nbsp;</span><input id="jsdw" type="text">-->
+        <!--<span>年度:&nbsp;</span><input id="nd" name="ndname" type="text">-->
+        <!--<span>项目名称:&nbsp;</span><input id="xmmc" type="text">-->
+        <!--<button type="button" onclick="">查询</button>-->
+    <!--</div>-->
+    <div>
+        <h4 class='text-center'><b>项目预算管理</b></h4>
+    </div>
+    <div>
+        <table id="table"></table>
+    </div>
+    <div>
+        <button id="btnsave" type="button"></button>
+        <!--<button type="button" onclick="selectzb()">选指标</button>-->
+        <!--<button type="button" onclick="selectmx()">选明细</button>-->
+    </div>
+    <div>
+        <table id="table2"></table>
+    </div>
+
+</body>
+<script>
+    $("#btnsave").dbutton({
+        text:" 保存",
+        icon:'bootstrap-table-submit',
+        size:"xs",
+        type:'primary',
+        handler:function(){
+            updatednje(1);
+        }
+    });
+</script>
+</html>

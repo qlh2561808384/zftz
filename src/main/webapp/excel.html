@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="download-btn">下载</button>
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    function downloadFile(url) {
+        var a = $("<a><span id='_download'><span></a>").attr("href", url);
+        a.appendTo('body');
+        $("#_download").click().parent("a").remove();
+    }
+
+    $(function () {
+        $("#download-btn").on("click", function () {
+            downloadFile("/download");
+        });
+    });
+</script>
+</body>
+</html>

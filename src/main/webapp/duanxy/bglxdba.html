@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <title>项目变更备案</title>
+    <script src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <script src="../js/file.js"></script>
+    <script src="../js/common.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+    <script>
+    	var getRootPath = function(){
+            var curWwwPath=window.document.location.href;
+            var pathName=window.document.location.pathname;
+            var pos=curWwwPath.indexOf(pathName);
+            var localhostPaht=curWwwPath.substring(0,pos);
+            var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            return(localhostPaht+projectName);
+        }
+        var xmmcData = [];
+        var htmcData = [];
+        var yhxxData = [];
+        var gcfyData = [];
+        var tzeflData = [];
+        var isEdit = 0;
+        var bglxdbaid;
+        var htje = 0;
+        var gctzje = 0;
+        var jatzje = 0;
+        var selgcfyid;
+        var seltzefl;
+        var selxmid;
+        var htbaid;
+        var ysje = 0;
+        var dopenIndex = 0;
+        var toolbar = new Array();
+        var dragHtml = '';
+        var dopenJson;
+        var yhlx;
+        var buttonIds;
+        var lchj; 
+        var mrzt;
+        $(function(){
+        	$.dajax({
+	            type:'post',
+	            url:getRootPath()+"/user/getButtons.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                buttonIds = data;
+	                yhlx = data.yhlx;
+	                if(yhlx==1){
+	                	mrzt=1;
+	                }else if(yhlx==2){
+	                	mrzt=2;
+	                }
+	                if(data.buttons.indexOf('7100401')!=-1){
+	                	toolbar.push({"name":"新增", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"addRow()"});
+	                	dragHtml='<div class="toolbar layout_toolbar clearfix"><button class="bootstrap-table-add" type="button" id="addRowBtn" onclick="addRow1()">添加行</button>'+
+	                		'<button class="bootstrap-table-delete" type="button" id="removeBtn" onclick="removRow1()">删除行</button>'+
+	                		'<button class="bootstrap-table-save" type="button" id="saveBtn" onclick="saveXmbgbaData()">保存</button>'+
+	                		'<button class="bootstrap-table-submit" type="button" id="beianBtn" onclick="submitRow()">备案</button>'+
+	                		//'<button class="bootstrap-table-review" type="button" id="clearBtn" onclick="clearForm()">重填</button>'+
+	                		'<span class="pull-right">单位：万元</span>'+
+	                	'</div>';
+	                }
+	                if(data.buttons.indexOf('7100402')!=-1){
+	                	toolbar.push({"name":"删除", "classes":"btn bootstrap-table-delete", "type":"button", "onclick":"delRow()"});
+	                }
+	                if(data.buttons.indexOf('7100403')!=-1){
+	                	toolbar.push({"name":"查看/修改", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"editRow()"});
+	                }
+	                if(data.buttons.indexOf('7100405')!=-1){
+	                	toolbar.push({"name":"备案", "classes":"btn bootstrap-table-review", "type":"button", "onclick":"submitRow()"});
+	                }
+	                if(data.buttons.indexOf('7100406')!=-1){
+	                	toolbar.push({"name":"核实", "classes":"btn bootstrap-table-verify", "type":"button", "onclick":"verify()"});
+	                	if(dragHtml==''){
+	                		dragHtml='<div class="toolbar layout_toolbar clearfix">'+
+		                		'<button class="bootstrap-table-verify" type="button" onclick="verify()">核实</button>'+
+		                		'<button class="bootstrap-table-disable" type="button" onclick="returnback()">退回</button>'+
+		                		'<span class="pull-right">单位：万元</span>'+
+		                	'</div>';
+	                	}
+	                	//xmmcurl = getRootPath()+"/sgtysba/selectHxXmmc.do";
+	                }
+	                if(data.buttons.indexOf('7100407')!=-1){
+	                	toolbar.push({"name":"退回", "classes":"btn bootstrap-table-disable", "type":"button", "onclick":"returnback()"});
+	                }
+	                
+	            }
+	        });
+        	$.dajax({
+	            type:'post',
+	            url:getRootPath()+"/sgtysba/getYhxm.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                yhxxData = data;
+	            }
+	        });
+	        var xmmcurl = getRootPath()+"/sgtysba/selectXmmc.do";
+	        if(buttonIds.buttons.indexOf('7100406')!=-1&&yhlx!=1){
+	        	xmmcurl = getRootPath()+"/sgtysba/selectHxXmmc.do";
+	        }
+        	$.dajax({
+	            type:'post',
+	            url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+	            //url:xmmcurl,
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                xmmcData = data;
+	            }
+	        });
+	        $.dajax({
+	            type:'post',
+	            url:getRootPath()+"/htba/selectHtmc.do",
+	            dataType:'json',
+	            async:false,
+	            success:function (data) {
+	                htmcData = data;
+	            }
+	        });
+	        $.dajax({
+                type:'post',
+                url:getRootPath()+"/sgtysba/selectGcfymc.do",
+                dataType:'json',
+                async:false,
+                success:function (data) {
+                    gcfyData = data;
+                }
+            });
+            $.dajax({
+                type:'post',
+                url:getRootPath()+"/sgtysba/selectTzefl.do",
+                dataType:'json',
+                async:false,
+                success:function (data) {
+                    tzeflData = data;
+                }
+            });
+            var json = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        
+                                        {
+                                            "dtype":"html",
+                                            "dragHtml":"<h4 class='text-center'><b>项目变更备案</b></h4>"
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "id":"dataTableId",
+                                            "height": $(window).height() - 80,
+                                            pageNumber: 1,//起始页
+                                            pageSize: 20,
+                                            "columns": [
+                                                {field:"checkType", checkbox:true},
+                                                {field:"id",visible:false},
+                                                {field:"lchj",visible:false},
+                                                {field:"", title:"序号", width:60, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                {field:"bgdh", title:"变更编号", width:100, align:"center"},
+                                                {field:"xmid", title:"项目名称", width:100, align:"center",formatter:xsgcXmmc},
+                                                {field:"htbaid", title:"工程名称", width:100, align:"center",formatter:getHtGcmc},
+                                                {field:"htbaid", title:"合同/协议名称", width:100, align:"center",formatter:getHtmc},
+                                                {field:"tcdw", title:"变更提出单位", width:100, align:"center"},
+                                                {field:"bgqrsj", title:"变更确认时间", width:100, align:"center"},
+                                                {field:"sjzjzjys", title:"涉及增减预算造价（万元）", width:100, align:"center"},
+                                                {field:"ljzhtjbl", title:"本次变更占合同价比例（%）", width:100, align:"center"},
+                                                {field:"ljzjagsbl", title:"累计占建安概算比例（%）", width:100, align:"center"},
+                                                {field:"czr", title:"备案人", width:100, align:"center",formatter:czrHx},
+                                                {field:"czsj", title:"备案时间", width:100, align:"center"},
+                                                {field:"tcdw",visible:false},
+                                                {field:"tcr",visible:false},
+                                                {field:"tcsj",visible:false},
+                                                {field:"jsdwjbr",visible:false},
+                                                {field:"jsdwspr",visible:false},
+                                                {field:"jsdwsptysj",visible:false},
+                                                {field:"zgdwspr",visible:false},
+                                                {field:"zgdwspsj",visible:false},
+                                                {field:"bgqrsj",visible:false}
+                                                
+                                            ],
+                                            "url":  getRootPath()+"/bglxdba/getBglxdbaData.do",
+                                            /* "toolbar": [
+                                                {"name":"新增", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"addRow()"},
+                                                {"name":"删除", "classes":"btn bootstrap-table-delete", "type":"button", "onclick":"delRow()"},
+                                                {"name":"查看/修改", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"editRow()"},
+                                                {"name":"提交", "classes":"btn bootstrap-table-review", "type":"button", "onclick":"submitRow()"},
+                                                {"name":"核实", "classes":"btn bootstrap-table-verify", "type":"button", "onclick":"verify()"},
+                                                {"name":"退回", "classes":"btn bootstrap-table-disable", "type":"button", "onclick":"returnback()"}
+                                            ], */
+                                            "toolbar":toolbar,
+                                            "clickToSelect": true,
+                                            queryParams: queryParams,
+                                            searchbar:{
+							                    rownum:2,
+							                    labelwidth: "70px",
+							                    "inputs":[
+	                                                {title:"项目名称", name:"xmmc", type:"textBox",id:"xmmcid"},
+	                                                {title:"状态", name:"zt", type:"comboBox",id:"ztid",defaultValue:mrzt,localdata:[{id:1,text:'未备案'},{id:2,text:'已备案'}]}
+	                                                //{title:"查询", name:"", type:"plainText", plainText:'<button type="button" class="btn btn-primary btn-sm" onclick="searchByMcOrZt()">查询</button>', textAlign:"left"}
+	                                            ]
+							                }
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+            $.initPage(json);
+            if(yhlx==1){
+            	$("#ztid").comboBox("setValue",1);
+            }else if(yhlx==2){
+            	$("#ztid").comboBox("setValue",2);
+            }
+            dopenJson = [
+	            {
+	                "plug": [
+	                    {
+	                        "plug": [
+	                            {
+	                                "plug": [
+	                                    {
+	                                        "dtype":"html",
+	                                        "dragHtml":"<h4 class='text-center'>项目变更备案</h4><h5 class='text-center'>变更单号：<span id='bgid'></span></h5>"
+	                                    },
+	                                    {
+	                                        "dtype":"html",
+	                                        
+	                                        "dragHtml":dragHtml
+	                                    },
+	                                    {
+	                                        "dtype":"dform",
+	                                        "id":"openForm",
+	                                        "classes":"tableForm",
+	                                        "rownum":3,
+	                                        "labelwidth":"220px",
+	                                        "labelAlign":"center",
+	                                        "inputs":[
+	                                        	{title:"", name:"id", type:"hidden"},
+	                                        	{title:"", name:"bgdh", type:"hidden"},
+	                                            /* {title:"项目名称", name:"xmid", type:"comboBox",textField: 'xmmc',
+	                                            	valueField: 'id',
+							                        url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+							                        onChange:function(newValue,oldValue,itemData){
+							                        	selxmid = newValue;
+							                        	$("#comboxid")["comboBox"]("clear");
+							                        	$("#openForm").dform("setValueByName","gcmc","");
+											            $("#comboxid").comboBox("reload",{url:getRootPath()+"/htba/selectHtmcByXmid.do?xmid="+newValue});
+											            
+											        },onClickInput:function(a){
+                                                        a.comboBox("reload",{url:getRootPath()+"/sgtysba/selectXmmc.do"});
+                                                    }//,formatter:xsgcXmmc
+											    }, */
+											    {
+							                        title: '项目名称',
+							                        type: 'searchTree',
+							                        name: 'xmid',
+							                        searchOption: true,
+							                        isGetText: true,
+							                        getTextField: "searchTree_searchTree",
+							                        required:true,
+							                        url:getRootPath()+"/sgtysba/selectHxXmmc.do",
+							                        isleaf: true,
+							                        onlyLeaf:true,
+							                        modalTitle: '查找名称',
+							                        checkType: 'radio',
+							                        data:{
+														key : {name:"xmmc"},
+														simpleData :{
+															enable : true,
+															idKey : "id",
+														    pIdKey : "pid",
+														    rootPId : null
+														}
+											    	},onClickInput:function(a){
+                                                        a.searchTree("reload",{url:getRootPath()+"/sgtysba/selectXmmc.do"});
+                                                    },onChange:function(newValue,oldValue,itemData){
+                                                    	selxmid = newValue;
+							                        	$("#comboxid")["comboBox"]("clear");
+							                        	$("#openForm").dform("setValueByName","gcmc","");
+											            $("#comboxid").comboBox("reload",{url:getRootPath()+"/htba/selectHtmcByXmid.do?xmid="+newValue});
+                                                    }
+							                    },
+	                                            {title:"合同/协议名称", name:"htbaid", type:"comboBox",id:"comboxid",textField: 'HTMC',
+	                                            	valueField: 'ID',
+							                        url:getRootPath()+"/htba/selectHtmc.do",
+							                        onChange:function(newValue,oldValue,itemData){
+											            htbaid = newValue;
+											            setGcmc(newValue);
+											            getGsxxByXmid(newValue);
+											        }
+											    },
+	                                            {title:"工程名称", name:"gcmc", type:"textBox",id:"gcmcBoxId"},
+	                                            {title:"涉及增减预算造价（万元）", name:"sjzjzjys",id:"sjzjzjysid", type:"textBox",colspan: 1.5},
+	                                            {title:"本次变更占合同价比例（%）", name:"ljzhtjbl",id:"ljzhtjblid", type:"textBox",colspan: 1.5},
+	                                            {title:"累计变更占合同价比例（%）", name:"ljbgzhtjbl",id:"ljbgzhtjblid", type:"textBox",colspan: 1.5},
+	                                            {title:"累计占建安概算比例（%）", name:"ljzjagsbl",id:"ljzjagsblid", type:"textBox",colspan: 1.5},
+	                                            {title:"<br/>变更内容", name:"bgnr", type:"textBox",multiline:true,colspan: 3},
+	                                            //s{title:"变更id", name:"id", type:"hidden"}
+	                                            
+	                                        ]
+	                                    },
+	                                    {
+	                                        dtype: "dtable",
+	                                        sortable: false,
+	                                        sort:false,
+	                                        id:"tableDetail",
+	                                        height: 150,
+	                                        editable :true,
+	                                        data: [],
+	                                        url: "",
+	                                        clickToSelect:true,
+	                                        columns: [
+	                                        	 {radio: true, width: 20},  
+	                                        	 {field:"id",visible:false},
+	                                             
+	                                             {field:"gcfyid", id:"dygcfyid",title:"对应工程或者费用名称", width:120, align:"center",editor:{type:'comboBox',
+		                                             	textField: 'MC',
+		                                            	valueField: 'BM',
+		                                              	multiple: false,
+		                                              	//localdata:gcfyData,
+							                        	url:getRootPath()+"/sgtysba/selectGcfymc.do",
+							                        	onChange:function(newValue,oldValue,itemData){
+												            selgcfyid=newValue;
+												            selGsxxByFyidAndTzefl();
+												        },onClickInput:function(a){
+	                                                        a.comboBox("reload",{url:getRootPath()+"/bglxdba/selectGcfymcByXmid.do?xmid="+selxmid});
+	                                                    }
+						                            },formatter:xsgcfymc
+						                        },  
+	                                            {field:"tzefl", title:"投资分类", width:120, align:"center",editor:{type:'comboBox',
+		                                             	textField: 'MC',
+		                                            	valueField: 'BM',
+		                                              	multiple: false,
+		                                              	//localdata:gcfyData,
+							                        	url:getRootPath()+"/sgtysba/selectTzefl.do",
+							                        	onChange:function(newValue,oldValue,itemData){
+												            seltzefl=newValue;
+												            selGsxxByFyidAndTzefl();
+												        }
+						                            },formatter:xsgcTzefl
+						                        },
+	                                            {field:"gss", title:"概算数", width:120, type:'decimal',halign:'center',align:'right'},
+	                                            {field:"ysqje", title:"已使用概算", width:80, type:'decimal',halign:'center',align:'right'},
+	                                            {field:"ye", title:"余额", width:80, type:'decimal',halign:'center',align:'right'},
+	                                            {field:"bcbgje", title:"本次变更金额", width:80, align:"center",
+	                                            	editor:{type:'decimal',textAlign:'right',
+	                                            		onChange:function(n,o,i){
+	                                            			getSjzjyszj();
+	                                            		}
+	                                            	}
+	                                            },
+	                                            {field:"bz", title:"备注", width:120, align:"center",editor:{type:'textBox'}},
+	                                        ]
+	                                    },{
+	                                        "dtype":"dform",
+	                                        "id":"jsnrForm",
+	                                        "classes":"tableForm",
+	                                        "rownum":3,
+	                                        "labelwidth":"140px",
+	                                        "labelAlign":"center",
+	                                        "inputs":[
+	                                            {title:"提出单位", name:"tcdw", type:"textBox"},
+	                                            {title:"提出人", name:"tcr", type:"textBox"},
+	                                            {title:"提出时间", name:"tcsj", type:"dateBox",format: "yyyyMMdd"},
+	                                            {title:"建设单位经办人", name:"jsdwjbr", type:"textBox"},
+	                                            {title:"建设单位审批人", name:"jsdwspr", type:"textBox"},
+	                                            {title:"建设单位审批同意时间", name:"jsdwsptysj", type:"dateBox",format: "yyyyMMdd"},
+	                                            {title:"主管单位审批人", name:"zgdwspr", type:"textBox"},
+	                                            {title:"主管单位审批时间", name:"zgdwspsj", type:"dateBox",format: "yyyyMMdd"},
+	                                            {title:"变更确认时间", name:"bgqrsj", type:"dateBox",format: "yyyyMMdd"},
+	                                        ]
+	                                    },
+	                                    {
+	                                        "dtype":"html",
+	                                        "dragHtml":'<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button type="button" class="bootstrap-table-upload" id="scfjBtn" onclick="pageUploadFile()">上传附件</button>&nbsp;<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button></div>'
+	                                    },
+	                                    {
+	                                        "dtype": "dtable",
+	                                        "height": 250,
+	                                        "id":"uploadTable",
+	                                        editable :true,
+	                                        "clickToSelect": true,
+	                                        "url": "",
+	                                        "columns": [
+	                                        	{radio: true, width: 20},
+	                                        	{field : 'guid',title : 'guid',visible : false},
+	                                            {field:"xh", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+	                                            {field:"filename", title:"附件名", width:300, align:"center"},
+	                                            {field:"filedl", title:"附件大类", width:120, align:"center",type:'comboBox',selected: 1,localdata:[{id:7,text:"变更联系单备案"}],formatter:function(value,row,index){return "变更联系单备案";}},
+	                                            //{field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+	                                            {field:"filesize", title:"大小（KB）", width:80, align:"center",formatter:function(value,row,index){return formatSize(value)}},
+	                                            {
+													field : '',
+													title : '操作 ',
+													width : 100,
+													align : 'center',
+													formatter : function(value, row, index) {
+														return '<a href='+getRootPath()+'/file/downloadByid.do?id='+row.guid+'>下载</a>';							
+													}
+												}
+	                                            //{field:"filebz", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+	                                        ]
+	                                    }
+	                                ],
+	                                "colspan": "12",
+	                                "dtype": "column"
+	                            }
+	                        ],
+	                        "dtype": "row"
+	                    }
+	                ],
+	                "dtype": "body"
+	            }
+	        ];
+        });
+
+	
+		function queryParams(params){
+            return{
+                //如果需要后端进行分页 limit 和offset是必须参数
+                limit:params.limit,
+                offset:params.offset,
+            }
+        }
+        /* function getGsxxByXmid(xmid){
+        	$.dajax({
+               type:'post',
+               url: getRootPath()+"/sgtysba/getGsxxByXmid.do",
+               data:{
+               		xmid:xmid
+               },
+               dataType:'json',
+               success:function (data) {
+               		//$("#pfwhid").text="1111";
+               		$("#openForm").dform("setValueByName","gspfwh",data.gspfwh);
+               		$("#openForm").dform("setValueByName","gsztz",data.gsztz);
+               		$("#openForm").dform("setValueByName","gsjaztz",data.gsjaztz);
+                   //$("#frTableId").dtable("load",data);
+               }
+           })
+        } */
+        function editRow(){
+        	isEdit = 1;
+        	var data = $("#dataTableId").dtable("getSelections");
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else if(data.length>1){
+            	$.dalert({text:'最多只能选择一行数据',icon:7});
+                return;
+            }else{
+            	bglxdbaid = data[0].id;
+            	lchj = data[0].lchj;
+            	dopenIndex = $.dopen({
+	                type: 6,
+	                title :"项目变更备案",
+	                area: ["95%", "100%"],
+	                content: dopenJson,
+	                btn: ["关闭"]
+	            });
+	            var dataLen = $("#tableDetail").dtable("getData").length;
+				        $("#tableDetail").dtable("refreshOptions",{height:200+30*dataLen});
+	            $(".customInput input").each(function(){
+	                var $inp = $(this),
+	                    dtype = $inp.attr("type"),
+	                    options = $inp.data();
+	                $inp[dtype](options);
+	            });
+	            $("#openForm").dform('load',data[0]);
+	            $("#jsnrForm").dform('load',data[0]);
+	            $("#comboxid").comboBox("reload",{url:getRootPath()+"/htba/selectHtmcByXmid.do?xmid="+data[0].xmid});
+	            setGcmc(data[0].htbaid);
+	            
+	            $("#sjzjzjysid").textBox("setValue",data[0].sjzjzjys);
+	            $("#ljzhtjblid").textBox("setValue",data[0].ljzhtjbl);
+	            $("#ljzjagsblid").textBox("setValue",data[0].ljzjagsbl);
+	            /* 
+	            $("#openForm").dform("setValueByName","sjzjzjys",data[0].sjzjzjys);
+	        	$("#openForm").dform("setValueByName","ljzhtjbl",data[0].ljzhtjbl);
+	        	$("#openForm").dform("setValueByName","ljzjagsbl",data[0].ljzjagsbl); */
+	            $.dajax({
+                    type:'post',
+                    url:getRootPath()+'/bglxdba/selBglxdbamxByBglxdbaid.do',
+                    data:{bglxdbaid:data[0].id,xmid:data[0].xmid},
+                    dataType:'json',
+                    success:function (res) {
+                        if(res.length>0){
+                        	$("#tableDetail").dtable("load",res);
+                        	if(lchj=='-1'){
+                        		$("#tableDetail").tableEditor("initAll");
+                        	}
+                        }
+                    }
+                });
+                $.dajax({
+                    type:'post',
+                    url:getRootPath()+'/bglxdba/selBglxdbaFilesByBglxdbaid.do',
+                    data:{bglxdbaid:data[0].id},
+                    dataType:'json',
+                    success:function (res) {
+                        if(res.length>0){
+                        	$("#uploadTable").dtable("load",res);
+                        	if(lchj=='-1'){
+                        		$("#uploadTable").tableEditor("initAll");
+                        	}
+                        }
+                    }
+                });
+                selxmid = data[0].xmid;
+                getGsxxByXmid(data[0].htbaid);
+                $("#ljbgzhtjblid").textBox("setValue",((parseFloat(ljbgje)/parseFloat(gctzje))*100).toFixed(2));
+	            /* $('#sjzjzjysid').attr('disabled',true);
+	            $('#ljzhtjblid').attr('disabled',true);
+	            $('#ljzjagsblid').attr('disabled',true); */
+	            $("#sjzjzjysid").textBox("disable");
+	            $("#ljzhtjblid").textBox("disable");
+	            $("#ljzjagsblid").textBox("disable");
+	            $("#ljbgzhtjblid").textBox("disable");
+	        	$("#bgid").text(data[0].bgdh);
+	        	if(lchj!='-1'){
+	        		$("#openForm").dform("setReadonly", true);
+	        		$("#jsnrForm").dform("setReadonly", true);
+	        		disableButton(['addRowBtn','removeBtn','saveBtn','beianBtn','clearBtn','scfjBtn','deleteFileId']);
+	        	}
+            }
+        }
+        
+        function disableButton(arr) {
+	        $.each(arr,function (i,v) {
+	            $('#'+v).attr('disabled',true);
+	        })
+	    }
+	
+	    function enableButton(arr) {
+	        $.each(arr,function (i,v) {
+	            $('#'+v).attr('disabled',false);
+	        })
+	    }
+        
+        function addRow() {
+        	isEdit = 0;
+            dopenIndex = $.dopen({
+                type: 6,
+                title :"项目变更备案",
+                area: ["95%", "100%"],
+                content: dopenJson,
+                btn: ["关闭"]
+            });
+            $(".customInput input").each(function(){
+                var $inp = $(this),
+                    dtype = $inp.attr("type"),
+                    options = $inp.data();
+                $inp[dtype](options);
+            });
+            $("#sjzjzjysid").textBox("disable");
+            $("#ljzhtjblid").textBox("disable");
+            $("#ljzjagsblid").textBox("disable");
+            $("#ljbgzhtjblid").textBox("disable");
+        }
+
+        function clearForm(){
+            var formObj = $("#openForm");
+            formObj.dform("clear");
+            formObj.find(".customInput .form-control").each(function(){
+                var $input = $(this),
+                    dtype = $input.parents(".ztreeBox_inp").find(".valueBox").attr("boxtype");
+                $input[dtype]("clear");
+            })
+        }
+        function addRow1(){
+        	var $table = $("#tableDetail");
+            var dataLen = $table.dtable("getData").length;
+            $table.tableEditor("updateAll");
+            $table.dtable('insertRow', {index:dataLen, row:{}});
+			$table.dtable("refreshOptions",{height:200+30*dataLen});
+            //$table.tableEditor("init",dataLen);
+            $table.tableEditor("initAll");
+        }
+        function removRow1(){
+        	var $table = $("#tableDetail");
+            var selectData = getselectdata();
+            if(selectData != undefined){
+                layer.confirm('确定删除吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    var tableData = $table.dtable("getData");
+                    $table.tableEditor("updateAll");
+                    $.each(selectData, function(i){
+                        var dataIndex = tableData.indexOf(selectData[i]);
+                        $table.dtable("removeByRowIndex", dataIndex);
+                    });
+                    $table.tableEditor("updateAll");
+
+                    var dataLen = $table.dtable("getData").length;
+                    $table.dtable("refreshOptions",{height:200+30*dataLen});
+                    $table.tableEditor("initAll");
+
+                    layer.msg('删除成功', {icon: 1});
+                });
+            }
+        }
+        function getselectdata(){
+        	var dataArr = $("#tableDetail").dtable("getSelections");
+	        if (dataArr.length === 0) {
+	            $.dalert({text:"请选择数据",icon:7});
+	            return;
+	        }
+	        return dataArr;
+        }
+        function getSjzjyszj(){
+        	$("#tableDetail").tableEditor("updateAll");
+        	var tableData = $("#tableDetail").dtable("getData");
+        	var sjzjyszj = 0;
+        	var jabge = 0;
+        	for(var i=0;i<tableData.length;i++){
+        		sjzjyszj = sjzjyszj + parseFloat(tableData[i].bcbgje);
+        		if(tableData[i].tzefl==1||tableData[i].tzefl==2){
+        			jabge = jabge+parseFloat(tableData[i].bcbgje);
+        		}
+        	}
+        	ysje = sjzjyszj;
+        	
+        	$("#sjzjzjysid").textBox("setValue",parseFloat(sjzjyszj));
+            $("#ljzhtjblid").textBox("setValue",((parseFloat(sjzjyszj)/parseFloat(gctzje))*100).toFixed(2));
+            $("#ljzjagsblid").textBox("setValue",((parseFloat(jabge)/parseFloat(jatzje))*100).toFixed(2));
+        	$("#ljbgzhtjblid").textBox("setValue",((parseFloat(ljbgje)/parseFloat(gctzje))*100).toFixed(2));
+        	/* $("#openForm").dform("setValueByName","sjzjzjys",parseFloat(sjzjyszj));
+        	$("#openForm").dform("setValueByName","ljzhtjbl",((parseFloat(sjzjyszj)/parseFloat(gctzje))*100).toFixed(2));
+        	$("#openForm").dform("setValueByName","ljzjagsbl",((parseFloat(jabge)/parseFloat(jatzje))*100).toFixed(2)); */
+        }
+        function saveXmbgbaData(){
+        	if(isEdit == 1){
+        		if(bglxdbaid!=""&&bglxdbaid!=null){
+	        		$("#openForm").dform("setValueByName","id",bglxdbaid);
+	        	}
+        	}
+        	var openFormdata = $("#openForm").dform('getData');
+        	var jsnrFormData = $("#jsnrForm").dform('getData');
+        	$("#tableDetail").tableEditor("updateAll");
+        	var appData2 = $("#tableDetail").dtable("getData");
+        	$.each(appData2,function (i,v) {
+                 if(isNaN(v.gss)){
+                     v.gss = 0.00;
+                 }
+                 if(isNaN(v.ysqje)){
+                     v.ysqje = 0.00;
+                 }
+                 if(isNaN(v.ye)){
+                     v.ye = 0.00;
+                 }
+                 if(isNaN(v.bcbgje)){
+                     v.bcbgje = 0.00;
+                 }
+             });
+        	$.each(appData2,function (i,v) {
+                if(v.gss==''&&v.ysqje==''&&v.ye==''&&v.bcbgje==''){
+                    appData2.splice(i,1);
+                }
+            });
+            openFormdata.sjzjzjys = ysje;
+            openFormdata.bglxdbamx = appData2;
+            $("#uploadTable").tableEditor("updateAll");
+            var uploadTableData = $("#uploadTable").dtable("getData");
+            $.each(uploadTableData,function (i,v) {
+                if(v.filexl==''&&v.filebz==''&&v.fileid==''){
+                    uploadTableData.splice(i,1);
+                }
+            });
+            openFormdata.zfFile=uploadTableData;
+            $.dajax({
+               type:'post',
+               url:getRootPath()+'/bglxdba/saveXmbgbaData.do',
+               data:{
+               		content1:JSON.stringify([openFormdata]),
+               		content2:JSON.stringify([jsnrFormData])
+               	},
+               dataType:'json',
+               success:function (data) {
+                   if(data.success){
+                   		if(isEdit==1){
+                   			$.dalert({text:'修改成功',icon:1});
+                   		}else{
+                   			$.dalert({text:'保存成功',icon:1});
+                   		}
+                   		$("#openForm").dform("setValueByName","id",data.content);
+                   		$('#dataTableId').dtable('refresh');
+                   		//layer.close(dopenIndex);
+                   }else{
+                   		if(isEdit==1){
+                   			$.dalert({text:'修改失败',icon:2});
+                   		}else{
+                   			$.dalert({text:'保存失败',icon:2});
+                   		}
+                   }
+               }
+           })
+            
+        }
+        function pageUploadFile() {
+	        uploadfile({server: getRootPath()+'/file/uploader.do?filebstype=7'}, function (rowData) {
+	            var $table = $("#uploadTable"),
+	                dataLen = $table.dtable("getData").length;
+	            $table.tableEditor("updateAll");
+	            for (var i = 0; i < rowData.length; i++) {
+	                var data = {
+	                    filename: rowData[i].name,
+	                    filesize: rowData[i].size,
+	                    guid: rowData[i].fileId
+	                };
+	                $table.dtable("insertRow", {index: dataLen + i, row: data});
+	            }
+	            $table.tableEditor("initAll");
+	        });
+	    }
+        function setGcmc(htbaid){
+	        $.dajax({
+	            type:'post',
+	            url:getRootPath()+"/htba/selectHtbagcmc.do",
+	            dataType:'json',
+	            data:{htbaid:htbaid},
+	            async:false,
+	            success:function (data) {
+	            	$("#gcmcBoxId").textBox("setValue",data[0].gcmc);
+	                //$("#openForm").dform("setValueByName","gcmc",data[0].gcmc);
+	                htje = data[0].htje;
+	            }
+	        });
+        }
+        function getGsxxByXmid(xmid){
+        	$.dajax({
+	            type:'post',
+	            url:getRootPath()+"/bglxdba/getGsxxByXmid.do",
+	            dataType:'json',
+	            data:{xmid:xmid},
+	            async:false,
+	            success:function (data) {
+	                jatzje = data.jatzje;
+	                gctzje = data.gctzje;
+	                ljbgje = data.ljbgje;
+	            }
+	        });
+        }
+        function selGsxxByFyidAndTzefl(){
+        	
+	    	$.dajax({
+               type:'post',
+               url:getRootPath()+'/bglxdba/selGsxxByFyidAndTzefl.do',
+               data:{
+               		xmid:selxmid,
+               		gcfyid:selgcfyid,
+               		tzefl:seltzefl,
+               		htbaid:htbaid
+               },
+               dataType:'json',
+               success:function (data) {
+                   	var dataAll = $("#tableDetail").dtable("getData");
+					var dataSel = $("#tableDetail").dtable("getSelections");
+					if(dataSel.length>0){
+						var iIndex = dataAll.indexOf(dataSel[0]);
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"gcfyid",value:selgcfyid});
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"tzefl",value:seltzefl});
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"gss",value:data.gss});
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"ysqje",value:data.ysqje});
+						var ye = parseFloat(data.gss)-parseFloat(data.ysqje);
+						$("#tableDetail").dtable("updateCell",{index:iIndex,field:"ye",value:ye});
+					}
+					$("#tableDetail").tableEditor("initAll");
+               }
+           })
+	    }
+	    function xsgcXmmc(value, row, index){
+	    	var treeIdKey = "id", treeNameKey = "xmmc", res = "";
+	        $.each(xmmcData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function getHtmc(value, row, index){
+	    	var treeIdKey = "ID", treeNameKey = "HTMC", res = "";
+	        $.each(htmcData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function getHtGcmc(value, row, index){
+	    	var treeIdKey = "ID", treeNameKey = "GCMC", res = "";
+	        $.each(htmcData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function czrHx(value, row, index){
+	    	var treeIdKey = "guid", treeNameKey = "xm", res = "";
+	        $.each(yhxxData, function(key, val){
+	            if(val[treeIdKey] == value){
+	                res = val[treeNameKey];
+	                return res;
+	            }
+	        });
+	        return res;
+	    }
+	    function delRow(){
+        	var ids = '';
+			var data = $("#dataTableId").dtable("getSelections");
+			if(data.length==0){
+                $.dalert({text:'请至少选择一条数据',icon:7});
+                return;
+            }
+            var flag=true;
+            if(data.length>0){
+            	for(var i = 0;i<data.length;i++){
+            		ids +=data[i].id+",";
+            		if(data[i].lchj!=-1){
+            			flag=false;
+            		}
+            	}
+            }
+            if(flag){
+            	layer.confirm('确定删除吗？', {
+	                btn: ['确定','取消'] //按钮
+	            }, function(){
+	                $.dajax({
+	                    type:'post',
+	                    url:getRootPath()+'/bglxdba/deleteBglxdba.do',
+	                    data:{ids:ids.substring(0, ids.length-1)},
+	                    dataType:'json',
+	                    success:function (data) {
+	                        if(data.success){
+	                            $.dalert({text:'删除成功',icon:1});
+	                            $('#dataTableId').dtable('refresh');
+	                        }else{
+	                            $.dalert({text:'删除失败',icon:1});
+	                        }
+	                    }
+	                })
+	            });
+            }
+        }
+        function verify(){
+        	var ids = '';
+        	var data = $("#dataTableId").dtable("getSelections");
+        	var _list = new Array();
+        	
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else{
+            	for(var i=0;i<data.length;i++){
+        			_list.push(data[i].id);
+        		}
+            	$.dajax({
+	               type:'post',
+	               url:getRootPath()+'/bglxdba/submitSgtba.do',
+	               data:{
+	               		id:JSON.stringify(_list)
+	               },
+	               dataType:'json',
+	               success:function (data) {
+	                   if(data.success){
+	                   		$.dalert({text:'已核实',icon:1});
+	                   		$('#dataTableId').dtable('refresh');
+	                   		layer.close(dopenIndex);
+	                   }
+	               }
+	           })
+            }
+        }
+        
+        function submitRow(){
+        	var ids = '';
+        	var data = $("#dataTableId").dtable("getSelections");
+        	var _list = new Array();
+        	var flag = true;
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else{
+            	for(var i=0;i<data.length;i++){
+        			_list.push(data[i].id);
+        			if(data[i].lchj!='-1'){
+        				flag=false;
+        			}
+        		}
+        		if(flag){
+        			$.dajax({
+		               type:'post',
+		               url:getRootPath()+'/bglxdba/submitSgtba.do',
+		               data:{
+		               		id:JSON.stringify(_list)
+		               },
+		               dataType:'json',
+		               success:function (data) {
+		                   if(data.success){
+		                   		$.dalert({text:'已备案',icon:1});
+		                   		$('#dataTableId').dtable('refresh');
+		                   		layer.close(dopenIndex);
+		                   }
+		               }
+		           })
+        		}else{
+        			$.dalert({text:'已备案数据不能重复备案！',icon:5});
+        		}
+            	
+            }
+        } 
+        function returnback(){
+        	var ids = '';
+        	var data = $("#dataTableId").dtable("getSelections");
+        	var _list = new Array();
+        	
+        	if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else{
+            	for(var i=0;i<data.length;i++){
+        			_list.push(data[i].id);
+        		}
+            	$.dajax({
+	               type:'post',
+	               url:getRootPath()+'/bglxdba/returnback.do',
+	               data:{
+	               		id:JSON.stringify(_list)
+	               },
+	               dataType:'json',
+	               success:function (data) {
+	                   if(data.success){
+	                   		$.dalert({text:'已退回',icon:1});
+	                   		$('#dataTableId').dtable('refresh');
+	                   		layer.close(dopenIndex);
+	                   }
+	               }
+	           })
+            }
+        }
+        
+        function getFiledata(){
+        	var dataArr = $("#uploadTable").dtable("getSelections");
+	        if (dataArr.length === 0) {
+	            $.dalert({text:"请选择数据",icon:7});
+	            return;
+	        }
+	        return dataArr;
+        }
+	    
+	    function deleteFile(){
+	    	var data = $("#uploadTable").dtable("getSelections");
+        	if(data.length==0){
+                $.dalert({text:'请选择您要删除的附件',icon:7});
+                return;
+            }else{
+            	
+	           var $table = $("#uploadTable");
+	            var selectData = getFiledata();
+	            if(selectData != undefined){
+	                layer.confirm('确定删除吗？', {
+	                    btn: ['确定','取消'] //按钮
+	                }, function(){
+	                
+	                	$.dajax({
+			               type:'post',
+			               url:getRootPath()+'/file/deleteById.do',
+			               data:{
+			               		id:data[0].guid
+			               },
+			               dataType:'json',
+			               success:function (data) {
+			                   
+			                   var tableData = $table.dtable("getData");
+			                    $table.tableEditor("updateAll");
+			                    $.each(selectData, function(i){
+			                        var dataIndex = tableData.indexOf(selectData[i]);
+			                        $table.dtable("removeByRowIndex", dataIndex);
+			                    });
+			                    $table.tableEditor("updateAll");
+								$('#uploadTable').dtable('refresh');
+			                    /* var dataLen = $table.dtable("getData").length;
+			                    $table.dtable("refreshOptions",{height:200+30*dataLen});
+			                    $table.tableEditor("initAll"); */
+			
+			                    layer.msg('删除成功', {icon: 1});
+			               }
+			           })
+	                
+	                    
+	                });
+	            }
+            }
+	    }
+	    
+	    function xsgcfymc(value, row, index) {
+            var treeIdKey = "BM", treeNameKey = "MC", res = "";
+            $.each(gcfyData, function(key, val){
+                if(val[treeIdKey] == value){
+                    res = val[treeNameKey];
+                    return res;
+                }
+            });
+            return res;
+        }
+        
+        function xsgcTzefl(value, row, index){
+            var treeIdKey = "BM", treeNameKey = "MC", res = "";
+            $.each(tzeflData, function(key, val){
+                if(val[treeIdKey] == value){
+                    res = val[treeNameKey];
+                    return res;
+                }
+            });
+            return res;
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

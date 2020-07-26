@@ -1,0 +1,1658 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <title>webuploader</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+</head>
+<script>
+
+$(function() {
+    var uploader = $("#uploader").webupload({
+        isDel: true,
+        previewTarget:"parent",
+        defaultView: "detailList",
+        server: '../plugins/webuploader/webuploader.json',//用于提交文件
+        dataUrl: '../plugins/webuploader/filesList.json',//已上传的文件数据
+        delUrl: '../plugins/webuploader/webuploader.json',
+        downloadUrl: '../plugins/webuploader/webuploader.json',
+        onLoaded: function (obj) {
+            $(this).webupload("loadData", obj.options.dataUrl)
+        }
+    });
+
+    $("#uploader2").webupload({
+        singleMode:true,
+        isDel: true,
+        previewTarget:"parent",
+        server: '../plugins/webuploader/webuploader.json',//用于提交文件
+        dataUrl: '../plugins/webuploader/filesList.json',//已上传的文件数据
+        delUrl: '../plugins/webuploader/webuploader.json',
+        downloadUrl: '../plugins/webuploader/webuploader.json',
+        onLoaded: function (obj) {
+            $(this).webupload("loadData", obj.options.dataUrl)
+        }
+    });
+});
+
+function readonly(){
+    $("#uploader").webupload("readonly");
+}
+function disable(){
+    $("#uploader").webupload("disable");
+}
+function enable(){
+    $("#uploader").webupload("enable");
+}
+function destroy(){
+    $("#uploader").webupload("destroy");
+}
+function clearFile(){
+    $("#uploader").webupload("clear");
+}
+function setValue(){
+    $("#uploader").webupload("setValue", 'ccc,ddd');
+}
+function getValue(){
+    alert($("#uploader").webupload("getValue"));
+}
+function getData(){
+    alert($("#uploader").webupload("getData"));
+    // console.log($("#uploader").webupload("getData"))
+}
+function setDisabled(){
+    $("#uploader").webupload("setDisabled", true);
+}
+function setEnable(){
+    $("#uploader").webupload("setDisabled", false);
+}
+</script>
+</head>
+<body>
+    <section class="parser container-fluid">
+        <div class="page-header"><h1>语法解析</h1></div>
+        <h4 id="a1">使用方法</h4>
+        <pre>
+            <ol style="margin-bottom:10px;display:table">
+                <li>//html部分</li>
+                <li><span>&lt;div id="uploader" class="uploader"&gt;&lt;/div&gt;</span></li>
+            </ol>
+            <ol style="display:table">
+                <li>//js部分</li>
+                <li><span>$("#uploader").webupload({</span></li>
+                <li><span>    server: '../plugins/webuploader/webuploader.json',</span></li>
+                <li><span>    dataUrl: '../plugins/webuploader/filesList.json'</span></li>
+                <li><span>})</span></li>
+            </ol>
+        </pre>
+        <div class="tableBox">
+            <div class="tableBox-left">
+                <!--<h4 id="a3"></h4>-->
+                <div class="table">
+                    <div class="table-tr" id="a3_tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="table-th" style="width: 25%;">
+                                        名称
+                                    </div>
+                                    <div class="table-th" style="width: 15%;">
+                                        类型
+                                    </div>
+                                    <div class="table-th" style="width: 40%;">
+                                        描述
+                                    </div>
+                                    <div class="table-th" style="width: 20%;">
+                                        默认值
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        isDel
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        是否显示删除按钮
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        true
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        previewTarget
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        预览图片时图片打开位置，默认"self"为本页面，设置为“parent”则在父级页面打开
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        self
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        isDownload
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        是否显示下载按钮
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        true
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        defaultView
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        默认视图，值：bigPic——大图展示、detailList——列表展示
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        bigPic
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        dataUrl
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        已提交的文件信息
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        delUrl
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        用于删除文件
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        downloadUrl
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        用于下载文件
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        fileIdKey
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        上传文件时返回的用于保存文件id的属性
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        fileId
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        listHeight
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Number
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        固定文件列表的高度，超出部分滚动
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        null
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        server
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        文件提交路径
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        singleMode
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        单文件上传
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        flashUrl
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        浏览器没有安装flash时提供安装路径
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        dnd
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Selector
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        指定Drag And Drop拖拽的容器，如果不指定，则不启动
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        disableGlobalDnd
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Selector
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        是否禁掉整个页面的拖拽功能，如果不禁用，图片拖进来的时候会默认被浏览器打开
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        paste
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Selector
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        指定监听paste事件的容器，如果不指定，不启用此功能。此功能为通过粘贴来添加截屏的图片。建议设置为document.body
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        thumbnailWidth
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Number
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        缩略图宽度
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        thumbnailHeight
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Number
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        缩略图高度
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        pick
+                                    </div>
+                                    <div class="sub-table-td"  style="width: 75%;">
+                                        <div class="sub-table-th">
+                                            <div class="sub-table-td ">
+                                                Selector, Object
+                                            </div>
+                                            <div class="sub-table-td">
+                                                指定选择文件的按钮容器，不指定则不创建按钮
+                                            </div>
+                                        </div>
+                                        <div class="sub-table-th">
+                                            <p style="color:#f93;text-align: left;">例如：</p>
+                                            <div class="pre">
+                                                <ol style="display:table">
+
+                                                    <li><span>pick:{</span></li>
+
+                                                    <li><span>    id: ".filePicker", //{Seletor|dom} 指定选择文件的按钮容器，不指定则不创建按钮。注意 这里虽然写的是 id, 但是不是只支持 id, 还支持 class, 或者 dom 节点</span></li>
+
+                                                    <li><span>    label: "", //{String} 请采用 innerHTML 代替</span></li>
+
+                                                    <li><span>    innerHTML: "点击选择文件", //{String} 指定按钮文字。不指定时优先从指定的容器中看是否自带文字。</span></li>
+
+                                                    <li><span>    multiple: true/false //{Boolean} 是否开起同时选择多个文件能力。</span></li>
+
+                                                    <li><span>}</span></li>
+
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        accept
+                                    </div>
+                                    <div class="sub-table-td"  style="width: 75%;">
+                                        <div class="sub-table-th">
+                                            <div class="sub-table-td">
+                                                Array
+                                            </div>
+                                            <div class="sub-table-td">
+                                                指定接受哪些类型的文件
+                                            </div>
+                                        </div>
+                                        <div class="sub-table-th">
+                                            <p style="color:#f93;text-align: left;">例如：</p>
+                                            <div class="pre">
+                                                <ol style="display:table">
+                                                    <li><span>accept:{</span></li>
+                                                    <li><span>    title : "Image", //{String} 文字描述</span></li>
+                                                    <li><span>    extensions: "gif,jpg,jpeg,bmp,png", //{String} 允许的文件后缀，不带点，多个用逗号分割</span></li>
+                                                    <li><span>    mimeTypes: "image/*" //{String} 多个用逗号分割</span></li>
+                                                    <li><span>}</span></li>
+                                                    <li><b style="color:#f00; font-size:14px;">『mimeType类型可参考 <a href="http://www.w3school.com.cn/media/media_mimeref.asp" target="_blank">MIME 参考手册</a>』</b></li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr" style="width: 100%">
+
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        thumb
+                                    </div>
+                                    <div class="sub-table-td" style="width: 75%;">
+                                        <div class="sub-table-th">
+                                            <div class="sub-table-td">
+                                                Object
+                                            </div>
+                                            <div class="sub-table-td">
+                                                配置生成缩略图的选项
+                                            </div>
+                                        </div>
+                                        <div class="sub-table-th">
+                                            <p style="color:#f93;text-align: left;">例如：</p>
+                                            <div class="pre">
+                                                <ol style="display:table">
+                                                    <li><span>thumb:{</span></li>
+                                                    <li><span>    width: 110,</span></li>
+                                                    <li><span>    height: 110,</span></li>
+                                                    <li><span>    quality: 70, //图片质量，只有type为'image/jpeg'的时候才有效</span></li>
+                                                    <li><span>    allowMagnify: true, //是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false</span></li>
+                                                    <li><span>    crop: true, //是否允许裁剪</span></li>
+                                                    <li><span>    type: 'image/jpeg' //为空的话则保留原有图片格式。否则强制转换成指定的类型</span></li>
+                                                    <li><span>}</span></li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        compress
+                                    </div>
+                                    <div class="sub-table-td"  style="width: 75%;">
+                                        <div class="sub-table-th">
+                                            <div class="sub-table-td">
+                                                Object
+                                            </div>
+                                            <div class="sub-table-td">
+                                                配置压缩的图片的选项。如果此选项为false, 则图片在上传前不进行压缩
+                                            </div>
+                                        </div>
+                                        <div class="sub-table-th">
+                                            <p style="color:#f93;text-align: left;">例如：</p>
+                                            <div class="pre">
+                                                <ol style="display:table">
+                                                    <li><span>compress:{</span></li>
+                                                    <li><span>    width: 1600,</span></li>
+                                                    <li><span>    height: 1600,</span></li>
+                                                    <li><span>    quality: 90, //图片质量，只有type为'image/jpeg'的时候才有效</span></li>
+                                                    <li><span>    allowMagnify: false, //是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false</span></li>
+                                                    <li><span>    crop: false, //是否允许裁剪</span></li>
+                                                    <li><span>    preserveHeaders: true, //是否保留头部meta信息</span></li>
+                                                    <li><span>    noCompressIfLarger: false, //如果发现压缩后文件大小比原来还大，则使用原来图片.此属性可能会影响图片自动纠正功能</span></li>
+                                                    <li><span>    compressSize: 0 //单位字节，如果图片大小小于此值，不会采用压缩。</span></li>
+                                                    <li><span>}</span></li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        auto
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        设置为 true 后，不需要手动调用上传，有文件选择即开始上传
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        runtimeOrder
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Object
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        指定运行时启动顺序。默认会想尝试 html5 是否支持，如果支持则使用 html5, 否则则使用 flash
+                                        <br />可以将此值设置成 flash，来强制使用 flash 运行时
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        html5,flash
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        prepareNextFile
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        是否允许在文件传输时提前把下一个文件准备好。 对于一个文件的准备工作比较耗时，比如图片压缩，md5序列化。 如果能提前在当前文件传输期处理，可以节省总体耗时。
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        chunked
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        是否要分片处理大文件上传
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        chunkSize
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        如果要分片，分多大一片？ 默认大小为5M
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        5242880
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        chunkRetry
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        如果某个分片由于网络问题出错，允许自动重传多少次？
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        2
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        threads
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        上传并发数。允许同时最大上传进程数
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        3
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        formData
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Object
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        文件上传请求的参数表，每次发送都会发送此对象中的参数
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        {}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        fileVal
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Object
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        file
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        设置文件上传域的name
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        method
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Object
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        文件上传方式，POST或者GET
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        POST
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        sendAsBinary
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Object
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        是否已二进制的流的方式发送文件，这样整个上传内容php://input都为文件内容， 其他参数在$_GET数组中
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        fileNumLimit
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Int
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        验证文件总数量, 超出则不允许加入队列
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        fileSizeLimit
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Int
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        验证文件总大小是否超出限制, 超出则不允许加入队列
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        fileSingleSizeLimit
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Int
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        验证单个文件大小是否超出限制, 超出则不允许加入队列
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        duplicate
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        去重，根据文件名字、文件大小和最后修改时间来生成hash Key
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        disableWidgets
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        String, Array
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        默认所有 Uploader.register 了的 widget 都会被加载，如果禁用某一部分，请通过此 option 指定黑名单
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onExceedFileNum
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Function
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        undefined
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        hoverTips
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        Boolean/String
+                                    </div>
+                                    <div class="sub-table-td" style="width: 40%;">
+                                        鼠标上移会出现提示信息，配置字符串
+                                    </div>
+                                    <div class="sub-table-td" style="width: 20%;">
+                                        false
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onLoaded
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        uploader：返回的uploader对象
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        组件加载完成后触发事件
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onBeforeFileQueued
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当文件被加入队列之前触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onFileQueued
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当文件被加入队列以后触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onFilesQueued
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        files
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当一批文件添加进队列以后触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onFileDequeued
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当文件被移除队列后触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onReset
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;"></div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当 uploader 被重置的时候触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onStartUpload
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;"></div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当开始上传流程时触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onStopUpload
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;"></div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当开始上传流程暂停时触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadFinished
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;"></div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当所有文件上传结束时触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadStart
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        某个文件开始上传前触发，一个文件只会触发一次
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadBeforeSend
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        object, data, header
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当某个文件的分块在发送前触发，主要用来询问是否要添加附带参数，大文件在开起分片上传的前提下此事件可能会触发多次
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadAccept
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        object, ret
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当某个文件上传到服务端响应后，会派送此事件来询问服务端响应是否有效
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadProgress
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file, percentage
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        上传过程中触发，携带上传进度
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadError
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file, reason
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当文件上传出错时触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadSuccess
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file, response
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        当文件上传成功时触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onUploadComplete
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        file
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        不管成功或者失败，文件上传完成时触发
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-tr">
+                        <div class="table-td">
+                            <div class="sub-table">
+                                <div class="sub-table-tr">
+                                    <div class="sub-table-td" style="width: 25%;">
+                                        onError
+                                    </div>
+                                    <div class="sub-table-td" style="width: 15%;">
+                                        type
+                                    </div>
+                                    <div class="sub-table-td" style="width: 60%;">
+                                        验证不通过返回的错误
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tableBox-right">
+                <div class="table">
+                    <div class="table">
+                        <div class="table-tr" id="a4">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 100%;">
+                                            方法：
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr" id="a4_tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="table-th" style="width: 25%;">
+                                            名称
+                                        </div>
+                                        <div class="table-th" style="width: 15%;">
+                                            类型
+                                        </div>
+                                        <div class="table-th" style="width: 60%;">
+                                            描述
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 25%;">setDisabled</div>
+                                        <div class="sub-table-td" style="width: 15%;">true / false</div>
+                                        <div class="sub-table-td" style="width: 60%;">禁用/启用 表单内所有表单元素（禁用后使用getData无法获取表单数据）</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 25%;">setValue</div>
+                                        <div class="sub-table-td" style="width: 15%;">string</div>
+                                        <div class="sub-table-td" style="width: 60%;">设值，参数为fileId的字符串<br>需要配置dataUrl获取所有已上传的文件 才能设置指定值</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 25%;">getValue</div>
+                                        <div class="sub-table-td" style="width: 15%;">null</div>
+                                        <div class="sub-table-td" style="width: 60%;">取值</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 25%;">getData</div>
+                                        <div class="sub-table-td" style="width: 15%;">null</div>
+                                        <div class="sub-table-td" style="width: 60%;">获取所有已上传文件</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 25%;">destroy</div>
+                                        <div class="sub-table-td" style="width: 15%;">null</div>
+                                        <div class="sub-table-td" style="width: 60%;">销毁组件</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-tr">
+                            <div class="table-td">
+                                <div class="sub-table">
+                                    <div class="sub-table-tr">
+                                        <div class="sub-table-td" style="width: 25%;">clear</div>
+                                        <div class="sub-table-td" style="width: 15%;">null</div>
+                                        <div class="sub-table-td" style="width: 60%;">清除数据</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4 id="a5">案例:</h4>
+
+        <div style="margin:10px 0;">
+            <!--<button class="btn btn-primary" onclick="readonly()">只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn9">查看代码</button> |-->
+            <button class="btn btn-primary btn-xs" onclick="disable()">禁用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button> |
+            <button class="btn btn-primary btn-xs" onclick="enable()">启用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button> |
+
+            <button class="btn btn-primary btn-xs" type="button" onclick="setDisabled()">设置禁用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn14">查看代码</button> |
+            <button class="btn btn-primary btn-xs" type="button" onclick="setEnable()">设置启用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn15">查看代码</button> |
+            <br><br>
+            <button class="btn btn-primary btn-xs" onclick="destroy()">销毁</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn5">查看代码</button> |
+            <button class="btn btn-primary btn-xs" onclick="clearFile()">清除数据</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn6">查看代码</button> |
+            <button class="btn btn-primary btn-xs" onclick="setValue()">设值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn7">查看代码</button> |
+            <button class="btn btn-primary btn-xs" onclick="getValue()">取值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn8">查看代码</button>
+            <button class="btn btn-primary btn-xs" onclick="getData()">获取所有已上传的数据</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn16">查看代码</button>
+        </div>
+
+        <h4>案例1：&emsp;<button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn1">查看代码</button></h4>
+        <div id="uploader"></div>
+        <br>
+        <h4>案例2：单个文件上传模式，设置 <span style="color:#f00;">singleMode:true</span> &emsp;<button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn2">查看代码</button></h4>
+        <div id="uploader2"></div>
+    </section>
+
+    <div class="target">
+        <div class="sideBarLink">
+            目录
+        </div>
+        <div class="sideBar">
+
+            <div class="siteDir">
+                <div class="dir-title">
+                    目录
+                    <button type="button" class="close" aria-label="Close">
+                    </button>
+                </div>
+                <div class="dir-list">
+                    <ul id="dir_tree"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $(".sideBarLink").on({
+                mouseenter:function () {
+                    var left = $(".sideBar").offset().left,
+                        clientWidth = $(window).width();
+                    if(Math.round(left) == clientWidth){
+                        $(".sideBar").animate({right: 5},'slow')
+                        $(this).animate({right: $(".sideBar").width()+5 },'slow')
+                    }
+                },
+                click:function () {
+                    var left = $(".sideBar").offset().left,
+                        clientWidth = $(window).width();
+                    if(Math.round(left) == clientWidth){
+                        $(".sideBar").animate({right: 20},'slow')
+                        $(this).animate({right: $(".sideBar").width()+20 },'slow')
+                    }else {
+                        $(".sideBar").animate({right:-180},'slow')
+                        $(this).animate({right: 0},'slow')
+                    }
+                }
+            })
+            var debounce = function debounce(fn, wait) {
+                var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+                var timer = 0,
+                    startTimeStamp = 0;
+                var context =  0,
+                    args = 0;
+
+                var run = function run(timerInterval) {
+                    timer = setTimeout(function () {
+                        var now = new Date().getTime();
+                        var interval = now - startTimeStamp;
+                        if (interval < timerInterval) {
+                            // the timer start time has been reset，so the interval is less than timerInterval
+                            startTimeStamp = now;
+                            run(timerInterval - interval); // reset timer for left time
+                        } else {
+                            if (!immediate) {
+                                fn.apply(context, args);
+                            }
+                            clearTimeout(timer);
+                            timer = null;
+                        }
+                    }, timerInterval);
+                };
+
+                return function () {
+                    context = this;
+                    args = arguments;
+                    var now = new Date().getTime();
+                    startTimeStamp = now; // set timer start time
+
+                    if (!timer) {
+                        if (immediate) {
+                            fn.apply(context, args);
+                        }
+                        run(wait); // last timer alreay executed, set a new timer
+                    }
+                }();
+            };
+            $(".target").on({
+                mouseleave:function () {
+                    debounce(function () {
+                        $(".sideBar").stop().animate({right:-180})
+                        $(".sideBarLink").stop().animate({right: 0})
+                    },100)
+                }
+            })
+            function addEleId(ele) {
+                var i = 0;
+                $('#' + ele + '_tr').parent().find(".sub-table-tr").map(function (index, value) { //a3_tr_1
+                    $(this).attr('id', ele + "_tr_" + (++i));
+                })
+            }
+            addEleId('a2');//传入参数a2
+            addEleId('a3');//传入参数a3
+            addEleId('a4');//传入参数a4
+            function createObject(ele) { //创建一个对象，{id:3, pId:0, name:"方法", url:"#a4", target:"_self"}
+                var gdatastring = [];
+                var gdata = {
+                    arg: {},
+                    i: 3,
+                    sumarg: [],
+                    glength: $('#a' + ele + '_tr').parent().find('.sub-table-tr').length,
+                    gseriesinfo: function () {
+                        var sumarg = [];
+                        for (; gdata.i <= gdata.glength; gdata.i++) {
+                            gdata.arg.id = ele.toString() + gdata.i;
+                            gdata.arg.pId = ele;
+                            gdata.arg.name = $('#a' + ele + '_tr_' + gdata.i).find('.sub-table-td:first').html();
+                            gdata.arg.url = '#a' + ele + '_tr_' + gdata.i;
+                            gdata.arg.target = '_self';
+                            sumarg.push(JSON.stringify(gdata.arg));
+                        }
+                        return sumarg;
+                    }
+                }
+                gdata.gseriesinfo().map(function (i,v) {
+                    gdatastring.push(JSON.parse(i));
+                });
+                return gdatastring;
+            } //动态生成对象
+            $("#dir_tree").tree({
+                localdata: [
+                    {id:1, pId:0, name:"用法 & 数据格式", url:"#a1", target:"_self"},
+                    {id:3, pId:0, name:"原有属性", url:"#a3", target:"_self"},
+                    {id:2, pId:0, name:"新增属性", url:"#a2", target:"_self"},
+                    {id:4, pId:0, name:"方法", url:"#a4", target:"_self"},
+                    {id:5, pId:0, name:"案例", url:"#a5", target:"_self"}
+                ].concat(createObject(2),createObject(3),createObject(4)),
+                checkType:'nocheck',
+                view: {
+                    showIcon: false
+                },
+                data : { // 必须使用data
+                    simpleData : {
+                        enable : true,
+                        idKey : "id", // id编号命名 默认
+                        pIdKey : "pId", // 父id编号命名 默认
+                        rootPId : 0
+                    },
+                    key: {
+                        url: "url"
+                    }
+                },
+                callback:{
+                    clickNode : function(e,treeId,treeNode,clickFlag){
+                        var ztree = $("#"+treeId).tree("getTree");
+                        ztree.expandNode(treeNode);
+                        hashLoadClass()
+                    }
+                }
+            });
+            hashLoadClass()
+            function hashLoadClass() {
+                setTimeout(function () {
+                    var id = location.hash;
+                    if(id){
+                        $(".sub-table-tr").each(function (i) {
+                            if('#'+$(this).attr("id") == id){
+                                $(this).addClass("active");
+                            }else {
+                                $(this).removeClass("active");
+                            }
+                        })
+
+                    }
+                },100)
+
+            }
+        })
+    </script>
+
+    <br><br><br><br>
+    <div style="width:1px;height:1px;overflow:hidden;">
+    <textarea id="copyTarget1">
+        $("#uploader").webupload({
+            isDel: true,
+            previewTarget:"parent",
+            defaultView: "detailList",
+            server: '../plugins/webuploader/webuploader.json',//用于提交文件
+            dataUrl: '../plugins/webuploader/filesList.json',//已上传的文件数据
+            delUrl: '../plugins/webuploader/webuploader.json',
+            downloadUrl: '../plugins/webuploader/webuploader.json',
+            onLoaded: function (obj) {
+                $(this).webupload("loadData", obj.options.dataUrl)
+            }
+        });
+    </textarea>
+    <textarea id="copyTarget2">
+        $("#uploader2").webupload({
+            singleMode:true,
+            isDel: true,
+            previewTarget:"parent",
+            server: '../plugins/webuploader/webuploader.json',//用于提交文件
+            dataUrl: '../plugins/webuploader/filesList.json',//已上传的文件数据
+            delUrl: '../plugins/webuploader/webuploader.json',
+            downloadUrl: '../plugins/webuploader/webuploader.json',
+            onLoaded: function (obj) {
+                $(this).webupload("loadData", obj.options.dataUrl)
+            }
+        });
+    </textarea>
+
+    <textarea id="copyTarget3">
+        function disable(){
+            $("#uploader").webupload("disable");
+        }
+    </textarea>
+    <textarea id="copyTarget4">
+        function enable(){
+            $("#uploader").webupload("enable");
+        }
+    </textarea>
+    <textarea id="copyTarget5">
+        function destroy(){
+            $("#uploader").webupload("destroy");
+        }
+    </textarea>
+    <textarea id="copyTarget6">
+        function clearFile(){
+            $("#uploader").webupload("clear");
+        }
+    </textarea>
+    <textarea id="copyTarget7">
+        function setValue(){
+            $("#uploader").webupload("setValue", 'ccc,ddd');
+        }
+    </textarea>
+        <textarea id="copyTarget8">
+        function getValue(){
+            alert($("#uploader").webupload("getValue"));
+        }
+    </textarea>
+    <textarea id="copyTarget9">
+        function readonly(){
+            alert($("#uploader").webupload("readonly"));
+        }
+    </textarea>
+    <textarea id="copyTarget14">
+    function setDisabled(){
+        $("#uploader").webupload("setDisabled", true);
+    }
+    </textarea>
+    <textarea id="copyTarget15">
+    function setEnable(){
+        $("#uploader").webupload("setDisabled", false);
+    }
+    </textarea>
+    <textarea id="copyTarget16">
+    $("#uploader").webupload("getData");
+    </textarea>
+    </div>
+    <script>
+        $(function(){
+            $(".copyBtn").on("click", function(){
+                var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+                var target = $("#copyTarget"+ num);
+                $.dopen({
+                    title: "查看代码",
+                    content: "<pre>"+ target.html() +"</pre>",
+                    area: ["1000px", "auto"],
+                    btn: ["复制", "取消"],
+                    btn1: function(index){
+                        var res = $.copyToClipboard(target.get(0));
+                        if(res){
+                            layer.msg('复制成功', {time: 2000});
+                            layer.close(index);
+                        }else{
+                            layer.msg('复制失败，请手动复制', {time: 2000});
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+
+</body>
+
+
+</html>

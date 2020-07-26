@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>票据拖拽打印</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <style>
+        /*.printArea{width:190mm !important; height:100mm !important;}*/
+        @media print {
+            .printWrap{border:none !important;}
+            @page {
+                size: 215mm 120mm;
+            }
+        }
+    </style>
+    <script>
+        $(function () {
+            $("#billPrint").billPrint({
+                bgUrl:"../plugins/billPrint/billTempBg.jpg",
+                defaultValue: '<div id="printModel" class="printWrap" style="width: 720px; height: 358px; margin: auto;"><div class="bg noPrint printArea"><img src="../plugins/billPrint/billTempBg.jpg" class="bgImg"></div><div class="nodesArea printArea" style="width: 718px; height: 356px; position: absolute;"><div class="txtNode" style="position: absolute; left: 86px; top: 132px; width: 150px; height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>科目1</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute; left: 86px; top: 159px; width: 150px; height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode2_txt"><p>科目2</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute; left: 504px; top: 128px; width: 150px; height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode3_txt"><p>1212</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute; left: 507px; top: 157px; width: 150px; height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode4_txt"><p>12</p></div><div class="resizeBtn"></div></div></div></div>'
+            });
+        });
+
+        function changeBg(){
+            $("#billPrint").billPrint("changeBg", "../plugins/billPrint/billTemp.jpg");
+        }
+        function addNode(){
+            $("#billPrint").billPrint("addTxtNode", {text:"node"});
+        }
+        function save(){
+            console.log($("#billPrint").billPrint("getValue"))
+        }
+        function readonly(){
+            $("#billPrint").billPrint("readonly");
+        }
+        function edit(){
+            $("#billPrint").billPrint("editPage");
+        }
+
+        function doPrint(){
+             $(".bill").billPrint("doPrint");
+        }
+
+        $(function () {
+            var cons = '<div class="printWrap" style="width: 720px; height: 358px;  margin: auto;"><div class="bg noPrint printArea"><img src="../plugins/billPrint/billTempBg.jpg" class="bgImg"></div><div class="nodesArea printArea" style="width: 718px;  position: absolute;"><div class="txtNode" style="position: absolute;left: 504px;top: 132px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>￥1000</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 504px;top: 157px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>￥2000</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 513px;top: 266px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode2_txt">叁仟元整</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 500px;top: 293px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode3_txt">测试员</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 88px;top: 132px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font"id="txtNode4_txt">某某科目</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 89px;top: 160px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode5_txt">某某科目</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 120px;top: 80px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode6_txt">某某单位</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 425px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode7_txt">11</div><div class="resizeBtn"></div></div><div class="txtNode"style="position: absolute;left: 390px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode8_txt">11</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 332px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode8_txt">2018</div><div class="resizeBtn"></div></div></div></div>';
+            $(".bill").billPrint({
+                bgUrl:"../plugins/billPrint/billTempBg.jpg",
+                defaultValue: cons
+            });
+        })
+
+        function preview() {
+            var con = $("#billPrint").billPrint("getValue");
+            $(".bill").billPrint("setValue", { preContent:con});
+        }
+        function previewDefult() {
+            var cons = '<div class="printWrap" style="width: 720px;  height: 358px;  margin: auto;"><div class="bg noPrint printArea"><img src="../plugins/billPrint/billTempBg.jpg" class="bgImg"></div><div class="nodesArea printArea" style="width: 718px;  position: absolute;"><div class="txtNode" style="position: absolute;left: 504px;top: 132px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>￥1000</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 504px;top: 157px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>￥2000</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 513px;top: 266px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode2_txt">叁仟元整</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 500px;top: 293px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode3_txt">测试员</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 88px;top: 132px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font"id="txtNode4_txt">某某科目</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 89px;top: 160px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode5_txt">某某科目</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 120px;top: 80px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode6_txt">某某单位</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 425px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode7_txt">11</div><div class="resizeBtn"></div></div><div class="txtNode"style="position: absolute;left: 390px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode8_txt">11</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 332px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode8_txt">2018</div><div class="resizeBtn"></div></div></div></div>'
+            $(".bill").billPrint("setValue", { preContent:cons});
+        }
+
+    </script>
+</head>
+<body>
+<section class="parser spacetop noPrint">
+    <div class="page-header"><h1>票据打印组件</h1></div>
+    <h4>打印纸张大小（在style标签中加入以下样式，size根据纸张大小修改）：</h4>
+    <pre style="padding: 0; height:120px;">
+        <ol style="display:table">
+            <li><span>@media print {</span></li>
+            <li><span>    @page {</span></li>
+            <li><span>        size:215mm 308mm;</span></li>
+            <li><span>    }</span></li>
+            <li><span>}</span></li>
+        </ol>
+    </pre>
+    <h4>属性：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>bgUrl</td><td>String</td><td>更换票据背景图片</td><td></td></tr>
+        <tr><td>edit</td><td>Boolean</td><td>是否默认可编辑</td><td>true</td></tr>
+        <tr><td>defaultValue</td><td>String</td><td>默认值</td><td></td></tr>
+        </tbody>
+    </table>
+    <h4>方法：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>描述</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>doPrint</td><td>打印操作</td></tr>
+        <tr><td>changeBg</td><td>参数String-图片路径，用于切换票据背景图</td></tr>
+        <tr><td>addTxtNode</td><td>
+            新增文字节点
+            <pre style="padding: 0;">
+                <ol style="display:table">
+                    <li><span>$("#billPrint").billPrint("addTxtNode", {</span></li>
+                    <li><span>    text: "新增",</span></li>
+                    <li><span>    width: 150,</span></li>
+                    <li><span>    height: 30,</span></li>
+                    <li><span>    left: 30,</span></li>
+                    <li><span>    top: 30</span></li>
+                    <li><span>    toolbar: [] //toolbar省略时默认显示编辑工具栏；设置为空数组时不显示工具栏</span></li>
+                    <li><span>});</span></li>
+                </ol>
+                <ol style="display:table">
+                    <li><span style="color:#F00;"><b>toolbar默认值：</b>（可根据需求删减）</span></li>
+                    <li><span>toolbar: [</span></li>
+                    <li><span>    //加粗、斜体、下划线、穿过线、下标字、上标字</span></li>
+                    <li><span>    ['Bold','Italic','Underline','Strike','Subscript','Superscript'],</span></li>
+                    <li><span>    //数字列表、实体列表、减小缩进、增大缩进</span></li>
+                    <li><span>    ['NumberedList','BulletedList','-','Outdent','Indent'],</span></li>
+                    <li><span>    //左对齐、居中对齐、右对齐、两端对齐</span></li>
+                    <li><span>    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],</span></li>
+                    <li><span>    //超链接、取消超链接、锚点</span></li>
+                    <li><span>    ['Link','Unlink','Anchor'],</span></li>
+                    <li><span>    //图片、flash、表格、水平线、表情、特殊字符、分页符</span></li>
+                    <li><span>    ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],</span></li>
+                    <li><span>    '/',</span></li>
+                    <li><span>    //样式、格式、字体、字体大小</span></li>
+                    <li><span>    ['Styles','Format','Font','FontSize'],</span></li>
+                    <li><span>    //文本颜色、背景颜色</span></li>
+                    <li><span>    ['TextColor','BGColor'],</span></li>
+                    <li><span>    //全屏、显示区块</span></li>
+                    <li><span>    ['Maximize', 'ShowBlocks','-']</span></li>
+                    <li><span>]</span></li>
+                </ol>
+            </pre>
+        </td></tr>
+        <tr><td>getValue</td><td>获取节点，返回值 打印部分的html代码（原方法名getPage，修改后跟form相关方法对应）</td></tr>
+        <tr><td>setValue</td><td>重新加载票据节点，预览页面，参数obj格式 {preBgUrl:"", preContent:""}（原方法名previewPage，修改后跟form相关方法对应）</td></tr>
+        <tr><td>readonly</td><td>只读展示，不可编辑</td></tr>
+        <tr><td>editPage</td><td>返回可编辑状态</td></tr>
+        </tbody>
+    </table>
+    <!--<h4>案例：&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn5">查看代码</button></h4>-->
+    <br>
+</section>
+<div class="outbackframe">
+    <button style="margin-left: 5px;margin-bottom: 10px" type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn10">查看代码
+    </button>
+    <div class="innerback">
+        <div id="bt">
+            <button type="button" class="btn btn-primary" onclick="addNode()">新增文字节点</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn1">查看代码</button>
+            |
+            <button type="button" class="btn btn-primary" onclick="save()">获取模板</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn2">查看代码</button>
+            |
+            <button type="button" class="btn btn-primary" onclick="readonly()">只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button>
+            |
+            <button type="button" class="btn btn-primary" onclick="edit()">返回编辑状态</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button>
+            |
+            <button type="button" class="btn btn-primary" onclick="changeBg()">切换背景图</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn8">查看代码</button>
+            <div id="billPrint"></div>
+        </div>
+
+    </div>
+
+</div>
+<div class="outbackframe">
+
+    <div class="innerback">
+        <div class="">
+            <button type="button" class="btn btn-primary" onclick="previewDefult()">预览例子</button>&nbsp;
+            <button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn11">查看代码</button>
+
+            <button type="button" class="btn btn-primary" onclick="doPrint()">打印</button>&nbsp;
+            <button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn6">查看代码</button>
+            <!--<button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn11">查看代码</button>-->
+            <!--<h4>预览例子</h4>-->
+            <!--<button type="button" class="btn btn-primary" onclick="preview()">预览上一个例子的编辑内容</button>&nbsp;-->
+            <!--<button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn111">查看代码</button>-->
+            <div class="bill"></div>
+        </div>
+    </div>
+</div>
+    <div class="btnLine noPrint">
+        <!--<button type="button" class="btn btn-primary" onclick="addNode()">新增文字节点</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn1">查看代码</button>-->
+        <!--<button type="button" class="btn btn-primary" onclick="save()">保存模板</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn2">查看代码</button>-->
+
+        <!--<button type="button" class="btn btn-primary" onclick="readonly()">只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button>-->
+
+        <!--<button type="button" class="btn btn-primary" onclick="edit()">返回编辑页</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button>-->
+        <!--<button type="button" class="btn btn-primary" onclick="preview()">预览</button>&nbsp;-->
+        <!--<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn7">查看代码</button>-->
+        <!--<button type="button" class="btn btn-primary" onclick="changeBg()">切换背景图</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn8">查看代码</button>-->
+    </div>
+
+
+<div style="width:1px;height:1px;overflow:hidden;" class="noPrint">
+    <textarea id="copyTarget1">$("#billPrint").billPrint("addTxtNode", {text:"node"});</textarea>
+    <textarea id="copyTarget2">$("#billPrint").billPrint("getValue")</textarea>
+    <textarea id="copyTarget3">$("#billPrint").billPrint("readonly");</textarea>
+    <textarea id="copyTarget4">$("#billPrint").billPrint("editPage");</textarea>
+    <textarea id="copyTarget5">$("#billPrint").billPrint();</textarea>
+    <textarea id="copyTarget6">$("#billPrint").billPrint("doPrint");</textarea>
+    <textarea id="copyTarget7">$("#billPrint").billPrint("setValue", {bgUrl:"", content:""});</textarea>
+    <textarea id="copyTarget8">$("#billPrint").billPrint("changeBg", "../plugins/billPrint/billTemp.jpg");</textarea>
+    <textarea id="copyTarget10">$("#billPrint").billPrint({bgUrl:"../plugins/billPrint/billTempBg.jpg", defaultValue:'<div class="printWrap">...</div>'});</textarea>
+    <textarea id="copyTarget111">
+            var con = $("#billPrint").billPrint("getValue");
+            $(".bill").billPrint("setValue", { preContent:con});
+    </textarea>
+    <textarea id="copyTarget11">
+        //  var $bill = $(".bill");
+        //  $bill.billPrint();       确保他是一个套打组件
+        //
+        // cons 可通过$("#billPrint").billPrint("getValue")得到;
+        var cons = '<div class="printWrap" style="width: 720px; height: 358px;  margin: auto;"><div class="bg noPrint printArea"><img src="../plugins/billPrint/billTempBg.jpg" class="bgImg"></div><div class="nodesArea printArea" style="width: 718px;  position: absolute;"><div class="txtNode" style="position: absolute;left: 504px;top: 132px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>￥1000</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 504px;top: 157px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode1_txt"><p>￥2000</p></div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 513px;top: 266px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode2_txt">叁仟元整</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 500px;top: 293px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode3_txt">测试员</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 88px;top: 132px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font"id="txtNode4_txt">某某科目</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 89px;top: 160px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode5_txt">某某科目</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 120px;top: 80px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode6_txt">某某单位</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 425px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode7_txt">11</div><div class="resizeBtn"></div></div><div class="txtNode"style="position: absolute;left: 390px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode8_txt">11</div><div class="resizeBtn"></div></div><div class="txtNode" style="position: absolute;left: 332px;top: 79px;width: 150px;height: 30px;"><div class="txt_editBtn"><a class="btn dragBtn">拖拽</a><a class="btn delBtn">删除</a></div><div class="txt_font" id="txtNode8_txt">2018</div><div class="resizeBtn"></div></div></div></div>'
+        $(".bill").billPrint("setValue", { preContent:cons});
+    </textarea>
+</div>
+</body>
+</html>
+<script>
+    $(function(){
+        $(".copyBtn").on("click", function(){
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var target = $("#copyTarget"+ num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>"+ target.html() +"</pre>",
+                area: ["600px", "auto"],
+                btn: ["复制", "取消"],
+                btn1: function(index){
+                    var res = $.copyToClipboard(target.get(0));
+                    if(res){
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>

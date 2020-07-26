@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>常用布局</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <script type="text/javascript" src="../../js/jquery.js"></script>
+    <script src="../../js/bootstrap.datanew.js"></script>
+    <style>
+        .thumbPic{float:left; width:45%; margin:20px; text-align: center; font-size:18px; border:1px solid #DEDEDE;}
+        .btn-unique{border: none;background-color: #fff;outline: none;overflow: hidden;position: relative}
+        .btn-unique img{transition: all 0.6s;}
+        .btn-unique img:hover{transform: scale(1.1);}
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="thumbPic">
+                <button class="btn-unique" onclick="btnclick1()"><img src="images/layout1.jpg" width="100%"></button>
+                左侧树右侧表单
+                <button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn1">查看代码</button>
+            </div>
+            <div class="thumbPic">
+                <button class="btn-unique" onclick="btnclick2()"><img src="images/layout2.jpg" width="100%"></button>
+                左侧树右侧表格
+                <button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn2">查看代码</button>
+            </div>
+            <div class="thumbPic">
+                <button class="btn-unique" onclick="btnclick3()"><img src="images/layout3.jpg" width="100%"></button>
+                表格
+                <button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button>
+            </div>
+            <div class="thumbPic">
+                <button class="btn-unique" onclick="btnclick4()"><img src="images/layout4.jpg" width="100%"></button>
+                tab切换
+                <button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function btnclick1(){
+            $.dopen({
+                parent:true,
+                type: 2,
+                title :"左侧树右侧表单",
+                area: ['1000px', '500px'],
+                content: 'example/layout/layout-1.html'
+            });
+        }
+        function btnclick2(){
+            $.dopen({
+                parent:true,
+                type: 2,
+                title :"左侧树右侧表格",
+                area: ['1000px', '500px'],
+                content: 'example/layout/layout-2.html'
+            });
+        }
+        function btnclick3(){
+            $.dopen({
+                parent:true,
+                type: 2,
+                title :"表格",
+                area: ['1000px', '500px'],
+                content: 'example/layout/layout-3.html'
+            });
+        }
+        function btnclick4(){
+            $.dopen({
+                parent:true,
+                type: 2,
+                title :"tab切换",
+                area: ['1000px', '500px'],
+                content: 'example/layout/layout-4.html'
+            });
+        }
+    </script>
+<div style="width:1px;height:1px;overflow:hidden;">
+<textarea id="copyTarget1">
+var json = [
+    {
+        "dtype": "html",
+        "dragHtml": '<div class="toolbar layout_toolbar" id="toolbar">' +
+        '    <button class="bootstrap-table-add" type="button">新增</button>' +
+        '    <button class="bootstrap-table-edit" type="button">修改</button>' +
+        '    <button class="bootstrap-table-delete" type="button">删除</button>' +
+        '    <button class="bootstrap-table-download" type="button">导入</button>' +
+        '    <button class="bootstrap-table-upload" type="button">导出</button>' +
+        '    <button class="bootstrap-table-submit" type="button">保存</button>' +
+        '    <button class="bootstrap-table-disable" type="button">取消</button>' +
+        '</div>'
+    },
+    {
+        "plug": [
+            {
+                "plug": [
+                    {
+                        "plug": [
+                            {
+                                "dtype": "html",
+                                "dragHtml": "<h4>项目清单</h4>"
+                            },
+                            {
+                                "dtype": "tree",
+                                "id": "sideTree",
+                                "checkType": "nocheck",
+                                "outerHeight": $(window).height() - 120,
+                                "url": './json/treeData.json',
+                                "onLoaded": function(ztree){
+                                    ztree.expandAll(true);
+                                }
+                            }
+                        ],
+                        "colspan": "3",
+                        "dtype": "column",
+                        "classes": "selectTree"
+                    },
+                    {
+                        "plug": [
+                            {
+                                "dtype": "html",
+                                "dragHtml": "<h4>项目信息</h4>"
+                            },
+                            {
+                                "dtype": "dform",
+                                "id": "form",
+                                "rownum":2,
+                                "labelwidth":"100px",
+                                "inputs": [
+                                    {name:"textBox", type:"textBox", title:"textBox", required:true},
+                                    {name:"searchTree", type:"searchTree", title:"searchTree", url: './json/treeData.json', onLoaded:function(ztree){/!* ztree.expandAll(true);*!/}},
+                                    {name:"comboBox", type:"comboBox", title:"comboBox", localdata: [{id:1,text:'79962450@qq.com'},{id:2,text:456}]},
+                                    {name:"dateBox", type:"dateBox", title:"dateBox"}
+                                ]
+                            }
+                        ],
+                        "colspan": "9",
+                        "dtype": "column",
+                        "classes": "selectCon"
+                    }
+                ],
+                "dtype": "row"
+            }
+        ],
+        "dtype": "body",
+        "classes": "layout_treeTable"
+    }
+];
+$.initPage(json);
+</textarea>
+<textarea id="copyTarget2">
+var json = [
+    {
+        "dtype": "html",
+        "classes": "layout_toolbar",
+        "dragHtml": '<div class="toolbar" id="toolbar2">' +
+        '    <button class="bootstrap-table-add" type="button">新增</button>' +
+        '    <button class="bootstrap-table-edit" type="button">修改</button>' +
+        '    <button class="bootstrap-table-delete" type="button">删除</button>' +
+        '    <button class="bootstrap-table-download" type="button">导入</button>' +
+        '    <button class="bootstrap-table-upload" type="button">导出</button>' +
+        '    <button class="bootstrap-table-submit" type="button">保存</button>' +
+        '    <button class="bootstrap-table-disable" type="button">取消</button>' +
+        '</div>'
+    },
+    {
+        "plug": [
+            {
+                "plug": [
+                    {
+                        "plug": [
+                            {
+                                "dtype": "tree",
+                                "id": "sideTree",
+                                "checkType": "nocheck",
+                                "url": './json/treeData.json',
+                                "onLoaded": function(ztree){
+                                    ztree.expandAll(true);
+                                }
+                            }
+                        ],
+                        "colspan": "3",
+                        "dtype": "column",
+                        "classes": "selectTree"
+                    },
+                    {
+                        "plug": [
+                            {
+                                "dtype": "dtable",
+                                "id": "table",
+                                "height":$(window).height() - $("#toolbar2").outerHeight(true) - 65,
+                                "columns" : [
+                                    {field : 'guid', title : 'guid', width : 10, align : 'center', visible:false},
+                                    {field : 'buymode', title : 'buymode', width : 10, align : 'center', visible:false},
+                                    {field : 'code', title : '工作内容编码', width : 10, align : 'center', visible:false},
+                                    {field : 'name', title : '工作内容名称', width : 180, align : 'left'},
+                                    {field : 'reportdiv', title : '上报单位', width : 80, align : 'center'},
+                                    {field : 'programsource', title : '项目来源', width : 80, align : 'center'},
+                                    {field : 'money', title : '项目预算(万元)', width : 115, align : 'right'},
+                                    {field : 'cmoney', title : '本年预算(万元) ', width : 115, align : 'right'},
+                                    {field : 'lmoney', title : '历年预算 (万元)', width : 115, align : 'right'},
+                                    {field : 'nmoney', title : '下年预算 (万元)', width : 115, align : 'right'},
+                                    {field : 'programleader', title : '课题组长', width : 80, align : 'center'},
+                                    {field : 'businesscontact', title : '业务联系人', width : 90, align : 'center'},
+                                    {field : 'remark', title : '备注 ', width : 80, align : 'center'}
+                                ],
+                                "uniqueId":'guid',
+                                "url": './json/tableData.json',
+                                "showRefresh": false,
+                                "pageNumber":1,//起始页
+                                "pageSize":10,//页面大小
+                                "paginationHAlign":'left',//分页按钮位置  left right
+                                "sidePagination":'client',//分页方式
+                                "singleSelect":true,//单选
+                                "clickToSelect":true//点击选中
+                            }
+                        ],
+                        "colspan": "9",
+                        "dtype": "column",
+                        "classes": "selectCon"
+                    }
+                ],
+                "dtype": "row"
+            }
+        ],
+        "dtype": "body",
+        "classes": "layout_treeTable"
+    }
+];
+$.initPage(json);
+</textarea>
+<textarea id="copyTarget3">
+var json = [
+    {
+        "dtype": "html",
+        "dragHtml": '<div class="toolbar layout_toolbar" id="toolbar3">' +
+        '    <button class="bootstrap-table-add" type="button">新增</button>' +
+        '    <button class="bootstrap-table-edit" type="button">修改</button>' +
+        '    <button class="bootstrap-table-delete" type="button">删除</button>' +
+        '    <button class="bootstrap-table-download" type="button">导入</button>' +
+        '    <button class="bootstrap-table-upload" type="button">导出</button>' +
+        '    <button class="bootstrap-table-submit" type="button">保存</button>' +
+        '    <button class="bootstrap-table-disable" type="button">取消</button>' +
+        '</div>'
+    },
+    {
+        "plug": [
+            {
+                "plug": [
+                    {
+                        "plug": [
+                            {
+                                "dtype": "dtable",
+                                "id": "table",
+                                "height":$(window).height() - $("#toolbar3").outerHeight(true) - 65,
+                                "columns" : [
+                                    {field : 'guid', title : 'guid', width : 10, align : 'center', visible:false},
+                                    {field : 'buymode', title : 'buymode', width : 10, align : 'center', visible:false},
+                                    {field : 'code', title : '工作内容编码', width : 10, align : 'center', visible:false},
+                                    {field : 'name', title : '工作内容名称', width : 180, align : 'left'},
+                                    {field : 'reportdiv', title : '上报单位', width : 80, align : 'center'},
+                                    {field : 'programsource', title : '项目来源', width : 80, align : 'center'},
+                                    {field : 'money', title : '项目预算(万元)', width : 115, align : 'right'},
+                                    {field : 'cmoney', title : '本年预算(万元) ', width : 115, align : 'right'},
+                                    {field : 'lmoney', title : '历年预算 (万元)', width : 115, align : 'right'},
+                                    {field : 'nmoney', title : '下年预算 (万元)', width : 115, align : 'right'},
+                                    {field : 'programleader', title : '课题组长', width : 80, align : 'center'},
+                                    {field : 'businesscontact', title : '业务联系人', width : 90, align : 'center'},
+                                    {field : 'remark', title : '备注 ', width : 80, align : 'center'}
+                                ],
+                                "uniqueId":'guid',
+                                "url": './json/tableData.json',
+                                "showRefresh": false,
+                                "pageNumber":1,//起始页
+                                "pageSize":10,//页面大小
+                                "paginationHAlign":'left',//分页按钮位置  left right
+                                "sidePagination":'client',//分页方式
+                                "singleSelect":true,//单选
+                                "clickToSelect":true//点击选中
+                            }
+                        ],
+                        "colspan": "12",
+                        "dtype": "column",
+                        "classes": "selectCon"
+                    }
+                ],
+                "dtype": "row"
+            }
+        ],
+        "dtype": "body",
+        "classes": "layout_treeTable"
+    }
+];
+$.initPage(json);
+</textarea>
+<textarea id="copyTarget4">
+var json = [
+    {
+        "plug": [
+            {
+                "dtype": "html",
+                "dragHtml": '<ul class="nav nav-tabs" role="tablist">' +
+                '    <li role="presentation" class="active"><a href="#div_pList1" role="tab" data-toggle="tab">待审合同列表</a></li>' +
+                '    <li role="presentation"><a href="#div_pList2" role="tab" data-toggle="tab">已阅合同列表</a></li>' +
+                '</ul>'
+            },
+            {
+                "dtype": "html",
+                "dragHtml": '<div class="tab-content"></div>',
+                "plug": [
+                    {
+                        "dtype": "html",
+                        "dragHtml": '<div role="tabpanel" class="tab-pane active" id="div_pList1"></div>',
+                        "plug": [
+                            {
+                                "dtype": "dtable",
+                                "id": "pList1",
+                                "height":$(window).height() - 65,
+                                "columns" : [
+                                    {field : 'guid', title : 'guid', width : 10, align : 'center', visible:false},
+                                    {field : 'buymode', title : 'buymode', width : 10, align : 'center', visible:false},
+                                    {field : 'code', title : '工作内容编码', width : 10, align : 'center', visible:false},
+                                    {field : 'name', title : '工作内容名称', width : 180, align : 'left'},
+                                    {field : 'reportdiv', title : '上报单位', width : 80, align : 'center'},
+                                    {field : 'programsource', title : '项目来源', width : 80, align : 'center'},
+                                    {field : 'money', title : '项目预算(万元)', width : 115, align : 'right'},
+                                    {field : 'cmoney', title : '本年预算(万元) ', width : 115, align : 'right'},
+                                    {field : 'lmoney', title : '历年预算 (万元)', width : 115, align : 'right'},
+                                    {field : 'nmoney', title : '下年预算 (万元)', width : 115, align : 'right'},
+                                    {field : 'programleader', title : '课题组长', width : 80, align : 'center'},
+                                    {field : 'businesscontact', title : '业务联系人', width : 90, align : 'center'},
+                                    {field : 'remark', title : '备注 ', width : 80, align : 'center'}
+                                ],
+                                "uniqueId":'guid',
+                                "url": './json/tableData.json',
+                                "showRefresh": false,
+                                "pageNumber":1,//起始页
+                                "pageSize":10,//页面大小
+                                "paginationHAlign":'left',//分页按钮位置  left right
+                                "sidePagination":'client',//分页方式
+                                "singleSelect":true,//单选
+                                "clickToSelect":true//点击选中
+                            }
+                        ]
+                    },
+                    {
+                        "dtype": "html",
+                        "dragHtml": '<div role="tabpanel" class="tab-pane" id="div_pList2"></div>',
+                        "plug": [
+                            {
+                                "dtype": "dtable",
+                                "id": "pList2",
+                                "height":$(window).height() - 65,
+                                "columns" : [
+                                    {field : 'guid', title : 'guid2', width : 10, align : 'center', visible:false},
+                                    {field : 'buymode', title : 'buymode2', width : 10, align : 'center', visible:false},
+                                    {field : 'code', title : '工作内容编码2', width : 10, align : 'center', visible:false},
+                                    {field : 'name', title : '工作内容名称2', width : 180, align : 'left'},
+                                    {field : 'reportdiv', title : '上报单位2', width : 80, align : 'center'},
+                                    {field : 'programsource', title : '项目来源2', width : 80, align : 'center'},
+                                    {field : 'money', title : '项目预算2 (万元)', width : 115, align : 'right'},
+                                    {field : 'cmoney', title : '本年预算2 (万元) ', width : 115, align : 'right'},
+                                    {field : 'lmoney', title : '历年预算2 (万元)', width : 115, align : 'right'},
+                                    {field : 'nmoney', title : '下年预算2 (万元)', width : 115, align : 'right'},
+                                    {field : 'programleader', title : '课题组长2', width : 80, align : 'center'},
+                                    {field : 'businesscontact', title : '业务联系人2', width : 90, align : 'center'},
+                                    {field : 'remark', title : '备注2 ', width : 80, align : 'center'}
+                                ],
+                                "uniqueId":'guid',
+                                "url": './json/tableData.json',
+                                "showRefresh": false,
+                                "pageNumber":1,//起始页
+                                "pageSize":10,//页面大小
+                                "paginationHAlign":'left',//分页按钮位置  left right
+                                "sidePagination":'client',//分页方式
+                                "singleSelect":true,//单选
+                                "clickToSelect":true//点击选中
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "dtype": "body",
+        "classes": "layout_treeTable"
+    }
+];
+$.initPage(json);
+</textarea>
+    </div>
+    <script>
+        $(function(){
+            $(".copyBtn").on("click", function(){
+                var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+                var target = $("#copyTarget"+ num);
+                $.dopen({
+                    title: "查看代码",
+                    content: "<pre>"+ target.html() +"</pre>",
+                    area: ["800px", "450px"],
+                    btn: ["复制", "取消"],
+                    btn1: function(index){
+                        var res = $.copyToClipboard(target.get(0));
+                        if(res){
+                            layer.msg('复制成功', {time: 2000});
+                            layer.close(index);
+                        }else{
+                            layer.msg('复制失败，请手动复制', {time: 2000});
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+</body>
+</html>

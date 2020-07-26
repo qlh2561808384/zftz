@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导出excel表格</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function(){
+            $("#tableExcel").dtable({
+                height:400,
+                url: "../example/json/tableData.json",
+                columns: [
+                    {checkbox: true},
+                    {field: 'status', title: '状态', width: 100, align: 'center'},
+                    {field: 'postaccount', title: '商户号', align: 'center',width:150},
+                    {field: 'appName', title: '接入应用', align: 'center',width: 150},
+                    {field: 'accountbank', title: '开户银行',  align: 'center',width: 150},
+                    {field: 'enddate', title: '到期日期',  align: 'center',width: 150},
+                    {field: 'remark', title: '备注', align: 'center'}
+                ],
+                toolbar: [
+                    {"name":"新增", "classes":"bootstrap-table-add", "type":"button", "onclick":"addPledgeRow()"},
+                    {"name":"删除", "classes":"bootstrap-table-delete", "type":"button", "onclick":"removePledgeRow()"}
+                ],
+                uniqueId: "guid",
+                singleSelect: true,
+                clickToSelect: true,//点击选中
+                exportExcel: {fileName:"42323", tableStyle:"", fileEncode:""}//默认编码utf-8
+            });
+        })
+    </script>
+</head>
+<body>
+    <table id="tableExcel"></table>
+</body>
+</html>

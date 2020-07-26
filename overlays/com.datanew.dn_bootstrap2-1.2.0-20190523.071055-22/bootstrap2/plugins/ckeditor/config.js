@@ -1,0 +1,1 @@
+CKEDITOR.editorConfig=function(a){a.language="zh-cn";a.font_names="微软雅黑/Microsoft Yahei;宋体/SimSun;黑体/SimHei;仿宋/FangSong;楷体/KaiTi;隶书/LiSu;幼圆/YouYuan;"+a.font_names;a.baseFloatZIndex=99999999};

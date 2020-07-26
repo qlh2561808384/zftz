@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title>bootstrapTable_demo</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+
+    <script>
+        window.onload = function () {
+            var loadTime = window.performance.timing.domComplete  - window.performance.timing.domInteractive;
+            //console.log('Page load time is '+ loadTime);
+        }
+
+        //本地数据
+        var localdata = [{
+            "guid": 1,
+            "postaccount": "1",
+            "account": "1",
+            "accountname": "中国银行",
+            "accountbank": "中国银行",
+            "startdate": "2016-08-29",
+            "enddate": "2016-11-25",
+            "secretkey": "1111",
+            "status": 1,
+            "sortnum": 1,
+            "remark": null,
+            "writedate": 1473324355000,
+            "writeuserid": 1,
+            "writeusername": "张三",
+            "isb2B": 1,
+            "modifydata": 1473404834000,
+            "modifyuserid": null,
+            "modifyusername": null,
+            "appid": null,
+            "agencycode": "99",
+            "paywaycode": "03",
+            "bankcode": "980101",
+            "agencyName": null,
+            "bankName": null,
+            "appName": null,
+            "paywayName": null
+        }];
+        var localdefdata = {
+            "guid": 4,
+            "postaccount": "1",
+            "account": "1",
+            "accountname": "中国银行",
+            "accountbank": "中国银行",
+            "startdate": "2016-08-29",
+            "enddate": "2016-12-08",
+            "secretkey": "1111",
+            "status": 1,
+            "sortnum": 1,
+            "remark": "",
+            "writedate": 1473324355000,
+            "writeuserid": 1,
+            "writeusername": "张三",
+            "isb2B": 1,
+            "modifydata": 1473404843000,
+            "modifyuserid": null,
+            "modifyusername": "",
+            "appid": null,
+            "agencycode": "98",
+            "paywaycode": "06",
+            "bankcode": "980101",
+            "agencyName": null,
+            "bankName": null,
+            "appName": null,
+            "paywayName": null
+        };
+
+        var time = 1000; //数据条数
+
+        //数据条数   时间
+        //1000       250ms
+        //10000      293ms
+        //1000000    344ms 性能还是不错的
+
+        for(var i=1;i<time;i++){
+            localdata.push(localdefdata);
+        }
+
+        var zNodes =[
+            { id:1, pId:0, name:"节点搜索演示 1", open:true, ISLEAF:0},
+            { id:11, pId:1, name:"关键字可以是名字", ISLEAF:1},
+            { id:12, pId:1, name:"关键字可以是level", ISLEAF:1},
+            { id:13, pId:1, name:"关键字可以是id", ISLEAF:1},
+            { id:14, pId:1, name:"关键字可以是各种属性", ISLEAF:1},
+            { id:2, pId:0, name:"节点搜索演示 2", open:true, ISLEAF:0},
+            { id:21, pId:2, name:"可以只搜索一个节点", ISLEAF:1},
+            { id:22, pId:2, name:"可以搜索节点集合", ISLEAF:1},
+            { id:23, pId:2, name:"搜我吧", ISLEAF:1},
+            { id:3, pId:0, name:"节点搜索演示 3", open:true, ISLEAF:0},
+            { id:31, pId:3, name:"我的 id 是: 31", ISLEAF:0},
+            { id:32, pId:31, name:"我的 id 是: 32", ISLEAF:0},
+            { id:33, pId:32, name:"我的 id 是: 33", ISLEAF:1}
+        ];
+        $(function () {
+            var toolObj = [
+                {"name":"新增", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"add()"},
+                {"name":"编辑", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"edit()"},
+                {"name":"删除", "classes":"btn bootstrap-table-delete test", "type":"button", "onclick":"remov()"}
+            ];
+            $("#datatable").dtable({
+                //列参数
+                height:400,
+                columns: [
+                    //radio、checkbox 单选或多选框
+                    {field:'checkType', checkbox: true},
+                    //field：对应数据键名 title：列名 width:单元格宽度px单位  align：单元格水平位置'left', 'right', 'center'
+                    //formatter：格式化方法参数为：value,row
+                    {field: 'status', title: '状态', width: 100, align: 'center', formatter: statusFormatter},
+                    {field: 'agencyName', title: '代收机构', width: 100, align: 'center',
+                        editor:{
+                            type:"comboBox",
+                            multiple: true,
+                            localdata:[{id:1,text:"机构1"}, {id:2,text:"机构2"}],
+                        }
+                    },
+                    {field: 'appName', title: '接入应用', width: 100, align: 'center',
+                        editor:{
+                            type: 'searchTree',
+                            required:true,
+                            url:'./json/treeData.json',
+                            ISLEAF: false,
+                            onlyLeaf:true,
+                            modalTitle: '查找名称',
+                            checkType: 'checkbox'
+                        }
+                    },
+                    {field: 'paywayName', title: '支付方式', width: 150, align: 'center',
+                        editor:{
+                            type: "dateBox",
+                            startView: 3,
+                            minView: 2,
+                            format: "mm-dd",
+                            pickerPosition: "bottom-left"
+                        }
+                    },
+                    {field: 'postaccount', title: '商户号', width: 130, align: 'center',
+                        editor:{
+                            title: "文本框-单行",
+                            type: "textBox",
+                            defaultvalue: "张三",
+                            colspan: "2"
+                        }
+                    },
+                    {
+                        field: 'isb2B', title: '商户类型', width: 100, align: 'center',
+                        editable: {
+                            type: 'select',
+                            title: '商户类型',
+                            //本地数据加载
+                            source: [{value: "0", text: "个人"}, {value: "1", text: "企业"}],
+                            //远程数据加载  参照getSelectOption 方法
+                        }
+                    },
+                    {field: 'sortnum', title: '排序', width: 50, align: 'center', sortable: true},
+                    {field: 'bankName', title: '收款银行', width: 100, align: 'center',
+                        editor:{
+                            title: "小数",
+                            type: "ddecimal",
+                            decimalPlaces: 2 //小数位数
+                        }
+                    },
+                    {field: 'accountbank', title: '开户银行', width: 100, align: 'center',
+                        editable:{
+                            types: "searchTree",
+                            mode:'popup',
+                            width:200,
+                            checkType:'checkbox',
+                            required:true,
+                            validText:'测试',
+                            url: './json/treeData.json',
+                            rootElement:false,
+                            onlyLeaf:true
+                        }
+                    },
+                    {field: 'accountname', title: '账户名称', width: 100, align: 'center',
+                        editable: {
+                            type: 'text',
+                            title: '账户名称',
+                            validate: function (v) {
+                                if (!v) return '账户名称不能为空';
+                            }
+                        }
+                    },
+                    {field: 'account', title: '账号', width: 100, align: 'center',
+                        editable:{
+                            types:"comboBox",
+                            required:true,
+                            mode:"popup",
+                            localdata:[{id:1,text:'79962450@qq.com'},{id:2,text:456}]
+                        }
+                    },
+                    {field: 'startdate', title: '启用日期', width: 200, align: 'center',
+                        editable:{
+                            types:"dateBox",
+                            width:200,
+                            format : 'yyyy-mm-dd',
+                            minView: 2,
+                            required:true
+                        }
+                    },
+                    {field: 'enddate', title: '到期日期', width: 100, align: 'center'},
+                    {field: 'remark', title: '备注', width: 100, align: 'center'}
+                ],
+                //远程数据请求地址
+//              url: 'admin/pwayList/pawayListPage.do?',
+                //本地数据加载
+                data: localdata,
+
+               // url :'./json/tabletimeData.json',  //10000以下性能都是不错的
+                //搜索栏初始化
+                resizable:true, //单元格手动拉伸
+                editable :true,
+                pageNumber: 1,//起始页
+                pageSize: 3,//页面大小
+                queryParams: queryParams,//查询参数 queryParams(params) params 包含分页参数
+                pagination:true,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                //toolbar: '#bt',//工具栏 指定dom对象
+                toolbar: toolObj,
+                showToggle: true,//是否使用列表显示开关
+//                singleSelect: true,//是否启用单选
+                clickToSelect: true,//点击选中
+                idField: 'guid',
+                detailView: true,//是否启用详细显示页面 当为true时 每行数据前会有展开按钮
+                //展开行事件    detailView 为true时生效   可根据该展开栏实现子表格显示
+                onExpandRow: function (index, row, $detail) {
+                    InitSubTable(index, row, $detail);//子表初始化方法
+                },
+                //双击行事件
+                onDblClickRow: function (row, $element) {
+                },
+                rigthClickRow:function(row, $element){
+                    //console.log(JSON.stringify(row))
+                },
+                //行内编辑提交保存事件
+                //提交行数据 如success 返回false 被编辑单元格数据修改回原数据
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.dajax({
+                        url: "/Editable/Edit",
+                        data: row,
+                        success: function (data) {
+                            if (data.success) {
+                                alert('提交数据成功');
+                            } else {
+                                alert('编辑失败');
+//                            $.el.text(oldValue)
+                            }
+                            $("#datatable").dtable("refresh")
+                        }
+                    });
+                },
+                onCheck:function(row,$element){
+                    // alert(JSON.stringify(row))
+                }
+            });
+
+
+            $("#datatable1").dtable({
+                //列参数
+                height:400,
+                columns: [
+                    //radio、checkbox 单选或多选框
+                    {field:'checkType', checkbox: true},
+                    //field：对应数据键名 title：列名 width:单元格宽度px单位  align：单元格水平位置'left', 'right', 'center'
+                    //formatter：格式化方法参数为：value,row
+                    {field: 'status', title: '状态', width: 100, align: 'center', formatter: statusFormatter},
+                    {field: 'agencyName', title: '代收机构', width: 100, align: 'center',
+                        editor:{
+                            type:"comboBox",
+                            multiple: true,
+                            localdata:[{id:1,text:"机构1"}, {id:2,text:"机构2"}],
+                        }
+                    },
+                    {field: 'appName', title: '接入应用', width: 100, align: 'center',
+                        editor:{
+                            type: 'searchTree',
+                            required:true,
+                            url:'./json/treeData.json',
+                            ISLEAF: false,
+                            onlyLeaf:true,
+                            modalTitle: '查找名称',
+                            checkType: 'checkbox'
+                        }
+                    },
+                    {field: 'paywayName', title: '支付方式', width: 150, align: 'center',
+                        editor:{
+                            type: "dateBox",
+                            startView: 3,
+                            minView: 2,
+                            format: "mm-dd",
+                            pickerPosition: "bottom-left"
+                        }
+                    },
+                    {field: 'postaccount', title: '商户号', width: 130, align: 'center',
+                        editor:{
+                            title: "文本框-单行",
+                            type: "textBox",
+                            defaultvalue: "张三",
+                            colspan: "2"
+                        }
+                    },
+                    {
+                        field: 'isb2B', title: '商户类型', width: 100, align: 'center',
+                        editable: {
+                            type: 'select',
+                            title: '商户类型',
+                            //本地数据加载
+                            source: [{value: "0", text: "个人"}, {value: "1", text: "企业"}],
+                            //远程数据加载  参照getSelectOption 方法
+                        }
+                    },
+                    {field: 'sortnum', title: '排序', width: 50, align: 'center', sortable: true},
+                    {field: 'bankName', title: '收款银行', width: 100, align: 'center',
+                        editor:{
+                            title: "小数",
+                            type: "ddecimal",
+                            decimalPlaces: 2 //小数位数
+                        }
+                    },
+                    {field: 'accountbank', title: '开户银行', width: 100, align: 'center',
+                        editable:{
+                            types: "searchTree",
+                            mode:'popup',
+                            width:200,
+                            checkType:'checkbox',
+                            required:true,
+                            validText:'测试',
+                            url: './json/treeData.json',
+                            rootElement:false,
+                            onlyLeaf:true
+                        }
+                    },
+                    {field: 'accountname', title: '账户名称', width: 100, align: 'center',
+                        editable: {
+                            type: 'text',
+                            title: '账户名称',
+                            validate: function (v) {
+                                if (!v) return '账户名称不能为空';
+                            }
+                        }
+                    },
+                    {field: 'account', title: '账号', width: 100, align: 'center',
+                        editable:{
+                            types:"comboBox",
+                            required:true,
+                            mode:"popup",
+                            localdata:[{id:1,text:'79962450@qq.com'},{id:2,text:456}]
+                        }
+                    },
+                    {field: 'startdate', title: '启用日期', width: 200, align: 'center',
+                        editable:{
+                            types:"dateBox",
+                            width:200,
+                            format : 'yyyy-mm-dd',
+                            minView: 2,
+                            required:true
+                        }
+                    },
+                    {field: 'enddate', title: '到期日期', width: 100, align: 'center'},
+                    {field: 'remark', title: '备注', width: 100, align: 'center'}
+                ],
+                //远程数据请求地址
+//              url: 'admin/pwayList/pawayListPage.do?',
+                //本地数据加载
+                data: localdata,
+
+                // url :'./json/tabletimeData.json',  //10000以下性能都是不错的
+                //搜索栏初始化
+                resizable:true, //单元格手动拉伸
+                editable :true,
+                pageNumber: 1,//起始页
+                pageSize: 3,//页面大小
+                queryParams: queryParams,//查询参数 queryParams(params) params 包含分页参数
+                pagination:false,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                //toolbar: '#bt',//工具栏 指定dom对象
+                toolbar: toolObj,
+                showToggle: true,//是否使用列表显示开关
+//                singleSelect: true,//是否启用单选
+                clickToSelect: true,//点击选中
+                idField: 'guid',
+                detailView: true,//是否启用详细显示页面 当为true时 每行数据前会有展开按钮
+                //展开行事件    detailView 为true时生效   可根据该展开栏实现子表格显示
+                onExpandRow: function (index, row, $detail) {
+                    InitSubTable(index, row, $detail);//子表初始化方法
+                },
+                //双击行事件
+                onDblClickRow: function (row, $element) {
+                },
+                rigthClickRow:function(row, $element){
+                    //console.log(JSON.stringify(row))
+                },
+                //行内编辑提交保存事件
+                //提交行数据 如success 返回false 被编辑单元格数据修改回原数据
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.dajax({
+                        url: "/Editable/Edit",
+                        data: row,
+                        success: function (data) {
+                            if (data.success) {
+                                alert('提交数据成功');
+                            } else {
+                                alert('编辑失败');
+//                            $.el.text(oldValue)
+                            }
+                            $("#datatable").dtable("refresh")
+                        }
+                    });
+                },
+                onCheck:function(row,$element){
+                    // alert(JSON.stringify(row))
+                }
+            });
+        });
+
+
+
+        function getSelectOption() {
+            var result = [];
+            $.dajax({
+                url: '/Editable/GetDepartments',
+                async: false,
+                success: function (data) {
+                    $.each(data, function (key, value) {
+                        result.push({value: value.ID, text: value.name});
+                    });
+                }
+            });
+            return result;
+        }
+        /**
+         * 子表初始化方法
+         */
+        InitSubTable = function (index, row, $detail) {
+            //在父表展开区域添加table元素
+            var cur_table = $detail.html('<table></table>').find('table');
+            $(cur_table).dtable({
+                method: 'post',
+                contentType: "application/x-www-form-urlencoded",
+                url: 'admin/pwayList/voucherList.do?',
+                queryParams: {paylistno: row.paylistno},
+                clickToSelect: true,
+                height:"100px",
+                columns: [{
+                    field: 'certificateNo',
+                    title: '缴款凭证号'
+                }, {
+                    field: 'agencyName',
+                    title: '代收机构'
+                }, {
+                    field: 'paywayName',
+                    title: '支付方式'
+                }, {
+                    field: 'payDate',
+                    title: '缴款时间'
+                }]
+            });
+        };
+
+
+        /**
+         * 设置查询参数  limit offset 为固定参数
+         * @param params
+         * @returns {{limit: (params.limit|*), offset: (params.offset|*), test: string}}
+         *          如return false 则终止请求
+         */
+        function queryParams(params) {
+            //  var paramSearch=DataDeal("#formSearch");
+            var param = {
+                /*limit: params.limit,
+                offset: params.offset*/
+                pageNumber: params.offset/params.limit,
+                pageSize: params.limit,
+            };
+            return param;
+            // return $.extend({},param,paramSearch)
+        }
+
+        function subqueryParams(params) {
+            return {
+                limit: params.limit,
+                offset: params.offset
+            };
+        }
+
+        /**
+         * 格式化
+         */
+
+        function statusFormatter(value, row, index) {
+            switch (value) {
+                case 0:
+                    return '未缴款';
+                case 1:
+                    return '缴款';
+                case 2:
+                    return '退款';
+                case 3:
+                    return '重复缴款';
+            }
+        }
+
+    </script>
+</head>
+<body>
+<section class="parser">
+    <h4>案例1：分页</h4>
+</section>
+<div class="outbackframe">
+    <div style="width:98.5%;"><table id="datatable"></table></div>
+</div>
+
+<section class="parser spacetop">
+    <table class="table-border">
+        <thead>
+        <tr><th>浏览器</th><th>数据条数</th><th>时间(ms)</th></tr>
+        </thead>
+        <tbody>
+        <tr><td rowspan="3">chrome</td><td>1000</td><td>250</td></tr>
+        <tr><td>10000</td><td>293</td></tr>
+        <tr><td>100000</td><td>344</td></tr>
+        <tr><td rowspan="3">ie8</td><td>1000</td><td>720</td></tr>
+        <tr><td>10000</td><td>729</td></tr>
+        <tr><td>100000</td><td>787</td></tr>
+        <tr><td colspan="3">数据仅供参考，以实际运行为准</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="parser">
+    <h4>案例2：未分页</h4>
+</section>
+<div class="outbackframe">
+    <div style="width:98.5%;"><table id="datatable1"></table></div>
+</div>
+<section class="parser spacetop">
+    <table class="table-border">
+        <thead>
+        <tr><th>浏览器</th><th>数据条数</th><th>时间(ms)</th></tr>
+        </thead>
+        <tbody>
+        <tr><td rowspan="3">chrome</td><td>1000</td><td>10628</td></tr>
+        <tr><td>10000</td><td>68407</td></tr>
+        <tr><td>100000</td><td>页面未响应</td></tr>
+        <tr><td rowspan="3">ie8</td><td>1000</td><td>30571</td></tr>
+        <tr><td>10000</td><td>页面未响应</td></tr>
+        <tr><td>100000</td><td>页面未响应</td></tr>
+        <tr><td colspan="3">数据仅供参考，以实际运行为准</td></tr>
+        </tbody>
+    </table>
+</section>
+
+
+</body>
+
+
+
+</html>
+<style>
+    .spacetop{margin-top: 10px;}
+    .bootstrap-table {margin-left:15px;}
+    html .btn-exclusive{margin: 5px;border-radius: 4px;background-color:#428BCA;border:1px solid #2E6DA4;font-family: "Microsoft YaHei";font-size:14px;height:34px;line-height:34px;padding:0 10px;color:#fff;}
+    html .btn-exclusive:hover{background-color: #3276b1;border:1px solid #125590;}
+</style>

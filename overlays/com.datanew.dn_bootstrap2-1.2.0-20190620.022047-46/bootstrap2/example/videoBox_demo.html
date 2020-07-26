@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视频播放</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            var player = $("#videoBox").videoBox({
+                width: 500,
+                video: "http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4"
+            });
+        })
+    </script>
+</head>
+<body>
+<section class="parser spacetop">
+    <div class="page-header"><h1>视频播放</h1></div>
+    <h4>属性：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>container</td><td>string</td><td>播放器窗口的idName或className【必需】 <br><span style="color:#f00;">【单独调用该组件时后台js会自动获取id或class 所以无需配置；但当使用json数据初始化页面时需要配置id或者class】</span></td><td></td></tr>
+        <tr><td>flashplayer</td><td>boolean</td><td>强制使用flashplayer播放</td><td>false</td></tr>
+        <tr><td>width</td><td>number</td><td>定义播放器宽度</td><td>100%</td></tr>
+        <tr><td>height</td><td>number</td><td>定义播放器高度</td><td>400</td></tr>
+        <tr>
+            <td>video</td>
+            <td>string/array/object</td>
+            <td>定义播放地址。<b style="color:#F00;">IE8下需要使用绝对路径</b><br/>
+                <pre style="padding: 0;">
+       array情况下,可设置清晰度,[(地址),(视频类型),(具体文字说明),(优先级)]
+       视频类型 值可以有以下几种：video/mp4，video/m3u8，video/ogg，video/webm
+       [
+          ['http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4', 'video/mp4', '中文标清', 0],
+          ['http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4', 'video/mp4', '中文高清', 0],
+          ['http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4', 'video/mp4', '英文高清', 10],
+          ['http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4', 'video/mp4', '英文超清', 0],
+       ],
+                </pre>
+            </td>
+            <td></td>
+        </tr>
+        <tr><td>autoplay</td><td>boolean</td><td>是否自动播放。false=默认暂停，true=默认播放</td><td>false</td></tr>
+        <tr><td>mobileCkControls</td><td>boolean</td><td>是否在移动端（包括ios）环境中显示控制栏。false=隐藏，true=显示</td><td>false</td></tr>
+        <tr><td>mobileAutoFull</td><td>boolean</td><td>是在移动端播放后是否按系统设置的全屏播放</td><td>false</td></tr>
+        <tr><td>loop</td><td>boolean</td><td>播放结束后是否循环播放。false=播放结束后暂停，true=播放结束后重新播放</td><td>false</td></tr>
+        <tr><td>volume</td><td>number</td><td>初始音量。初始化播放器的音量，如果静音，则设置成0，数值为0-1之间的小数</td><td>0.8</td></tr>
+        <tr><td>poster</td><td>string</td><td>封面图片。定义播放器默认暂停时显示的一张图片地址。</td><td></td></tr>
+        <tr><td>preview</td><td>object</td>
+            <td>预览图片
+                <pre>
+            { //预览图片
+            file: ['material/mydream_en1800_1010_01.png', 'material/mydream_en1800_1010_02.png'],
+            scale: 2
+            },
+                </pre>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>promptSpot</td>
+            <td>array</td>
+            <td>	提示点
+                <pre style="padding: 0;">
+[
+  {
+     words:'提示点文字01',
+     time:16
+   },
+  {
+      words:'提示点文字02',
+      time:60
+   }
+]
+                </pre>
+            </td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+    <h4>方法：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>描述</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>changeControlBarShow</td><td>隐藏/显示控制栏 false/true</td></tr>
+        <tr><td>videoRotation</td><td>调整角度 参数格式  ""(默认角度)/0(默认角度)/-1(逆时针旋转)/1(顺时针旋转)/度数(-180至180)</td></tr>
+        <tr><td>videoZoom</td><td>
+             视频画面缩放 默认为1
+        </td></tr>
+        <tr><td>changeDefinition</td>
+            <td>
+                切换清晰度 值为viedo[] 对应清晰度的index
+            </td>
+        </tr>
+        <tr>
+            <td>changeConfig</td>
+            <td>
+                关于进度条拖动函数，例子: $("#videoBox").videoBox("changeConfig",'config','timeScheduleAdjust',1)<br>
+                1/正常拖动，0/不能拖动，2/只能前进（向右拖动）,3/只能后退,4/能回到第一次拖动时的位置,5/看过的地方可以随意拖动
+            </td>
+        </tr>
+        <tr><td>changePlaybackRate</td>
+            <td>(仅H5) 播放速度 0/0.5倍,1/默认速度,3/1.5倍，4/2倍</td>
+        </tr>
+        <tr><td>videoProportion</td>
+            <td>(仅flashplayer)<br/>
+                $("#videoBox").videoBox("videoProportion") 原始比例<br/>
+                $("#videoBox").videoBox("videoProportion"，4,3) 4:3<br/>
+                $("#videoBox").videoBox("videoProportion"，16,9) 16:9<br/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h4>代码：</h4>
+    <div>
+        <pre style="padding: 0;">
+            <ol style="display:table">
+                <li><span><b>html部分：</b></span></li>
+                <li><span>&lt;div id="videoBox"&gt;&lt;/div&gt;</span></li>
+                <li><span></span></li>
+                <li><span><b>js部分：</b></span></li>
+                <li><span>$("#videoBox").videoBox({</span></li>
+                <li><span>    width: 500,</span></li>
+                <li><span>    video: "http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4"</span></li>
+                <li><span>});</span></li>
+            </ol>
+        </pre>
+    </div>
+    <h4>案例：</h4>
+    <div id="videoBox"></div>
+</section>
+</body>
+</html>

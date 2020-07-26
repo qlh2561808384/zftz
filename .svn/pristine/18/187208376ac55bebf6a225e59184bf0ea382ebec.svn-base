@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="bootstrap/js/jquery.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.datanew.js"></script>
+    <script>
+
+        var getRootPath = function(){
+            var curWwwPath=window.document.location.href;
+            var pathName=window.document.location.pathname;
+            var pos=curWwwPath.indexOf(pathName);
+            var localhostPaht=curWwwPath.substring(0,pos);
+            var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            return(localhostPaht+projectName);
+        }
+
+        $(function () {
+            var json = [{"plug":[{"plug":[{"colspan":"12","plug":[{"id":"tableDemo","toolbar":[{"classes":"btn bootstrap-table-add","name":"新增","onclick":"addRow()","type":"button"},{"classes":"btn bootstrap-table-edit","name":"编辑","onclick":"editRow()","type":"button"},{"classes":"btn bootstrap-table-delete","name":"删除","onclick":"removeRow()","type":"button"}],"height":$(window).height() - 80,"columns":[{"field":"checkType","radio":true},{"field":"guid","title":"GUID","visible":true,"align":"center","width":120,"valign":"middle"},{"field":"name","title":"NAME","visible":true,"align":"center","width":120,"valign":"middle"}],"pageSize":30,"dtype":"dtable","pageNumber":1,"sidePagination":"server","searchbar":{"labelwidth":"100px","rownum":3,"inputs":[]},"pagination":true,"clickToSelect":true,"url":getRootPath()+"/dsff/queryByPage.do"}],"dtype":"column"}],"dtype":"row"}],"dtype":"body"}];
+            $.initPage(json);
+        });
+
+
+
+        var formOptions = {"labelwidth":"150px","rownum":2,"inputs":[{"title":"GUID","name":"guid","type":"textBox"},{"title":"NAME","name":"name","type":"textBox"}]};
+
+        function addRow() {
+            var btnObj = $(event.srcElement);
+            var tableObj = btnObj.parents(".bootstrap-table").find(".fixed-table-body").find(".table");
+            $.dopen({
+                title: "新增",
+                content: '<form id="addForm"></form>',
+                area: ['700px', '500px'],
+                btn: ['保存', '取消'],
+                btn1: function (index) {
+                    var formData = $("#addForm").dform("getData");
+                    var tableData = tableObj.bootstrapTable("getData");
+                    save(formData,tableObj);
+                    layer.close(index);
+                },
+                btn2: function (index) {
+                }
+            });
+            $("#addForm").dform(formOptions);
+        }
+
+        function editRow() {
+            var btnObj = $(event.srcElement);
+            var tableObj = btnObj.parents(".bootstrap-table").find(".fixed-table-body").find(".table");
+
+            var tableData = tableObj.bootstrapTable("getData");
+            var rowData = tableObj.bootstrapTable("getAllSelections")[0];
+            if (!!rowData) {
+                var dataIndex = tableData.indexOf(rowData);
+                $.dopen({
+                    title: "编辑",
+                    content: '<form id="eidtForm"></form>',
+                    area: ['700px', '500px'],
+                    btn: ['保存', '取消'],
+                    btn1: function (index) {
+                        var formData = $("#eidtForm").dform("getData");
+                        update(formData,tableObj);
+                        layer.close(index);
+                    },
+                    btn2: function (index) {
+                    }
+                });
+                 $("#eidtForm").dform(formOptions);
+                 $("#eidtForm").dform("load", rowData);
+            }else{
+                $.dalert({text:"请选择",icon:7});
+            }
+        }
+
+        function loadForm() {
+            $("#editForm").dform("load", {tplComboTree: 1});
+            $("#tplComboTree").comboTree("setValue",1);
+        }
+
+        function removeRow() {
+            var btnObj = $(event.srcElement);
+            var tableObj = btnObj.parents(".bootstrap-table").find(".fixed-table-body").find(".table");
+            var selectRows = tableObj.bootstrapTable("getAllSelections");
+            var tableData = tableObj.bootstrapTable("getData");
+
+            $.dopen({
+                title:"提示",
+                type:0,
+                content:"确认删除？",
+                btn:["确认", "取消"],
+                btn1: function(index){
+                    $.each(selectRows, function (i) {
+                        var dataIndex = tableData.indexOf(selectRows[i]);
+                         deleteData(selectRows[i],tableObj);
+                    });
+                    layer.close(index);
+                }
+            });
+        }
+
+        function cancelDel() {
+            var btnObj = $(event.srcElement);
+            var tableObj = btnObj.parents(".bootstrap-table").find(".fixed-table-body").find(".table");
+            var dataIndex = btnObj.parents("tr").data("index");
+            tableObj.bootstrapTable("removeByRowIndex", dataIndex);
+        }
+        function save(formData,tableObj){
+            $.dajax({
+                method:"post",
+                async:true,
+                url:getRootPath()+"/dsff/save.do",
+                data:formData,
+                dataType:"json",
+                success:function(data){
+                    if(data.success){
+                        $.dalert({text:"保存成功",icon:1});
+                        tableObj.bootstrapTable("refresh");
+                    }else{
+                        $.dalert({text:"保存失败",icon:2});
+                    }
+                }
+                }
+            );
+
+        }
+        function update(formData,tableObj){
+            $.dajax({
+                    method:"post",
+                    async:true,
+                    url:getRootPath()+"/dsff/update.do",
+                    data:formData,
+                    dataType:"json",
+                    success:function(data){
+                        if(data.success){
+                            $.dalert({text:"更改成功",icon:1});
+                            tableObj.bootstrapTable("refresh");
+                        }else{
+                            $.dalert({text:"更改失败",icon:2});
+                        }
+                    }
+                }
+            );
+        }
+        function deleteData(formData,tableObj){
+
+            $.dajax({
+                    method:"post",
+                    async:true,
+                    url:getRootPath()+"/dsff/delete.do",
+                    data:formData,
+                    dataType:"json",
+                    success:function(data){
+                        if(data.success){
+                            $.dalert({text:"删除成功",icon:1});
+                            tableObj.bootstrapTable("refresh");
+                        }else{
+                            $.dalert({text:"删除失败",icon:2});
+                        }
+                    }
+                }
+            );
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

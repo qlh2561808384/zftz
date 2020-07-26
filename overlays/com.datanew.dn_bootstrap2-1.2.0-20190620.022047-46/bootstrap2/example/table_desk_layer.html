@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title>bootstrapTable_demo</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#datatable").dtable({
+                //列参数
+                height:$(window).height(),
+                columns: [[
+                    {checkbox: true},
+                    {field: 'status', title: '状态', width: 90, align: 'center'},
+                    {field: 'agencyName', title: '代收机构', width: 90, align: 'center'},
+                    {
+                        field: 'appName',
+                        title: '接入应用',
+                        align: 'center',
+                        width: 90,
+                        clickToSelect: false
+                    },
+                    {
+                        field: 'paywayName',
+                        title: '支付方式',
+                        align: 'center',
+                        width: 90
+                    },
+                    {field: 'postaccount', title: '商户号', align: 'center', width: 120},
+                    {
+                        field: 'isb2B',
+                        title: '商户类型',
+                        align: 'center',
+                        width: 200,
+                        clickToSelect: false
+                    },
+                    {field: 'sortnum', title: '排序', align: 'center', width: 90},
+                    {
+                        field: 'bankName',
+                        title: '收款银行',
+                        align: 'center',
+                        width: 90,
+                        clickToSelect: false
+                    },
+                    {field: 'accountbank', title: '开户银行', align: 'center', width: 90},
+                    {field: 'accountname', title: '账户名称', align: 'center', width: 90},
+                    {field: 'account', title: '账号', align: 'center', width: 90},
+                    {
+                        field: 'startdate',
+                        title: '启用日期',
+                        align: 'center',
+                        width: 90,
+                        clickToSelect: false
+                    },
+                    {field: 'enddate', title: '到期日期', align: 'center', width: 90},
+                    {field: 'remark', title: '备注', align: 'center', width:90}
+                ]],
+                //本地数据加载
+                data: localdata,
+                resizable: true, //单元格手动拉伸
+                pageNumber: 1,//起始页
+                pageSize: 10,//页面大小
+                pagination: true,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                showToggle: true,//是否使用列表显示开关
+                singleSelect: true,//是否启用单选
+                clickToSelect: true,//点击选中
+                idField: 'guid',
+                onEditLineSave: function (rowIndex, row, oldRow) {
+                    //执行修改前回调函数  返回tree 将update 数据行   false 则不更新表格
+                    //todo 进行数据提交
+                    // console.log(rowIndex);
+                    // console.log(row);
+                    // console.log(oldRow);
+                    return true
+                }
+            });
+        });
+        //用于 该页面被父页面使用dopen调用时，缩小/放大弹窗时table高度自适应，方法名resetTableView需固定
+        function resetLayerTableView(){
+            $("#datatable").dtable("resetView", {height: $(window).height()});
+        }
+    </script>
+</head>
+<body>
+<!--工具栏-->
+<table id="datatable"></table>
+
+</body>
+
+<script>
+    //本地数据
+    var localdata = [{
+        "guid": 1,
+        "postaccount": "1",
+        "account": "1",
+        "accountname": "中国银行",
+        "accountbank": "中国银行",
+        "startdate": "2016-08-29",
+        "enddate": "2016-11-25",
+        "secretkey": "1111",
+        "status": 1,
+        "sortnum": 1,
+        "remark": "1",
+        "writedate": 1473324355000,
+        "writeuserid": 1,
+        "writeusername": "张三",
+        "isb2B": 1,
+        "modifydata": 1473404834000,
+        "modifyuserid": null,
+        "modifyusername": null,
+        "appid": null,
+        "agencycode": "99",
+        "paywaycode": "2",
+        "bankcode": "980101",
+        "agencyName": null,
+        "bankName": null,
+        "appName": null,
+        "paywayName": 1
+    }, {
+        "guid": 2,
+        "postaccount": "1",
+        "account": "1",
+        "accountname": "中国银行",
+        "accountbank": "中国银行",
+        "startdate": "2016-08-29",
+        "enddate": "2016-12-08",
+        "secretkey": "1111",
+        "status": 1,
+        "sortnum": 1,
+        "remark": "2",
+        "writedate": 1473324355000,
+        "writeuserid": 1,
+        "writeusername": "张三",
+        "isb2B": 1,
+        "modifydata": 1473404843000,
+        "modifyuserid": null,
+        "modifyusername": "",
+        "appid": null,
+        "agencycode": "98",
+        "paywaycode": "03",
+        "bankcode": "980101",
+        "agencyName": null,
+        "bankName": null,
+        "appName": null,
+        "paywayName": null
+    }, {
+        "guid": 3,
+        "postaccount": "777290058135724",
+        "account": "1",
+        "accountname": "中国银行",
+        "accountbank": "中国银行",
+        "startdate": "2016-08-29",
+        "enddate": "2016-11-25",
+        "secretkey": "1111",
+        "status": 1,
+        "sortnum": 1,
+        "remark": "3",
+        "writedate": 1473324355000,
+        "writeuserid": 1,
+        "writeusername": "张三",
+        "isb2B": 1,
+        "modifydata": 1473404834000,
+        "modifyuserid": null,
+        "modifyusername": "",
+        "appid": null,
+        "agencycode": "99",
+        "paywaycode": "05",
+        "bankcode": "980101",
+        "agencyName": null,
+        "bankName": null,
+        "appName": null,
+        "paywayName": null
+    }, {
+        "guid": 4,
+        "postaccount": "1",
+        "account": "1",
+        "accountname": "中国银行",
+        "accountbank": "中国银行",
+        "startdate": "2016-08-29",
+        "enddate": "2016-12-08",
+        "secretkey": "1111",
+        "status": 1,
+        "sortnum": 1,
+        "remark": "4",
+        "writedate": 1473324355000,
+        "writeuserid": 1,
+        "writeusername": "张三",
+        "isb2B": 1,
+        "modifydata": 1473404843000,
+        "modifyuserid": null,
+        "modifyusername": "",
+        "appid": null,
+        "agencycode": "98",
+        "paywaycode": "06",
+        "bankcode": "980101",
+        "agencyName": null,
+        "bankName": null,
+        "appName": null,
+        "paywayName": null
+    }];
+</script>
+</html>

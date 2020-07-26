@@ -1,0 +1,73 @@
+package com.datanew.service.xmgcjjs;
+
+
+import com.datanew.service.xmgcjjs.impl.FlowServiceImpl;
+import javassist.NotFoundException;
+import org.apache.poi.ss.formula.functions.T;
+
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * 流程服务
+ *
+ * @author inRush
+ * @date 2015/27
+ **/
+public interface FlowService {
+    /**
+     * 提交事件
+     */
+    interface SubmitEvent {
+        /**
+         * 准备阶段
+         *
+         * @param ywId 业务ID
+         * @return
+         */
+        String onPrepare(Integer ywId, int index);
+
+        /**
+         * 在提交前触发
+         *
+         * @param nextFlowCode 下一流程编码
+         * @return 业务ID
+         */
+        Long onSubmit(Integer ywId, String nextFlowCode, String comment);
+    }
+
+    /**
+     * 提交到流程
+     *
+     * @param ywIds 需要提交的业务对象
+     * @param sxbm  事项编码
+     */
+    void submit(Long yhId, List<Integer> ywIds, String sxbm, FlowServiceImpl.OperateCode operate, List<String> comments, SubmitEvent event) throws Exception;
+
+    /**
+     * 提交到下一流程
+     *
+     * @param ids
+     * @param sxbm
+     * @param comment 审批意见
+     */
+    void nextFlow(List<Integer> ids, String sxbm, String comment);
+
+    /**
+     * 返回到上一流程
+     *
+     * @param ids
+     * @param sxbm
+     * @param comment 审批意见
+     */
+    void preFlow(List<Integer> ids, String sxbm, String comment);
+
+    /**
+     * 检出是否有待办
+     *
+     * @param yhYyId 用户ID
+     * @param sxbm   事项编码
+     * @return 待办业务ID
+     */
+    List<String> check(Long yhYyId, String sxbm);
+}

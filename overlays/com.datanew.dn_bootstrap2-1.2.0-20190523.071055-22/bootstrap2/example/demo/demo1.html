@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo1</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <script type="text/javascript" src="../../js/jquery.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#table").dtable({
+                height: $(window).height(),
+                data: tableData,
+                columns: [
+                    {field:'check', checkbox:true},
+                    {field:'lineNum', title:'序号', width:60, align:'center', formatter:function(value, row, index){
+                            return index+1;
+                        }},
+                    {field:'name', title:'公式名称', width:300, align:'left'},
+                    {field:'intro', title:'', width:400, align:'left'}
+                ],
+                searchbar: {
+                    rownum: 3,
+                    inputs: [
+                        {
+                            title: '姓名',
+                            name: 'name',
+                            type: 'textBox',
+                            placeholder: '输入姓名'
+                        }, {
+                            title: '下拉框',
+                            name: 'test',
+                            type: 'comboBox',
+                            localdata: [{guid: 1, postaccount: 'test'}],
+                            valueField: 'guid',
+                            textField: 'postaccount',
+                            searchOption: true
+                        }, {
+                            type:'searchTree',
+                            title:'弹出树',
+                            name:'searchtree',
+                            localdata: treeData1,
+                            ISLEAF:false,
+                            modalTitle: '查找名称',
+                            checkType: 'checkbox'
+                        }
+                    ]
+                },
+                toolbar: [
+                    {"name":"新建", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"addRow()"},
+                    {"name":"编辑", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"editRow()", disabled:true},
+                    {"name":"删除", "classes":"btn bootstrap-table-delete", "type":"button", "onclick":"removeRow()", disabled:true},
+                    {"name":"公式科目查询", "classes":"btn bootstrap-table-review", "type":"button", "onclick":"searchTable()", disabled:true}
+                ],
+                clickToSelect: true,
+                singleSelect: true,
+                pagination: false,
+                resizable: true
+            })
+        });
+        function addRow() {
+            $.dopen({
+                title :"新建",
+                content: '<div class="col-xs-12"><b>定额公式新增：</b></div>' +
+                '<form id="openForm"></form><br>' +
+                '<div class="openDiv clearfix">' +
+                '<div class="col-xs-4"><div><b>基础数据：</b></div><ul id="tree1"></ul></div>' +
+                '<div class="col-xs-4"><div><b>表达式展示区：</b></div><div class="showDiv"><textarea style="width:100%;height:80%;resize:none;"></textarea></div></div>' +
+                '<div class="col-xs-4"><div><b>定额标准：</b></div><ul id="tree2"></ul></div>' +
+                '<div class="col-xs-4"><div><b>工资数据：</b></div><ul id="tree3"></ul></div>' +
+                '<div class="col-xs-4"><div><b>常量与逻辑运算符：</b></div><div class="operateBtns"></div></div>' +
+                '<div class="col-xs-4"><div><b>定额基数：</b></div><ul id="tree4"></ul></div>' +
+                '</div>',
+                area: ['800px', '98%'],
+                btn: ['确定', '取消'],
+                btn1:function(index){
+                    layer.close(index);
+                }
+            });
+            $("#openForm").dform({
+                rownum:3,
+                labelwidth: "100px",
+                labelAlign: "right",
+                inputs: [
+                    {
+                        title: "公式名称",
+                        name: "gsmc",
+                        type: "textBox"
+                    }, {
+                        title: '资金来源',
+                        name: 'zjly',
+                        type: 'searchTree',
+                        localdata: treeData1,
+                        checkType: 'radio',
+                        rootElement: true,
+                        ISLEAF: true
+                    }, {
+                        title: '基本支出项目',
+                        name: 'zbzcxm',
+                        type: 'searchTree',
+                        localdata: treeData2,
+                        checkType: 'radio',
+                        rootElement: true,
+                        ISLEAF: true
+                    }, {
+                        title: '部门经济分类',
+                        name: 'bmjjfl',
+                        type: 'searchTree',
+                        localdata: treeData3,
+                        checkType: 'radio',
+                        rootElement: true,
+                        ISLEAF: true
+                    }, {
+                        title: '公式类型',
+                        name: 'gslx',
+                        type: 'comboBox',
+                        localdata: treeData4,
+                        textField: 'name'
+                    }, {
+                        title: '系数',
+                        name: 'xs',
+                        type: 'textBox',
+                        defaultValue: '1.0'
+                    }
+                ]
+            });
+
+            //设定每个模块高度
+            var boxHeight = ($("#tree1").parents(".layui-layer-content").height()-$("#openForm").height()-20) / 2,
+                treeHeight = boxHeight - 30;
+            $(".openDiv").find(".col-xs-4").height(boxHeight);
+            $(".showDiv").height(treeHeight);
+
+            //运算符按钮
+            var btnsHtml = "",
+                btnsArr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "-", "*", "/", ".", "(", ")", "清空"];
+            $.each(btnsArr, function(k, v){
+                btnsHtml += '<button type="button" class="btn btn-default btn-sm" style="width:18%; margin:0 0 5px 2%;">'+ v +'</button>';
+            });
+            $(".operateBtns").append(btnsHtml);
+
+            //初始化树
+            $("#tree1").tree({
+                localdata: treeData5,
+                checkType: 'radio',
+                rootElement: true,
+                ISLEAF: true,
+                outerHeight: treeHeight
+            });
+            $("#tree2").tree({
+                localdata: treeData6,
+                checkType: 'radio',
+                rootElement: true,
+                ISLEAF: true,
+                outerHeight: treeHeight
+            });
+            $("#tree3").tree({
+                localdata: treeData7,
+                checkType: 'radio',
+                rootElement: true,
+                ISLEAF: true,
+                outerHeight: treeHeight
+            });
+            $("#tree4").tree({
+                localdata: treeData8,
+                checkType: 'radio',
+                rootElement: true,
+                ISLEAF: true,
+                outerHeight: treeHeight
+            });
+        }
+    </script>
+</head>
+<body>
+<table id="table"></table>
+</body>
+</html>
+<script>
+    var treeData1 = [
+            {id: 1, pId: 0, name: "一般预算"},
+            {id: 11, pId: 1, name: "本级"},
+            {id: 12, pId: 1, name: "上级转移"},
+            {id: 2, pId: 0, name: "政府性基金收入"},
+            {id: 21, pId: 2, name: "本级"},
+            {id: 211, pId: 21, name: "G级"},
+            {id: 22, pId: 2, name: "上级转移"},
+            {id: 3, pId: 0, name: "财政核拨非税收入"},
+            {id: 4, pId: 0, name: "上年结余"},
+            {id: 5, pId: 0, name: "上级补助收入"},
+            {id: 6, pId: 0, name: "事业单位经营收入"},
+            {id: 7, pId: 0, name: "财政专户资金"},
+            {id: 8, pId: 0, name: "其他资金"}
+        ],
+        treeData2 = [
+            {id: 1, pId: 0, name: "基本支出"},
+            {id: 11, pId: 1, name: "工资福利支出"},
+            {id: 12, pId: 1, name: "商品服务支出"},
+            {id: 13, pId: 1, name: "对个人和家庭补助支出"},
+            {id: 14, pId: 1, name: "其他政府基金人员经费"},
+            {id: 15, pId: 1, name: "12"}
+        ],
+        treeData3 = [
+            {id: 1, pId: 0, name: "[301]工资福利支出"},
+            {id: 11, pId: 1, name: "[30101]基本工资"},
+            {id: 111, pId: 11, name: "[3010101]职务工资（技术等级）工资"},
+            {id: 112, pId: 11, name: "[3010199]其他基本工资"},
+            {id: 12, pId: 1, name: "[30102]津贴补贴"},
+            {id: 121, pId: 12, name: "[3010201]规范津补贴"},
+            {id: 122, pId: 12, name: "[3010202]警衔津贴"},
+            {id: 123, pId: 12, name: "[3010203]办案人员岗位津贴"},
+            {id: 13, pId: 1, name: "[30106]伙食补助费"},
+            {id: 14, pId: 1, name: "[30108]机关事业单位基本养老保险缴费"},
+            {id: 15, pId: 1, name: "[30109]职业年金缴费"},
+            {id: 2, pId: 0, name: "[321]工资福利支出_事业"},
+            {id: 21, pId: 2, name: "[32101]基本工资_事业"},
+            {id: 211, pId: 21, name: "[3210101]岗位等级工资_事业"},
+            {id: 212, pId: 21, name: "[3210102]薪级工资_事业"},
+            {id: 22, pId: 2, name: "[32102]津贴补贴_事业"},
+            {id: 221, pId: 22, name: "[3210201]教龄补贴_事业"},
+            {id: 222, pId: 22, name: "[3210202]班主任津贴_事业"},
+            {id: 223, pId: 22, name: "[3210203]医疗卫生津贴_事业"},
+            {id: 23, pId: 2, name: "[32103]奖金_事业"},
+            {id: 231, pId: 23, name: "[3210301]事业在职工作责任制考评奖"},
+            {id: 232, pId: 23, name: "[3210302]工作责任制考评奖_事业"},
+            {id: 24, pId: 2, name: "[32104]伙食补助费_事业"},
+            {id: 25, pId: 2, name: "[32105]职业年金缴费_事业"}
+        ],
+        treeData4 = [
+            {id: 1, pId: 0, name: "类型1"},
+            {id: 2, pId: 0, name: "类型2"},
+            {id: 3, pId: 0, name: "类型3"},
+            {id: 4, pId: 0, name: "类型4"}
+        ],
+        treeData5 = [
+            {id: 1, pId: 0, name: "【2.】基层医疗机构补充数据"},
+            {id: 11, pId: 1, name: "【2.1.】财政经常性收支补助数"},
+            {id: 12, pId: 1, name: "【2.2.】公共卫生服务收入"},
+            {id: 2, pId: 0, name: "【3.】办公条件情况"},
+            {id: 21, pId: 2, name: "【3.1.】办公设备"},
+            {id: 211, pId: 21, name: "【3.1.1.】台式电脑"},
+            {id: 212, pId: 21, name: "【3.1.2.】复印机"},
+            {id: 22, pId: 2, name: "【3.2.】占地面积"},
+            {id: 221, pId: 22, name: "【3.2.1.】人均占地面积"},
+            {id: 23, pId: 2, name: "【3.3.】绿化面积"},
+            {id: 3, pId: 0, name: "【4.】在校学生情况"},
+            {id: 4, pId: 0, name: "【5.】车辆情况"},
+            {id: 5, pId: 0, name: "【6.】人员情况"},
+            {id: 6, pId: 0, name: "【8.】其他交通费"}
+        ],
+        treeData6 = [
+            {id: 1, pId: 0, name: "【2】生均公用经费人头数"},
+            {id: 2, pId: 0, name: "【5】生均公用经费定额"},
+            {id: 3, pId: 0, name: "【1】办公经费"}
+        ],
+        treeData7 = [
+            {id: 1, pId: 0, name: "工资分类合计"},
+            {id: 11, pId: 1, name: "行政在职人员工资"},
+            {id: 111, pId: 11, name: "【1】级别（岗位）工资"},
+            {id: 112, pId: 11, name: "【1】规范津贴费"},
+            {id: 113, pId: 11, name: "【1】警衔津贴"},
+            {id: 12, pId: 1, name: "行政离休人员工资"},
+            {id: 13, pId: 1, name: "行政退休人员工资"},
+            {id: 14, pId: 1, name: "事业在职人员工资"},
+            {id: 15, pId: 1, name: "事业、学校离休人员工资"},
+            {id: 16, pId: 1, name: "事业、学校退休人员工资"},
+            {id: 17, pId: 1, name: "学校在职人员工资"},
+            {id: 18, pId: 1, name: "其他人员工资"}
+        ],
+        treeData8 = [
+            {id: 1, pId: 0, name: "社区专职人员公积金定额（人月）"},
+            {id: 2, pId: 0, name: "增收节支奖（人年）"},
+            {id: 3, pId: 0, name: "残疾人保障金定额（人年）"},
+            {id: 4, pId: 0, name: "年休假未休补助（人年）"},
+            {id: 5, pId: 0, name: "退休人员活动费定额（人年）"},
+            {id: 6, pId: 0, name: "离休人员特需经费（人年）"},
+            {id: 7, pId: 0, name: "独生子女父母奖励金（人年）"},
+            {id: 8, pId: 0, name: "大学生村官公积金定额（人月）"},
+            {id: 9, pId: 0, name: "体检费定额（人年）"},
+            {id:10, pId: 0, name: "事业工作责任制考评奖（人年）"},
+            {id:11, pId: 0, name: "公务用车运行费用定额（车年）"},
+            {id:12, pId: 0, name: "行政工作责任制考评奖（人年）"},
+            {id:13, pId: 0, name: "事业在职人员公用经费定额（人年）"},
+            {id:14, pId: 0, name: "副处以上人员办公费（人年）"},
+            {id:15, pId: 0, name: "合同制消防员基础工资（人年）"}
+        ],
+        tableData = [
+            {"name":"行政（1-1）-3019901行政人员年休假未休补助", "intro":"【3.1.3】复印机*2*【1】办公经费"},
+            {"name":"行政（2）-3029902行政离休人员特需经费", "intro":"行政离休人员*离休人员特需经费（人年）"},
+            {"name":"行政（2）-3030107行政离休综合生活费（增收节支奖）", "intro":"行政离休人员*增收节支奖（人年）"},
+            {"name":"行政（2）-3030107行政退休综合生活费（增收节支奖）", "intro":"行政退休（退职）人员*增收节支奖（人年）"},
+            {"name":"行政（1）-3010301行政在职人员年终一次性奖金", "intro":"职务（技术等级）工资+级别（岗位）工资+规范津补贴+警衔津贴+特殊岗位津贴"},
+            {"name":"行政（1-2）-3019902行政月度考核奖（乡镇减半）", "intro":"行政在职人员*1300*12/2"},
+            {"name":"行政（1-2）-3019901行政人员年休假未休假补助（乡镇减半）", "intro":"行政在职人员*年休假未休补助（人年）/2"},
+            {"name":"事业（1-1-1）-3019902事业阅读考核奖", "intro":"【6.4.2】事业在职人员*1000*2"},
+            {"name":"事业（1-1-1）-3019901事业人员年休假未休补助", "intro":"事业在职人员*年休假未休补助（人年）"},
+            {"name":"事业（2）-3029902事业离休人员特需经费", "intro":"事业、学校离休人员*离休人员特需经费（人年）"},
+            {"name":"事业（2-1）-3030107事业离休人员综合生活费（增收节支奖）", "intro":"学校离休人员*增收节支奖（人年）"},
+            {"name":"事业（2-1）-3030107事业退休人员综合生活费（增收节支奖）", "intro":"学校退休（退职）人员*增收节支奖（人年）"},
+            {"name":"事业（1）-3010705事业在职人员奖励性绩效工资", "intro":"（生活补贴+岗位津贴+工龄补贴）/0.6*0.4*12"},
+            {"name":"事业（1-2）-3039902事业月度考核奖（乡镇减半）", "intro":"事业在职人员*1000*12/2"},
+            {"name":"事业（1-2）-3039901事业人员年休假未休补助（乡镇减半）", "intro":"事业在职人员*年休假未休补助（人年）"},
+            {"name":"行政（1-1）-3019901行政人员年休假未休补助", "intro":"【3.1.3】复印机*2*【1】办公经费"},
+            {"name":"行政（2）-3029902行政离休人员特需经费", "intro":"行政离休人员*离休人员特需经费（人年）"},
+            {"name":"行政（2）-3030107行政离休综合生活费（增收节支奖）", "intro":"行政离休人员*增收节支奖（人年）"},
+            {"name":"行政（2）-3030107行政退休综合生活费（增收节支奖）", "intro":"行政退休（退职）人员*增收节支奖（人年）"},
+            {"name":"行政（1）-3010301行政在职人员年终一次性奖金", "intro":"职务（技术等级）工资+级别（岗位）工资+规范津补贴+警衔津贴+特殊岗位津贴"},
+            {"name":"行政（1-2）-3019902行政月度考核奖（乡镇减半）", "intro":"行政在职人员*1300*12/2"},
+            {"name":"行政（1-2）-3019901行政人员年休假未休假补助（乡镇减半）", "intro":"行政在职人员*年休假未休补助（人年）/2"},
+            {"name":"事业（1-1-1）-3019902事业阅读考核奖", "intro":"【6.4.2】事业在职人员*1000*2"},
+            {"name":"事业（1-1-1）-3019901事业人员年休假未休补助", "intro":"事业在职人员*年休假未休补助（人年）"},
+            {"name":"事业（2）-3029902事业离休人员特需经费", "intro":"事业、学校离休人员*离休人员特需经费（人年）"},
+            {"name":"事业（2-1）-3030107事业离休人员综合生活费（增收节支奖）", "intro":"学校离休人员*增收节支奖（人年）"},
+            {"name":"事业（2-1）-3030107事业退休人员综合生活费（增收节支奖）", "intro":"学校退休（退职）人员*增收节支奖（人年）"},
+            {"name":"事业（1）-3010705事业在职人员奖励性绩效工资", "intro":"（生活补贴+岗位津贴+工龄补贴）/0.6*0.4*12"},
+            {"name":"事业（1-2）-3039902事业月度考核奖（乡镇减半）", "intro":"事业在职人员*1000*12/2"},
+            {"name":"事业（1-2）-3039901事业人员年休假未休补助（乡镇减半）", "intro":"事业在职人员*年休假未休补助（人年）"}
+        ]
+</script>

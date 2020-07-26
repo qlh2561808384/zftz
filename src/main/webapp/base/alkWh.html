@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <title>案例库维护</title>
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script type="text/javascript" src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+<div style="margin: 10px;" id="condition-bar"></div>
+<h3>案例库维护</h3>
+<table id="dynamic-table"></table>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/dynamic-table.js"></script>
+<script>
+    var api = $.extend({}, API, {
+        prefix: "../alk",
+        getColumnsDefine: function (bm, callback) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                _this.doGet(_this.urlGenerator("columnsDefine", bm), {}, function (list) {
+                    callback && callback(list);
+                    resolve(list);
+                });
+            });
+        }
+    });
+    var currentXmlx;
+    var dynamicTable;
+    (function () {
+        Promise.all([
+            api.getXx("xmlx")
+        ]).then(function (value) {
+            var xmlxList = value[0];
+            initConditionBar(API.xxFormatter(xmlxList));
+            currentXmlx = xmlxList[0]["BM"];
+            dynamicTable = DynamicTable.init("dynamic-table", currentXmlx, {tableHeight:$("html").height() - $("h3").height() - 74})
+                .onReady(function () {
+                    this.loadData();
+                });
+        });
+    })();
+
+    function initConditionBar(xmlxList) {
+        $("#condition-bar").dform({
+            inputs: [{
+                title: "项目类型",
+                name: "xmlx",
+                type: 'dsearchtree',//表单类型：目前支持 select/text
+                searchOption: true,
+                url: '../pro/getXMLXTree.do',
+                selected: 1,
+                colspan: 1,
+                onChange: function (newVal) {
+                    currentXmlx = newVal;
+                    dynamicTable.reloadColumns(currentXmlx)
+                        .onReady(function () {
+                            this.loadData();
+                        });
+                }
+            }]
+        });
+    }
+</script>
+</body>
+</html>

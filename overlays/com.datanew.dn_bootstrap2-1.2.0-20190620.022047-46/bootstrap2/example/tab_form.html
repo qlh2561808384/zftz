@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多标签页</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <style>
+        .container-fluid{padding:20px 10px 10px;}
+        .debtMoneyInfo{position:relative; padding:15px 10px 5px; border:1px solid #CCC; border-radius:4px;}
+        .debtMoneyInfo:after{position:absolute; left:10px; top:0; content:"债务金额信息"; background:#FFF; margin-top:-11px; font-size:16px;}
+        .debtMoneyInfo span{margin-right:10px;}
+        .debtTab{margin-top:10px;}
+        .debtTab .nav>li>a{padding:2px 15px;}
+        .debtTab .form-xs .dform-input .control-label{font-size:12px;}
+    </style>
+    <script>
+        function editForm(){
+            var openHtml = '<div class="container-fluid">' +
+                '<div class="debtMoneyInfo">' +
+                '    <span>协议金额：20,000,000.00</span>' +
+                '    <span>举借金额：20,000,000.00</span>' +
+                '    <span>偿还金额：0.00</span>' +
+                '    <span>支出金额：0.00</span>' +
+                '    <span>债务余额：20,000,000.00</span>' +
+                '</div>' +
+                '<div class="debtTab">' +
+                '    <ul class="nav nav-tabs" role="tablist">' +
+                '        <li role="presentation" class="active"><a href="#infoTab1" aria-controls="infoTab1" role="tab" data-toggle="tab">基本信息</a></li>' +
+                '        <li role="presentation"><a href="#infoTab2" aria-controls="infoTab2" role="tab" data-toggle="tab">举借信息</a></li>' +
+                '        <li role="presentation"><a href="#infoTab3" aria-controls="infoTab3" role="tab" data-toggle="tab">还款计划</a></li>' +
+                '        <li role="presentation"><a href="#infoTab4" aria-controls="infoTab4" role="tab" data-toggle="tab">应付利息</a></li>' +
+                '        <li role="presentation"><a href="#infoTab5" aria-controls="infoTab5" role="tab" data-toggle="tab">偿还本金</a></li>' +
+                '        <li role="presentation"><a href="#infoTab6" aria-controls="infoTab6" role="tab" data-toggle="tab">支付利息罚息</a></li>' +
+                '        <li role="presentation"><a href="#infoTab7" aria-controls="infoTab7" role="tab" data-toggle="tab">支付费用</a></li>' +
+                '        <li role="presentation"><a href="#infoTab8" aria-controls="infoTab8" role="tab" data-toggle="tab">变更历史</a></li>' +
+                '    </ul>' +
+                '    <div class="tab-content">' +
+                '        <div role="tabpanel" class="tab-pane active" id="infoTab1">' +
+                '            <form id="basicInfo"></form>' +
+                '            <div class="debtTab">' +
+                '                <ul class="nav nav-tabs" role="tablist">' +
+                '                    <li role="presentation" class="active"><a href="#tableTab1" aria-controls="tableTab1" role="tab" data-toggle="tab">抵押/质押</a></li>' +
+                '                    <li role="presentation"><a href="#tableTab2" aria-controls="tableTab2" role="tab" data-toggle="tab">担保</a></li>' +
+                '                    <li role="presentation"><a href="#tableTab3" aria-controls="tableTab3" role="tab" data-toggle="tab">附件</a></li>' +
+                '                </ul>' +
+                '                <div class="tab-content">' +
+                '                    <div role="tabpanel" class="tab-pane active" id="tableTab1">' +
+                '                        <table id="table1"></table>' +
+                '                    </div>' +
+                '                    <div role="tabpanel" class="tab-pane" id="tableTab2"></div>' +
+                '                    <div role="tabpanel" class="tab-pane" id="tableTab3"></div>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab2"></div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab3"></div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab4">' +
+                '            <table id="payInterest"></table>' +
+                '        </div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab5"></div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab6"></div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab7"></div>' +
+                '        <div role="tabpanel" class="tab-pane" id="infoTab8"></div>' +
+                '    </div>' +
+                '</div>' +
+                '</div>';
+
+            $.dopen({
+                title: "债务信息",
+                content: openHtml,
+                area: ["1000px", "600px"],
+                btn: ["保存送审", "保存", "关闭"],
+                btn1: function(index){
+                    layer.close(index)
+                },
+                btn2: function(index){
+                    layer.close(index)
+                }
+            });
+
+            $("#basicInfo").dform({
+                formtitle:"债务信息", //表单标题
+                labelwidth:"140px",
+                inputs:[
+                    {title:"债务单位", name:"debtUnit", type:"searchTree"},
+                    {title:"债务名称", name:"debtName", type:"textBox"},
+                    {title:"债务类别", name:"debtType", type:"searchTree"},
+                    {title:"签订日期", name:"startDate", type:"dateBox"},
+                    {title:"协议号", name:"agreementNo", type:"textBox"},
+                    {title:"债务类型", name:"debtStyle", type:"searchTree"},
+                    {title:"债权人", name:"debtUser", type:"searchTree"},
+                    {title:"债权人全称", name:"debtUserName", type:"textBox"},
+                    {title:"资金用途", name:"fundUsed", type:"searchTree"},
+                    {title:"补充必填", name:"other", type:"comboBox"},
+                    {title:"建设项目", name:"jsProject", type:"searchTree"},
+                    {title:"融资项目", name:"rzProject", type:"searchTree"},
+                    {title:"债务期限(月)", name:"debtLimit", type:"textBox"},
+                    {title:"币种", name:"currency", type:"searchTree"},
+                    {title:"汇率", name:"exchangeRate", type:"textBox"},
+                    {title:"协议金额(原币)", name:"agreementMoney1", type:"textBox"},
+                    {title:"利率类型", name:"interestRateType", type:"comboBox"},
+                    {title:"固定利率(%)", name:"fixedInterestRate", type:"textBox"},
+                    {title:"协议金额(人民币)", name:"agreementMoney2", type:"textBox"},
+                    {title:"利率调整方式", name:"interestRateMethod", type:"searchTree"},
+                    {title:"调整月份", name:"changeMonth", type:"dateBox", startView: 3, minView: 2, format: "mm-dd"},
+                    {title:"利率浮动方式", name:"floatingMethod", type:"comboBox", localdata:[{id:0, text:"上浮"}, {id:1, text:"下浮"}]},
+                    {title:"利率浮动率(%)", name:"floatingRate", type:"textBox"},
+                    {title:"协议利率", name:"agreementRate", type:"textBox"},
+                    {title:"结息方式", name:"settleMethod", type:"searchTree"},
+                    {title:"结息月份", name:"settleMonth", type:"dateBox", startView: 3, minView: 2, format: "mm-dd"},
+                    {title:"利随本清", name:"clearCost", type:"comboBox", selected:1, localdata:[{id:0, text:"否"}, {id:1, text:"是"}]},
+                    {title:"融资费用收取方式", name:"collectMethod", type:"searchTree"},
+                    {title:"综合成本率(%)", name:"combinedRatio", type:"textBox"},
+                    {title:"手续费率(%)", name:"poundageRatio", type:"textBox"},
+                    {title:"一次性费用", name:"oneTimeCharge", type:"textBox"},
+                    {title:"保证金", name:"bail", type:"textBox"},
+                    {title:"增信措施", name:"type1", type:"searchTree"},
+                    {title:"融资计划金额", name:"financeMoney", type:"textBox"},
+                    {title:"融资计划利率(%)", name:"financeRate", type:"textBox"},
+                    {title:"中间费率(%)", name:"middleRate", type:"textBox"},
+                    {title:"涉及政府担保类文件", name:"files", type:"comboBox"},
+                    {title:"融资类型", name:"financeType", type:"searchTree"},
+                    {title:"协议或文件名称", name:"filesName", type:"textBox"},
+                    {title:"签订协议的政府部门类型", name:"unitType", type:"textBox"},
+                    {title:"协议投资额", name:"agreementMoney", type:"textBox"},
+                    {title:"年度", name:"year", type:"dateBox", minView: 4, format: "yyyy"},
+                    {title:"协议类型", name:"agreementStyle", type:"comboBox", searchOption:false, localdata:[{id:0, text:"政府采购协议"}, {id:1, text:"财政函"}, {id:2, text:"县政府或人大文件"}]},
+                    {title:"签章部门", name:"signUnit", type:"textBox"},
+                    {title:"签章日期", name:"signDate", type:"dateBox"},
+                    {title:"协议或文件投资额", name:"filesMoney", type:"textBox"},
+                    {title:"约定的地方支出", name:"localPay", type:"textBox"}
+                ]
+            });
+
+            $("#table1").dtable({
+                height: 300,
+                columns: [
+                    {field: "checkType", radio:true, width: 50, align: "center", footerFormatter: function(){
+                            return "小计";
+                        }},
+                    {field: "pledgeType", title: "押物类型", width: 150, align: "center"},
+                    {field: "pledgeDate", title: "抵(质)押日期", width: 150, align: "center"},
+                    {field: "pledgeName", title: "抵(质)押物", width: 150, align: "center"},
+                    {field: "pledgeOldPrice", title: "抵(质)押物原值", width: 150, align: "right"},
+                    {field: "pledgeNewPrice", title: "抵(质)押物现值", width: 150, align: "right"},
+                    {field: "pledgePrice", title: "抵(质)押金额", width: 150, align: "right"},
+                    {field: "pledgeRemarks", title: "备注", width: 300, align: "center"}
+                ],
+                toolbar: [
+                    {"name":"新增", "classes":"bootstrap-table-add", "type":"button", "onclick":"addPledgeRow()"},
+                    {"name":"删除", "classes":"bootstrap-table-delete", "type":"button", "onclick":"removePledgeRow()"}
+                ],
+                showRefresh: false,
+                showFooter: true,
+                clickToSelect: true
+            });
+
+            $("#payInterest").dtable({
+                height: 500,
+                columns: [
+                    {field: "checkType", width: 30, radio: true},
+                    {field: "rowNum", title:"设置", width: 50, align: "center", formatter: function(value, row, index){
+                            return index + 1;
+                        }, footerFormatter: function(){
+                            return "小计";
+                        }},
+                    {field: "pledgeType", title: "偿还资金来源", width: 150, align: "center"},
+                    {field: "pledgeDate", title: "应付日期", width: 150, align: "center"},
+                    {field: "pledgeName", title: "应付利息金额", width: 150, align: "right"},
+                    {field: "pledgeRemarks", title: "备注", width: 300, align: "center"}
+                ],
+                toolbar: [
+                    {"name":"Excel导入", "classes":"bootstrap-table-download", "type":"button", "onclick":""},
+                    {"name":"利息计算", "classes":"bootstrap-table-verify", "type":"button", "onclick":""},
+                    {"name":"新增", "classes":"bootstrap-table-add", "type":"button", "onclick":"addInterestRow()"},
+                    {"name":"删除", "classes":"bootstrap-table-delete", "type":"button", "onclick":"removeInterestRow()"}
+                ],
+                showRefresh: false,
+                showFooter: true,
+                clickToSelect: true
+            });
+        }
+
+        function addInterestRow(){
+            $.dopen({
+                title: "新增",
+                content: "<form id='addPayForm'></form>",
+                area: ['600px','400px'],
+                btn: ["保存", "取消"],
+                btn1: function (index) {
+                    var $table = $("#payInterest");
+                    var dataLen = $table.dtable("getData").length,
+                        rowData = $("#addPayForm").dform("getData");
+                    rowData["pledgeType"] = $(".valueBox[name='pledgeType']").siblings(".form-control").searchTree("getText");
+                    $table.dtable("insertRow", {index:dataLen, row:rowData});
+                    layer.close(index);
+                }
+            });
+            $("#addPayForm").dform({
+                rownum: 2,
+                labelwidth:"100px",
+                inputs: [
+                    {title:"资金偿还来源", name:"pledgeType", type:"searchTree", url:"./bootstrap2/example/json/treeData.json"},
+                    {title:"应付日期", name:"pledgeDate", type:"dateBox", pickerPosition:"bottom-left"},
+                    {title:"应付利息金额", name:"pledgeName", type:"textBox"},
+                    {title:"备注", name:"pledgeRemarks", type:"textBox", multiline:true, colspan:2}
+                ]
+            });
+        }
+        function removeInterestRow(){
+            var $table = $("#payInterest");
+            var selectData = getSelectData($table);
+
+            var tableData = $table.dtable("getData");
+            $.each(selectData, function(i){
+                var dataIndex = tableData.indexOf(selectData[i]);
+                $table.dtable("removeByRowIndex", dataIndex);
+            });
+        }
+
+        function addPledgeRow(){
+            $.dopen({
+                title: "新增",
+                content: "<form id='addRowForm'></form>",
+                area: ['600px','400px'],
+                btn: ["保存", "取消"],
+                btn1: function (index) {
+                    var $table = $("#table1");
+                    var dataLen = $table.dtable("getData").length,
+                        rowData = $("#addRowForm").dform("getData");
+                    $table.dtable("insertRow", {index:dataLen, row:rowData});
+                    layer.close(index);
+                }
+            });
+            $("#addRowForm").dform({
+                rownum: 2,
+                labelwidth:"100px",
+                inputs: [
+                    {title:"押物类型", name:"pledgeType", type:"textBox"},
+                    {title:"抵(质)押日期", name:"pledgeDate", type:"dateBox", pickerPosition:"bottom-left"},
+                    {title:"抵(质)押物", name:"pledgeName", type:"textBox"},
+                    {title:"抵(质)押物原值", name:"pledgeOldPrice", type:"textBox"},
+                    {title:"抵(质)押物现值", name:"pledgeNewPrice", type:"textBox"},
+                    {title:"抵(质)押金额", name:"pledgePrice", type:"textBox"},
+                    {title:"备注", name:"pledgeRemarks", type:"textBox", multiline:true, colspan:2}
+                ]
+            });
+        }
+        function removePledgeRow() {
+            var $table = $("#table1");
+            var selectData = getSelectData($table);
+
+            var tableData = $table.dtable("getData");
+            $.each(selectData, function(i){
+                var dataIndex = tableData.indexOf(selectData[i]);
+                $table.dtable("removeByRowIndex", dataIndex);
+            });
+        }
+        function getSelectData(tableObj) {
+            var dataArr = tableObj.dtable("getSelections");
+            if (dataArr.length === 0) {
+                $.dalert({text:"请选择数据", icon:2});
+                return;
+            }
+            return dataArr;
+        }
+    </script>
+</head>
+<body>
+<button class="bootstrap-table-edit" onclick="editForm()">编辑</button>
+</body>
+</html>

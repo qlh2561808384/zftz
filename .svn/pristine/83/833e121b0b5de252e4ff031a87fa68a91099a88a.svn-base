@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>人员群组维护</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link href="../css/common.css" rel="stylesheet" type="text/css">
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .toolbar_one {
+        background-color: #EBEBEB;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+
+    .leftTree {
+        border-right: 1px solid #DEDEDE;
+        overflow: auto;
+    }
+</style>
+<script>
+    var treeData1 = [];
+    var treeData2 = [];
+    var treeData3 = [];
+
+    var init_form = '<div><form id="form" ></form></div>';//弹窗内表单初始样式
+    var init_forms = '<div><form id="forms" ></form></div>';//弹窗内表单初始样式
+    $(function () {
+        $.dajax({
+            data: {
+                id: "1",
+                key: {name: "NAME"},
+                simpleData: {
+                    enable: true,
+                    idKey: "ID",
+                    pIdKey: "PID",
+                    rootPId: 0
+                }
+            },
+            url: getRootPath() + "/yhglggryqz/getchoiceApplyTrees.do",
+            dataType: "json",
+            success: function (data) {
+                treeData1 = data;
+            }
+        });
+
+        $.dajax({
+            data: {
+                id: "2",
+                key: {name: "NAME"},
+                simpleData: {
+                    enable: true,
+                    idKey: "ID",
+                    pIdKey: "PID",
+                    rootPId: 0
+                }
+            },
+            url: getRootPath() + "/yhglggryqz/getchoiceApplyTrees.do",
+            dataType: "json",
+            success: function (data) {
+                treeData2 = data;
+            }
+        });
+
+
+        $.dajax({
+            data: {
+                id: "3",
+                key: {name: "NAME"},
+                simpleData: {
+                    enable: true,
+                    idKey: "ID",
+                    pIdKey: "PID",
+                    rootPId: 0
+                }
+            },
+            url: getRootPath() + "/yhglggryqz/getchoiceApplyTrees.do",
+            dataType: "json",
+            success: function (data) {
+                treeData3 = data;
+
+                var toolObj = [
+                    {"name": "新增", "classes": "btn bootstrap-table-add", "type": "button", "onclick": "add()"},
+                    {"name": "修改", "classes": "btn bootstrap-table-edit", "type": "button", "onclick": "edit()"},
+                    {"name": "删除", "classes": "btn bootstrap-table-delete test", "type": "button", "onclick": "remov()"}
+                ];
+                //  右侧表单
+                $("#table").dtable({
+                    height: 400,
+                    url: getRootPath() + "/yhglggryqz/getAppylToRyqzInfo.do",
+                    columns: [
+                        {checkbox: true},
+                        {field: 'GUID', title: '序号', align: 'center', visible: false},
+                        {field: 'MC', title: '分组名称', align: 'center'},
+                        {field: 'FZLX', title: '分组类型', align: 'center', formatter: ztFormatter},
+                        {field: 'FZLXVAL', title: '分组类型参数', align: 'center', width: 250, formatter: fzlxvalFormatter},
+                        {field: 'FZLXSQL', title: 'sql语句', align: 'center'},
+                        {
+                            field: 'ZT', title: '分组状态', align: 'center',
+                            editor: {
+                                type: "comboBox",
+                                localdata: [{id: 0, text: "停用"}, {id: 1, text: "启用"}],
+                            },
+                            formatter: stationTypeFormatters
+                        },
+                        {field: 'MS', title: '分组说明', align: 'center'},
+                        {field: 'CJSJ', title: '新增时间', align: 'center', visible: false},
+                        {field: 'SSYYID', title: '所属应用id', align: 'center', visible: false},
+                        {field: 'CJYHID', title: '创建用户id', align: 'center', visible: false}
+                    ],
+                    queryParams: queryParams,//查询参数方法
+                    resizable: false, //单元格手动拉伸
+                    editable: true,
+                    pageNumber: 1,//起始页
+                    pageSize: 12,//页面大小
+                    pagination: true,
+                    uniqueId: 'guid',
+                    paginationHAlign: 'left',//分页按钮位置  left/right
+                    sidePagination: 'server',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                    toolbar: toolObj,
+                    singleSelect: true,//单选
+                    clickToSelect: true,//点击选中
+                    showRefresh: false,
+                });
+            }
+        });
+
+
+//        $("#sideTree").dtree({
+// 		       	data:{
+// 					key : {name:"NAME"},
+// 					simpleData :{
+// 						enable : true,
+// 						idKey : "ID",
+// 						pIdKey : "PID",
+// 						rootPId : 0
+// 					}
+// 				},
+// 		         checkType: "nocheck",
+// 		         rootElement:true,
+// 		         url: getRootPath()+"/yhglggryqz/getApplyTree.do",
+
+//                 callback: {
+//                     onClick: getTreeId
+//                 }
+//             });
+
+        //  左侧树高度
+        $(".leftTree").height($(window).height() - $("#toolbar").outerHeight(true) - 20);
+
+    })
+
+
+    function stationTypeFormatters(value, row, index) {
+        switch (value) {
+            case "0":
+                return "停用";
+            case "1":
+                return "启用";
+        }
+    }
+
+    function add() {
+
+        $.dopen({
+            btns: 2,
+            btn: ['确定', '取消'],
+            area: ['600px', '380px'],
+            title: "岗位信息录入",
+            content: init_form,
+            closeBtn: 1,
+            skin: 'yourclass',
+            shadeClose: false,
+            yes: function (index) {
+// 				for(var i=0;i<$("#form").find("input").length;i++){
+// 					if($("#form").find("input")[i].value==""){
+// 						$.dalert({text:"所有信息必须填写完全"});
+// 						return false;
+// 					}
+// 				}
+                var flag = $("#form").dform("validate");
+                if (!flag) {
+                    $.dalert({text: "请填写必填的数据 ", icon: 2});
+                    return;
+                }
+                $.dajax({
+                    cache: true,
+                    url: getRootPath() + "/yhglggryqz/saveRyqz.do",
+                    data: $('#form').serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({
+                                text: data.content
+                            });
+                            layer.close(index);
+                            $("#table").bootstrapTable("refresh");
+                        }
+                    }
+                });
+            }
+        });
+        $("#form").dform({
+            rownum: 2,   //每行控件数目
+            labelwidth: "90px",
+            inputs: [
+                {title: "审批id", name: "guid", type: "hidden"},
+                {title: "分组名称", name: "mc", type: "text"},
+                {
+                    title: "状态",
+                    name: "zt",
+                    type: "comboBox",
+                    selected: 1,
+                    textField: 'comboTxt',
+                    valueField: 'comboId',
+                    required: true,
+                    localdata: [{comboId: 1, comboTxt: "启用"}, {comboId: 2, comboTxt: "停用"}]
+                },
+                {
+                    title: "分组类型",
+                    name: "fzlx",
+                    type: "comboBox",
+                    id: "fzlx",
+                    selected: 3,
+                    textField: 'comboTxt',
+                    valueField: 'comboId',
+                    required: true,
+                    onChange: function (newValue, oldValue) {
+                        $("#fzlxval").searchTree("reload", {
+                            queryParam: {id: newValue},
+                            url: getRootPath() + "/yhglggryqz/getchoiceApplyTree.do"
+                        });
+                        if (newValue == 4) {
+                            $("#fzlxsql").textBox("enable");
+                            $("#fzlxval").searchTree("disable");
+                            $("#fzlxval").parents(".dform-input").hide();
+                        } else {
+                            $("#fzlxsql").textBox("disable");
+                            $("#fzlxval").searchTree("enable");
+                            $("#fzlxval").parents(".dform-input").show();
+                        }
+
+                    },
+                    localdata: [{comboId: 1, comboTxt: "单位"}, {comboId: 2, comboTxt: "角色"}, {
+                        comboId: 3,
+                        comboTxt: "用户"
+                    }, {comboId: 4, comboTxt: "sql查询"}]
+                },
+                {
+                    title: "分组类型值", name: "fzlxval", type: "searchTree", id: "fzlxval", required: true,
+
+                    data: {
+                        key: {name: "NAME"},
+                        simpleData: {
+                            enable: true,
+                            idKey: "ID",
+                            pIdKey: "PID",
+                            rootPId: 0
+                        }
+                    },
+                    type: "searchTree",
+                    width: 200,
+                    checkType: 'checkbox',
+                    validText: '测试',
+                    url: getRootPath() + "/yhglggryqz/getchoiceApplyTree.do",
+                    rootElement: false,
+                    onlyLeaf: true,
+
+
+                },
+                {title: "sql语句", id: "fzlxsql", name: "fzlxsql", multiline: true, type: "textBox", colspan: 2},
+                {title: "分组说明", name: "ms", type: "textBox", multiline: true, colspan: 2},
+                {title: "新增用户id", name: "cjyhid", type: "hidden"},
+                {title: "新增时间", name: "cjsj", type: "hidden"},
+                {title: "对应业务系统编码", name: "ssyybm", type: "hidden"}
+            ]
+        });
+
+        $("#fzlxsql").textBox("disable");
+        $("#fzlxval").searchTree("reload", {
+            queryParam: {id: $("#fzlx").comboBox("getValue")},
+            url: getRootPath() + "/yhglggryqz/getchoiceApplyTree.do"
+        });
+
+    }
+
+    function edit() {
+        var dataArr = $("#table").bootstrapTable("getSelections");
+        if (dataArr.length != 1) {
+            $.dalert({text: "请选择一条记录进行更改操作！"});
+            return false;
+        }
+
+        $.dopen({
+            title: "人员群组信息修改",
+            content: init_forms,
+            area: ['600px', '380px'],
+            btn: ['确定', '取消'],
+            btn1: function (index) {
+                var flag = $("#forms").dform("validate");
+                if (!flag) {
+                    $.dalert({text: "请填写必填的数据 ", icon: 2});
+                    return;
+                }
+                var forms = $("#forms").dform("getData");
+
+                var guid = dataArr[0].GUID;
+                var mc = forms.mc;
+                var fzlx = forms.fzlx;
+                var fzlxval = forms.fzlxval;
+                var ms = forms.ms;
+                var zt = forms.zt;
+                var fzlxsql = forms.fzlxsql;
+                $.dajax({
+                    cache: true,
+                    url: getRootPath() + "/yhglggryqz/saveEditRyqz.do",
+                    data: $.param({
+                        "guid": guid,
+                        "mc": mc,
+                        "fzlx": fzlx,
+                        "fzlxval": fzlxval,
+                        "ms": ms,
+                        "zt": zt,
+                        "fzlxsql": fzlxsql
+
+                    }),
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: data.content, icon: 1});
+                            layer.close(index);
+                            $("#table").bootstrapTable("refresh");
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#forms").dform({
+            rownum: 2,   //每行控件数目
+            labelwidth: "90px",
+            inputs: [
+                {title: "审批id", name: "guid", type: "hidden"},
+                {title: "分组名称", name: "mc", type: "text"},
+                {
+                    title: "状态",
+                    name: "zt",
+                    type: "comboBox",
+                    selected: 1,
+                    textField: 'comboTxt',
+                    valueField: 'comboId',
+                    required: true,
+                    localdata: [{comboId: 1, comboTxt: "启用"}, {comboId: 2, comboTxt: "停用"}]
+                },
+                {
+                    title: "分组类型",
+                    name: "fzlx",
+                    type: "comboBox",
+                    id: "fzlxs",
+                    selected: 3,
+                    textField: 'comboTxt',
+                    valueField: 'comboId',
+                    required: true,
+                    onChange: function (newValue, oldValue) {
+                        $("#fzlxvals").searchTree("reload", {
+                            queryParam: {id: newValue},
+                            url: getRootPath() + "/yhglggryqz/getchoiceApplyTree.do"
+                        });
+                        if (newValue == 4) {
+                            $("#fzlxsql1").textBox("enable");
+                            $("#fzlxvals").searchTree("disable");
+                            $("#fzlxvals").parents(".dform-input").hide();
+                        } else {
+                            $("#fzlxsql1").textBox("disable");
+                            $("#fzlxvals").searchTree("enable");
+                            $("#fzlxvals").parents(".dform-input").show();
+                        }
+                        //loadform();
+                    },
+                    localdata: [{comboId: 1, comboTxt: "单位"}, {comboId: 2, comboTxt: "角色"}, {
+                        comboId: 3,
+                        comboTxt: "用户"
+                    }, {comboId: 4, comboTxt: "sql查询"}]
+                },
+                {
+                    title: "分组类型值", name: "fzlxval", type: "searchTree", id: "fzlxvals", required: true,
+                    data: {
+                        key: {name: "NAME"},
+                        simpleData: {
+                            enable: true,
+                            idKey: "ID",
+                            pIdKey: "PID",
+                            rootPId: 0
+                        }
+                    },
+                    type: "searchTree",
+                    width: 200,
+                    checkType: 'checkbox',
+                    validText: '测试',
+                    url: getRootPath() + "/yhglggryqz/getchoiceApplyTree.do",
+                    rootElement: false,
+                    onlyLeaf: true,
+
+                },
+                {title: "sql语句", id: "fzlxsql1", name: "fzlxsql", multiline: true, type: "textBox", colspan: 2},
+                {title: "分组说明", multiline: true, name: "ms", type: "text", colspan: 2},
+                {title: "新增用户id", name: "cjyhid", type: "hidden"},
+                {title: "新增时间", name: "cjsj", type: "hidden"},
+                {title: "对应业务系统编码", name: "ssyybm", type: "hidden"}
+            ]
+        });
+
+        loadform();
+        $("#fzlxvals").searchTree("reload", {
+            queryParam: {id: $("#fzlxs").comboBox("getValue")},
+            url: getRootPath() + "/yhglggryqz/getchoiceApplyTree.do"
+        });
+        if ($("#fzlxs").comboBox('getValue') == 4) {
+            $("#fzlxsql1").textBox("enable");
+            $("#fzlxvals").searchTree("disable");
+            $("#fzlxvals").parents(".dform-input").hide();
+        } else {
+            $("#fzlxsql1").textBox("disable");
+            $("#fzlxvals").searchTree("enable");
+            $("#fzlxvals").parents(".dform-input").show();
+        }
+
+
+        loadform();
+
+        function loadform() {
+            $("#forms").dform("load", {
+                guid: dataArr[0].GUID,
+                mc: dataArr[0].MC,
+                fzlx: dataArr[0].FZLX,
+                fzlxval: dataArr[0].FZLXVAL,
+                ms: dataArr[0].MS,
+                zt: dataArr[0].ZT,
+                cjyhid: dataArr[0].CJYHID,
+                cjsj: dataArr[0].CJSJ,
+                ssyybm: dataArr[0].SSYYBM,
+                fzlxsql: dataArr[0].FZLXSQL
+
+            });
+        }
+    }
+
+
+    function remov() {
+        var dataArr = $("#table").bootstrapTable("getSelections");
+        if (dataArr.length == 0) {
+            $.dalert({
+                text: "未选择要删除的项目",
+                icon: 7
+            });
+        } else {
+            var guid = dataArr[0].GUID;
+            $.dconfirm({
+                text: "确认继续？",
+                btn: ["确定", "取消"],
+                funs: [function () {
+                    $.dajax({
+                        type: "POST",
+                        url: getRootPath() + "/yhglggryqz/delRyqz.do",
+                        data: {
+                            id: guid
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.success) {
+                                $.dalert({
+                                    text: data.content
+                                });
+                                $("#table").bootstrapTable("refresh");
+                            }
+                        }
+
+                    });
+                }, function () {
+
+                }]
+            });
+
+        }
+
+
+    }
+
+    function queryParams(params) {
+
+        return {
+            //如果需要后端进行分页 limit 和offset是必须参数
+            limit: params.limit,
+            offset: params.offset,
+// 			id : treeIds,
+
+        }
+    }
+
+    function getRootPath() {
+        var curWwwPath = window.document.location.href;
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        var localhostPaht = curWwwPath.substring(0, pos);
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+
+    //     var treeId;
+    //     function getTreeId(event, treeId, treeNode){
+    //     	treeId=treeNode.ID;
+    //     	 $("#table").bootstrapTable("refresh", {query: {id: treeId}});
+    //     	 treeIds=treeId;
+    //     }
+
+    function fzlxvalFormatter(value, row, index) {
+        if (value != null) {
+            var valuearr = value.split(",");
+
+            var resarr = [];
+            var treeIdKey = "ID", treeNameKey = "NAME", res = "";
+            if (row.FZLX == '1') {
+                for (var key = 0; key < treeData1.length; key++) {
+                    for (var j = 0; j < valuearr.length; j++) {
+                        if (treeData1[key][treeIdKey] == valuearr[j]) {
+                            res = treeData1[key][treeNameKey];
+                            resarr.push(res);
+                        }
+                    }
+                }
+            }
+            if (row.FZLX == '2') {
+                for (var key = 0; key < treeData2.length; key++) {
+                    for (var j = 0; j < valuearr.length; j++) {
+                        if (treeData2[key][treeIdKey] == valuearr[j]) {
+                            res = treeData2[key][treeNameKey];
+                            resarr.push(res);
+                        }
+                    }
+                }
+            }
+
+            if (row.FZLX == '3') {
+                for (var key = 0; key < treeData3.length; key++) {
+                    for (var j = 0; j < valuearr.length; j++) {
+                        if (treeData3[key][treeIdKey] == valuearr[j]) {
+                            res = treeData3[key][treeNameKey];
+                            resarr.push(res);
+                        }
+                    }
+                }
+            }
+
+            return resarr.join(',');
+        }
+    }
+
+    function ztFormatter(value, row, index) {
+        switch (value) {
+            case "1":
+                return "单位";
+            case "2":
+                return "角色";
+            case "3":
+                return "用户";
+            case "4":
+                return "sql查询";
+        }
+    }
+</script>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!--         <div class="col-xs-2 leftTree"> -->
+        <!--             <div class="app_title">应用列表</div> -->
+        <!--             <div id="sideTree" class="ztree"></div> -->
+        <!--         </div> -->
+        <div class="col-xs-12 rightCon">
+            <div class="app_title">人员群组信息表</div>
+            <table id="table"></table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

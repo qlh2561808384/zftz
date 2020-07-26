@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<title>登录</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+	<script type="text/javascript" src="bootstrap2/js/jquery.js"></script>
+	<script type="text/javascript" src="bootstrap2/js/bootstrap.datanew.js"></script>
+    <link rel="stylesheet" href="css/newlogin.css" />
+</head>
+
+<body>
+<div class="loginBox">
+	<div class="login_hd"><b>政府投资项目管理系统</b></div>
+	<div class="login_bd clearfix">
+		<div class="login_lt lt">
+			<div class="lg_title">公告</div>
+			<ul class="lg_list">
+				<li>如您发现部分页面布局有问题</li>
+				<li>请您安装以下浏览器</li>
+			    <li>chrome<a href="common/downloadChrome.do" target="_blank"><input value="下载" class="bootstrap-table-download" style="height: 20px;" type="button" onclick="location.href = 'common/downloadChrome.do'" /></a></li>
+			</ul>
+			<!-- <div class="morelist"><a href="" target="_blank">更多</a></div> -->
+		</div>
+		<form id="loginform">
+		<div class="login_rt rt">
+			<div class="lg_title">用户登录</div>
+			<div class="lg_item">
+				<input type="text" id="username" name="username" proving="notEmpty" placeholder="用户名" title="用户名" class="tb_input tb_inp_name"  />
+			</div>
+			
+			<div class="lg_item">
+				<input type="password" name="password" proving="notEmpty" placeholder="密码" title="密码" class="tb_input tb_inp_pwd" />
+			</div>
+			<div class="lg_item clearfix">
+				<div class="chkbox lt"><input type="checkbox" name="" id="" class="tb_chk" />记住密码</div>
+				<div class="addFavorite rt"><a href="javascript:void(0);" onclick="javascript:addFavorite();">加入收藏夹</a></div>
+			</div>
+			<div class="lg_item clearfix">
+				<div class="lt"><button id="submitbtn" type="button" class="tb_btn tb_btn_login">登录</button></div>
+				<div class="rt"><button type="button" id="resetbtn" class="tb_btn tb_btn_reset">重置</button></div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<div class="bottominfo"><span>版权所有：</span>-<span>浙江网盛数新软件股份有限公司</span></div>
+	
+<script type="text/javascript">
+
+//	var isAlertOn = false;
+
+	$(function(){
+		$("#submitbtn").click(function(){
+			if($("#loginform").dform("validate")){
+				$("#loginform").dform("submit",{
+					url:"user/login.do",
+					success:function(data){
+						if(data.success){
+							window.location.href="index.jsp";
+						}else{
+							$.dalert({text:data.content});
+						}
+					}
+				})
+			}
+		});
+		$("#resetbtn").click(function(){
+			$('#loginform input').val("");
+		})
+
+		$("body").keydown(function () {
+//			$('#password').change();
+//			if (!isAlertOn) {
+				if (event.keyCode == "13") {
+					$("#submitbtn").click();
+				}
+//			}
+		});
+
+		$("#username").focus();
+
+//		$('#username').change(function() {
+//			isAlertOn = false;
+//		});
+//
+//		$('#password').change(function() {
+//			isAlertOn = false;
+//		});
+	})
+	
+	
+	
+	
+	
+	//加入收藏夹
+	function isPad() {
+		var ua = navigator.userAgent.toLowerCase();
+		var isPad = ua.match(/iPad/i)=="ipad" || ua.match(/iphone os/i) == "iphone os" 
+					|| ua.match(/android/i) == "android" || ua.match(/ucweb/i) == "ucweb"
+					|| ua.match(/rv:1.2.3.4/i) == "rv:1.2.3.4" || ua.match(/midp/i) == "midp"
+					|| ua.match(/windows ce/i) == "windows ce" || ua.match(/windows mobile/i) == "windows mobile";
+		return isPad;
+	}
+	function addFavorite() {
+		var url = window.location;
+		var title = document.title;
+		try {
+			//判断浏览器是否支持document.all        
+			if (document.all) {
+				//如果支持则用external方式加入收藏夹              
+				window.external.addFavorite(url, title);
+			} else if (window.sidebar) {
+				//如果支持window.sidebar，则用下列方式加入收藏夹   
+				window.sidebar.addPanel(url, title, '');
+			}else{
+				if(isPad()){
+					alert("加入收藏夹失败,请手动添加操作!");
+				}else{
+					alert("加入收藏夹失败，请使用Ctrl+D快捷键进行添加操作!");
+				}
+			}
+		}
+		//处理异常       
+		catch (e) {
+			if(isPad()){
+				alert("加入收藏夹失败，请手动添加操作!");
+			}else{
+				alert("加入收藏夹失败，请使用Ctrl+D快捷键进行添加操作!");
+			}
+		}
+	}
+</script>
+</body>
+</html>

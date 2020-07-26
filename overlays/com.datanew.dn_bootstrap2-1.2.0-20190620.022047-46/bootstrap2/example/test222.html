@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <title>Index</title>
+    <script>
+        $(function(){
+            $("#table1").dtable({
+                height:400,
+                data: [
+                    {name:"1111", score:"1111-111"},
+                    {name:"2222", score:"2222-222"},
+                    {name:"3333", score:"3333-333"}
+                ],
+                columns: [
+                    {field:"checktype", checkbox: true},
+                    {field:"id", title:"id", visible:false},
+                    {field: 'name', title: '名称', width: 100, align: 'center'},
+                    {field: 'score', title: '分数', align: 'center',width:150}
+                ]
+            })
+            $("#table1").dtable("getData")[0]["id"]="99"
+
+            console.log($("#table1").dtable("getData"))
+        })
+    </script>
+</head>
+<body>
+<table id="table1"></table>
+</body>
+</html>

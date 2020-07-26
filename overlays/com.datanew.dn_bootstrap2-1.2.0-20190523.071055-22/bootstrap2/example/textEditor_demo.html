@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>富文本编辑器</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        function readonly1(){
+            $("#txtEditor").textEditor("readonly");
+        }
+        function disable1(){
+            $("#txtEditor").textEditor("disable");
+        }
+        function enable1(){
+            $("#txtEditor").textEditor("enable");
+        }
+        function getText1(){
+            alert($("#txtEditor").textEditor("getText"));
+        }
+        function getValue1(){
+            alert($("#txtEditor").textEditor("getValue"));
+        }
+        function setValue1(){
+            $('#txtEditor').textEditor("setValue", '<img src="../images/city.jpg" />')
+        }
+        function destroy1(){
+            $("#txtEditor").textEditor("destroy")
+        }
+        function clear1(){
+            $("#txtEditor").textEditor("clear")
+        }
+        function setDisabled(){
+            $("#txtEditor").textEditor("setDisabled", true);
+        }
+        function setEnable(){
+            $("#txtEditor").textEditor("setDisabled", false);
+        }
+
+        $(function(){
+            $("#txtEditor").textEditor();
+        });
+    </script>
+</head>
+<body>
+<section class="parser container-fluid">
+    <div class="page-header" id="a1"><h1>textEditor —— 富文本编辑器</h1></div>
+    <h4>语法：</h4>
+    <pre>
+        <ol style="display:table">
+            <li><span>初始化：</span></li>
+            <li><span>jquery对象.textEditor(初始化参数对象)</span></li>
+            <li><span>方法调用：</span></li>
+            <li><span>jquery对象.textEditor('方法名',参数)</span></li>
+        </ol>
+    </pre>
+    <h4 id="a2">初始化参数</h4>
+    <table class=" table-border">
+        <thead>
+        <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+        </thead>
+        <tbody>
+        <tr id="a2_tr_1"><td>width</td><td>Number</td><td>编辑器宽度</td><td>100%</td></tr>
+        <tr><td>height</td><td>Number</td><td>编辑器文本编辑部分的高度</td><td>200</td></tr>
+        <tr><td>toolbar</td><td>Array</td><td>配置工具栏，例如：
+            <pre style="padding: 0;">
+                <ol style="display:table">
+                    <li><span>toolbar: [</span></li>
+                    <li><span>    //加粗、斜体、下划线、穿过线、下标字、上标字</span></li>
+                    <li><span>    ['Bold','Italic','Underline','Strike','Subscript','Superscript'],</span></li>
+                    <li><span>    //数字列表、实体列表、减小缩进、增大缩进</span></li>
+                    <li><span>    ['NumberedList','BulletedList','-','Outdent','Indent'],</span></li>
+                    <li><span>    //左对齐、居中对齐、右对齐、两端对齐</span></li>
+                    <li><span>    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],</span></li>
+                    <li><span>    //超链接、取消超链接、锚点</span></li>
+                    <li><span>    ['Link','Unlink','Anchor'],</span></li>
+                    <li><span>    //图片、flash、表格、水平线、表情、特殊字符、分页符</span></li>
+                    <li><span>    ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],</span></li>
+                    <li><span>    '/',</span></li>
+                    <li><span>    //样式、格式、字体、字体大小</span></li>
+                    <li><span>    ['Styles','Format','Font','FontSize'],</span></li>
+                    <li><span>    //文本颜色、背景颜色</span></li>
+                    <li><span>    ['TextColor','BGColor'],</span></li>
+                    <li><span>    //全屏、显示区块</span></li>
+                    <li><span>    ['Maximize', 'ShowBlocks','-']</span></li>
+                    <li><span>]</span></li>
+                </ol>
+            </pre>
+        </td><td></td></tr>
+        <tr><td>toolbarCanCollapse</td><td>Boolean</td><td>工具栏是否可以被收缩</td><td>true</td></tr>
+        <tr><td>toolbarLocation</td><td>String</td><td>工具栏的位置，可选"bottom"</td><td>top</td></tr>
+        <tr><td>toolbarStartupExpanded</td><td>Boolean</td><td>工具栏默认是否展开</td><td>false</td></tr>
+        <tr><td>resize_enabled</td><td>Boolean</td><td>可拖拽改变尺寸</td><td>true</td></tr>
+        </tbody>
+    </table>
+    <h4 id="a3">方法:</h4>
+    <table class=" table-border">
+        <thead>
+        <tr><th>名称</th><th>参数</th><th>描述</th></tr>
+        </thead>
+        <tbody>
+        <tr id="a3_tr_1"><td>destroy</td><td>none</td><td>销毁组件</td></tr>
+        <tr><td>clear</td><td>none</td><td>清除文本内容</td></tr>
+        <tr><td>getValue</td><td>none</td><td>获取带有html标签的内容</td></tr>
+        <tr><td>setValue</td><td>String</td><td>设值</td></tr>
+        <tr><td>readonly</td><td>none</td><td>编辑框只读</td></tr>
+        <tr><td>disable</td><td>none</td><td>禁用编辑框</td></tr>
+        <tr><td>enable</td><td>none</td><td>启用编辑框</td></tr>
+        <tr>
+            <td>setDisabled</td>
+            <td>true / false</td>
+            <td>禁用/启用 表单内所有表单元素（禁用后使用getData无法获取表单数据）</td>
+        </tr>
+        <tr><td>getText</td><td>none</td><td>获取纯文本</td></tr>
+        </tbody>
+    </table>
+    <h4 id="a4">案例1</h4>
+    <!--工具栏-->
+    <div class="outbackframe">
+        <button style="margin-left: 5px;margin-bottom: 10px" type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn9">查看代码</button>
+        <div class="innerback">
+            <div id="bt">
+                <!--<button class="btn btn-primary btn-sm" type="button" onclick="readonly1()">只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn1">查看代码</button> |-->
+                <button class="btn btn-primary btn-sm" type="button" onclick="disable1()">禁用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn2">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="enable1()">启用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button> |
+                <br><br>
+                <button class="btn btn-primary btn-sm" type="button" onclick="setDisabled()">设置禁用（使用getData方法无法获取到数据）</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn14">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setEnable()">设置启用（使用getData方法可以获取到数据）</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn15">查看代码</button> |
+                <br><br>
+                <button class="btn btn-primary btn-sm" type="button" onclick="getText1()">获取纯文本</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="getValue1()">取值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn5">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setValue1()">赋值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn6">查看代码</button> |<br><br>
+                <button class="btn btn-primary btn-sm" type="button" onclick="destroy1()">销毁组件</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn7">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="clear1()">清除组件值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn8">查看代码</button> |
+            </div>
+            <br>
+            <textarea id="txtEditor"></textarea>
+        </div>
+    </div>
+    <div style="width:1px;height:1px;overflow:hidden;">
+        <textarea id="copyTarget1">
+        $("#txtEditor").textEditor("readonly");
+        </textarea>
+        <textarea id="copyTarget2">
+        $("#txtEditor").textEditor("disable");
+        </textarea>
+        <textarea id="copyTarget3">
+        $("#txtEditor").textEditor("enable");
+        </textarea>
+        <textarea id="copyTarget4">
+        alert($("#txtEditor").textEditor("getText"));
+        </textarea>
+        <textarea id="copyTarget5">
+        alert($("#txtEditor").textEditor("getValue"));
+        </textarea>
+        <textarea id="copyTarget6">
+        $('#txtEditor').textEditor("setValue", '<img src="../images/city.jpg" />');
+        </textarea>
+        <textarea id="copyTarget7">
+        $("#txtEditor").textEditor("destroy");
+        </textarea>
+        <textarea id="copyTarget8">
+        $("#txtEditor").textEditor("clear");
+        </textarea>
+        <textarea id="copyTarget9">
+        html部分：&lt;textarea id="txtEditor"&gt;&lt;/textarea&gt;
+
+        js部分：$("#txtEditor").textEditor();
+        </textarea>
+        <textarea id="copyTarget14">
+        function setDisabled(){
+            $("#txtEditor").textEditor("setDisabled", true);
+        }
+        </textarea>
+        <textarea id="copyTarget15">
+        function setEnable(){
+            $("#txtEditor").textEditor("setDisabled", false);
+        }
+        </textarea>
+    </div>
+</section>
+
+</body>
+</html>
+
+<script>
+    $(function(){
+        $(".copyBtn").on("click", function(){
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var openH = "auto";
+            var target = $("#copyTarget"+ num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>"+ target.html() +"</pre>",
+                area: ["600px", openH],
+                btn: ["复制", "取消"],
+                btn1: function(index){
+                    var res = $.copyToClipboard(target.get(0));
+                    if(res){
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>

@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <script src="../js/file.js"></script>
+    <script src="../js/common.js"></script>
+    <script>
+        var iIndex;
+        var date = new Date();
+        var neweid = "";
+        $(function () {
+            $("#table").dtable({
+                height:$(window).height() - 80,
+                url: "../xmzjgl/getXmzxgl.do",
+                columns: [
+                    {field: 'checkType', checkbox: true},
+                    {field: 'SID', title: '序号', align: 'center', visible: false},
+                    {field: 'ID', title: '项目id', align: 'center', visible: false},
+                    {field: 'HTID', title: '合同id', align: 'center', visible: false},
+                    {field: 'PCH', title: '批次号', align: 'center'},
+                    {field: 'XMMC', title: '项目名称', align: 'center'},
+                    // {field: 'HTMC', title: '合同/协议', align: 'center'},
+                    {field: 'JE', title: '支付金额(万元)', halign:'center',align: 'right'},
+                    {field: 'ZFRQ', title: '支付登记日期', align: 'center'},
+                    {field: 'XXJD', title: '形象进度', align: 'center'},
+                    {field: 'CZR', title: '制单人', align: 'center'},
+                    {field: 'CZSJ', title: '制单日期', align: 'center'},
+                    {field: 'ZT', title: '状态', align: 'center', visible: false},
+                    {field: 'JSZT', title: '决算状态', align: 'center', visible: false}
+                ],
+                clickToSelect: true,
+                resizable: true, //单元格手动拉伸
+                pageNumber: 1,//起始页
+                pageSize: 20,//页面大小
+                pagination: true,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',
+                searchbar: {
+                    rownum: 2,
+                    inputs: [//搜索栏表单参数
+                        {
+                            title: '批次号',//表单lable显示名
+                            name: 'pch',//表单name属性
+                            type: 'textBox'//表单类型：目前支持 select/text
+                        },
+                        {
+                            name: 'zt',
+                            title: '状态',
+                            type: 'comboBox',
+                            localdata:[{id:1,text:"未入账"}, {id:2,text:"已入账"}]
+//                          isLeafCheck: false //checkType为checkbox或radio时，非叶子节点是否有选择框，false为不可选
+                        }
+                    ]
+                }
+            })
+        })
+
+        function remov() {
+            var $table = $("#table");
+            var selectData = getselectdata();
+            var tableData = $table.dtable("getData");
+            $("#table").tableEditor("updateAll");
+
+            for (var i=0;i<selectData.length;i++){
+               if (selectData[i].JSZT == 1){
+                   $.dalert({text: "项目:"+selectData[i].XMMC+" 已决算,不允许删除"});
+                   return;
+               }
+            }
+
+            for (var i=0;i<selectData.length;i++){
+                if (selectData[i].ZT != 1){
+                    $.dalert({text: "项目:"+selectData[i].XMMC+" 已入账,不允许删除"});
+                    return;
+                }
+            }
+
+            layer.confirm('确定删除吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function() {
+                $.dajax({
+                    url: "../xmzjgl/deleteXmzxgl.do",
+                    async: false,
+                    type: "post",
+                    data: {sdata: JSON.stringify(selectData)},
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: "删除数据成功"});
+                            $.each(selectData, function (i) {
+                                var dataIndex = tableData.indexOf(selectData[i]);
+                                $table.dtable("removeByRowIndex", dataIndex);
+                            });
+                            $("#table").dtable("refresh");
+                        } else {
+                            $.dalert({text: "删除失败"});
+                        }
+                        // $("#table").dtable("refresh");
+                    }
+                });
+            });
+        }
+
+        function getselectdata() {
+            var dataArr = $("#table").dtable("getSelections");
+            if (dataArr.length === 0) {
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+            return dataArr;
+        }
+
+        function add() {
+            neweid = "";
+            var dopenjson = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": "<h4 class='text-center'><b>项目执行登记号</b></h4><p class='text-center' style='margin: -10px 0px 0px 0px;font-size: smaller'>批次号:</p>"
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                                // '<button class="bootstrap-table-add" type="button" onclick="">增加行</button>' +
+                                                // '<button class="bootstrap-table-delete" type="button" onclick="">删除行</button>' +
+                                                '<button class="bootstrap-table-save" type="button" onclick="savedopen()">保存</button>' +
+                                                // '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                '<span class="pull-right">单位：元</span>' +
+                                                '</div>'
+                                        },
+                                        {
+                                            "dtype": "dform",
+                                            "id": "openForm",
+                                            "classes": "tableForm",
+                                            "rownum": 3,
+                                            "labelwidth": "140px",
+                                            "labelAlign": "center",
+                                            "inputs": [
+                                                {
+                                                    title: "项目名称", name: "XMCOMBOBOX", type: "searchTree",id:"xmcombo",
+                                                    url:"../xmzjgl/getXmmc2.do",
+                                                    // rootElement:true,
+                                                    modalTitle: "请选择项目名称",
+                                                    checkType: "radio",
+                                                    onChange: function (n, o, a) {
+                                                        if(n!=null&&n!=""&&n!=undefined){
+                                                            $("#htcombo")["searchTree"]("clear");
+                                                            $("#htcombo").searchTree("reload",{url:"../xmzjgl/getHtmc.do?xmid="+n})
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    title: "合同/协议", name: "HTCOMBOBOX", type: "searchTree",id:"htcombo",
+                                                    rootElement:true,
+                                                    modalTitle: "请选择合同名称",
+                                                    checkType: "checkbox",
+                                                    // url:"../xmzjgl/getHtmc.do",
+                                                    onChange: function (n, o, a) {
+                                                        if (n!=null&&n!=""&&n!=undefined){
+                                                            getXmzxInfo("");
+                                                            $("#table1").dtable("refresh",{query:{zxdjid:""}});
+                                                            $("#table2").dtable("refresh",{query:{htid:n,sid:""}});
+                                                            setTimeout(function () {
+                                                                $("#table1").tableEditor("initAll"),$("#table2").tableEditor("initAll")},200);
+                                                        }
+                                                    }
+                                                },
+                                                {title: "支付日期", name: "ZFRQ", type: "dateBox",format:"yyyyMMdd",defaultValue : date.getFullYear()+((date.getMonth()+1) > 10 ? (date.getMonth() + 1):"0"+(date.getMonth()+1))+(date.getDate()<10 ? "0"+date.getDate():date.getDate())},
+                                                {title: "摘要",id:'zyid', name: "ZY", type: "textBox"},
+                                                {title: "本次支付金额", id:'bczfjeid', name: "ZFJE",textAlign:"right", type: "textBox",setReadonly:true},
+                                                {title: "形象进度", name: "XXJD", type: "decimal",decimalPlaces: 2}
+                                            ]
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div style="height: 300px">' +
+                                                '<div style="float: left;width: 50%;">' +
+                                                '<div id="table1"></div>' +
+                                                '</div>' +
+                                                '<div style="float: left;width: 50%;">' +
+                                                '<div id="table2"></div>' +
+                                                '</div>' +
+                                                '</div>'
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div style="padding:15px 0 10px 15px;">' +
+                                                '<b>附件列表:&nbsp;</b>' +
+                                                '<button class="bootstrap-table-upload" type="button" onclick="pageUploadFile()">上传附件</button>' +
+                                                '<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button>'+
+                                                '</div>'
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "height": 250,
+                                            "id":"uploadTable",
+                                            editable :true,
+                                            clickToSelect:true,
+                                            "url": "",
+                                            "columns": [
+                                                {field:"checkType",radio:true},
+                                                {field:"xh", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                {field:"FILEID", title:"附件ID", width:50, align:"center",visible:false},
+                                                {field:"FILENAME", title:"附件名", width:300, align:"center"},
+                                                {field:"FILEDL", title:"附件大类", width:120, align:"center",type:'comboBox',selected: 1,localdata:[{id:7,text:"变更联系单备案"}],formatter:function(value,row,index){return "变更联系单备案";}},
+                                                // {field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+                                                {field:"FILESIZE", title:"大小", width:80, align:"center",formatter:function (value,row,index){return formatSize(value)}},
+                                                {
+                                                    filed:"",title:"操作",width:100,align:"center",formatter:function (value,row,index) {
+                                                        return '<a href=../file/downloadByid.do?id='+row.FILEID+'>下载</a>';
+                                                    }
+                                                }
+                                                // {field:"filebz", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+                                            ]
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+
+            iIndex = $.dopen({
+                type: 6,
+                area: ["95%", "100%"],
+                title :"项目执行登记",
+                content: dopenjson,
+                btn: ["关闭"],
+                btn1:function(index){
+                    closeDopen();
+                    // layer.close(index);
+                    // $("#table").bootstrapTable("refresh");
+                },
+                cancel:function (iIndex,layer) {
+                    neweid = "";
+                    $("#table").dtable("refresh");
+                }
+            })
+
+            $("#table1").dtable({
+                height: 300,
+                url: "../xmzjgl/getKxmx.do",
+                columns: [
+                    {field: 'checkType',width: 10, radio: true},
+                    {field: "XH", title: "序号", width: 30, align: "center", formatter:function(value,row,index){return index+1;}},
+                    {field: "BM", title: "类型编码", align: "center",visible: false},
+                    {field: "MC", title: "支付款项类型", width: 80, align: "center"},
+                    {
+                        field: "JE", title: "金额", width: 80, align: "center",
+                        editor: {
+                            title: "小数",
+                            type: "decimal",
+                            textAlign:"right",
+                            decimalPlaces: 2,
+                            onChange:function (n,o,a) {
+                                if (n!=null&&n!=""&&n!=undefined){
+                                    $("#table1").tableEditor("updateAll");
+                                    $("#table1").tableEditor("initAll");
+                                    var sdata = $("#table1").dtable("getData");
+                                    var countje=0;
+                                    for (var i=0;i<sdata.length;i++){
+                                        if(sdata[i].JE!=""){
+                                            countje = countje + parseFloat(sdata[i].JE);
+                                        }
+                                    }
+                                    $("#openForm").dform("setValueByName","ZFJE",countje);
+                                }
+                            }
+                        }
+                    }
+                ],
+                resizable: true, //单元格手动拉伸
+                // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                pagination: false,
+                // "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                clickToSelect: true
+            });
+
+            $("#table2").dtable({
+                height: 300,
+                url: "../xmzjgl/getHtzfmx.do",
+                "columns": [
+                    {field: 'checkType', radio: true, width: 10},
+                    {field: "SID", title: "明细id", width: 20, align: "center",visible:false},
+                    {field: "ID", title: "ID", width: 50, align: "center",visible:false},
+                    {field: "xh", title: "序号", width: 50, align: "center",formatter: function (value, row, index) {
+                            return index + 1;
+                        }},
+                    /*{field: "YJZFSJ", title: "预计支付时间", width: 100, align: "center"},
+                    {field: "YJZFJE", title: "预计支付金额", width: 100, halign:'center',align: "right"},*/
+                    {field: "HTXY", title: "合同/协议名称", width: 100, halign:'center'},
+                    {field: "YFJE", title: "已付金额", width: 50, halign:'center',align: "right"},
+                    {
+                        field: "JE", title: "本次执行金额", width: 50, align: "center",
+                        editor: {
+                            title: "小数",
+                            type: "decimal",
+                            textAlign:"right",
+                            decimalPlaces: 2
+                        }
+                    }
+                ],
+                resizable: true, //单元格手动拉伸
+                pagination: false,
+                // "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                clickToSelect: true
+            });
+
+            setTimeout(function () {
+                $("#table1").tableEditor("initAll"),$("#table2").tableEditor("initAll")},200);
+        }
+
+        function getXmzxInfo(pch) {
+            $.dajax({
+                url: "../xmzjgl/getXmzxInfo.do",
+                async:false,
+                type:"post",
+                data: {pch:pch},
+                success: function (data) {
+                    $("#openForm").dform("setValueByName","ZFRQ",data.ZFRQ);
+                    $("#zyid").textBox("setValue",data.ZY);
+                    $("#bczfjeid").textBox("setValue",data.JE);
+                    // $("#openForm").dform("setValueByName","ZY",data.ZY);
+                    // $("#openForm").dform("setValueByName","ZFJE",data.JE);
+                    $("#openForm").dform("setValueByName","XXJD",data.XXJD);
+                }
+            })
+        }
+
+        function removdopen() {
+            var $table = $("#table1");
+            var selectData = getselectdata1();
+            var tableData = $table.dtable("getData");
+            $("#table1").tableEditor("updateAll");
+            layer.confirm('确定删除吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function() {
+                $.dajax({
+                    url: "../xmzjgl/deleteXmzxgl.do",
+                    async: false,
+                    type: "post",
+                    data: {sid: selectData[0].SID},
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: "删除数据成功"});
+                            $.each(selectData, function (i) {
+                                var dataIndex = tableData.indexOf(selectData[i]);
+                                $table.dtable("removeByRowIndex", dataIndex);
+                            });
+                        } else {
+                            $.dalert({text: "删除失败"});
+                        }
+                        // $("#table").dtable("refresh");
+                    }
+                });
+            });
+        }
+
+        function getselectdata1() {
+            var dataArr = $("#table1").dtable("getSelections");
+            if (dataArr.length === 0) {
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+            return dataArr;
+        }
+
+        function savedopen() {
+            var fdata = $("#openForm").dform("getData")
+    
+            if (fdata.XMCOMBOBOX == ""||fdata.HTCOMBOBOX == ""){
+                $.dalert({text:"项目与合同不能为空!"});
+                return;
+            }
+            var htid = fdata.HTCOMBOBOX;
+            var zfje = fdata.ZFJE;
+            $("#table1").tableEditor("updateAll");
+            $("#table2").tableEditor("updateAll");
+            var sdata = $("#table1").dtable("getData");
+            var mxdata = $("#table2").dtable("getData");
+            $("#uploadTable").tableEditor("updateAll");
+            var uploadTableData = $("#uploadTable").dtable("getData");
+            var countje = 0;
+            for (var i = 0;i<sdata.length;i++){
+                if(sdata[i].JE!=""){
+                    countje = countje + parseFloat(sdata[i].JE);
+                }
+            }
+            var countmxje = 0;
+            for (var i = 0;i<mxdata.length;i++){
+                if(mxdata[i].JE!=""){
+                    countmxje = countmxje + parseFloat(mxdata[i].JE);
+                }
+            }
+
+            if(zfje!=countje||countje!=countmxje){
+                $.dalert({text: "总金额与总本次执行金额不相等,保存失败!"});
+                return;
+            }
+
+            //存储dform值
+            if (neweid == "") {
+                $.dajax({
+                    url: "../xmzjgl/insertXmzxdj.do",
+                    async: false,
+                    type: "post",
+                    data: {
+                        xmid: fdata.XMCOMBOBOX,
+                        htid: fdata.HTCOMBOBOX,
+                        zfrq: fdata.ZFRQ,
+                        zy: fdata.ZY,
+                        xxjd: fdata.XXJD,
+                        sdata: JSON.stringify(sdata),
+                        mxdata: JSON.stringify(mxdata),
+                        uploadTableData: JSON.stringify(uploadTableData)
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: "保存成功"});
+                            neweid = data.content;
+
+                            $("#table1").dtable("refreshOptions", {
+                                url: "../xmzjgl/getKxmx.do?zxdjid="+neweid
+                                // query: {"zxdjid": neweid}
+                            });
+
+                            $("#table2").dtable("refreshOptions", {
+                                // url: "../xmzjgl/getHtzfmx.do?htid="+htid+"&sid="+neweid
+                                url:"../xmzjgl/getHTZFmx.do?sid="+neweid,
+                                // query: {"htid": htid, "sid": neweid}
+                            });
+                            $("#xmcombo").searchTree("setDisabled",true);
+                            $("#htcombo").searchTree("setDisabled",true);
+                        }
+                        else {
+                            $.dalert({text: "保存失败"});
+                            // $.dalert({text:data.content});
+                        }
+                    }
+                });
+            }else{
+                $.dajax({
+                    url: "../xmzjgl/updateXmzxdj.do",
+                    async: false,
+                    type: "post",
+                    data: {id:neweid,xmid:fdata.XMCOMBOBOX,htid:fdata.HTCOMBOBOX,zfrq:fdata.ZFRQ,zy:fdata.ZY,xxjd:fdata.XXJD,sdata:JSON.stringify(sdata),mxdata:JSON.stringify(mxdata),uploadTableData:JSON.stringify(uploadTableData)},
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text:"保存成功"});
+                        }
+                        else{
+                            $.dalert({text:"保存失败"});
+                        }
+                    }
+                });
+            }
+
+            setTimeout(function () {
+                $("#table1").tableEditor("initAll"),$("#table2").tableEditor("initAll")
+                },200);
+        }
+
+        function modify() {
+            neweid = "";
+            var dataSel = $("#table").dtable("getSelections");
+            if (dataSel.length == 0){
+                $.dalert({text:"请先选择一条数据"});
+                return;
+            }
+
+            if (dataSel.length > 1){
+                $.dalert({text:"请选择一条数据"});
+                return;
+            }
+            var hetongid = dataSel[0].HETONGID;
+            var eid = dataSel[0].SID;
+            var htid = dataSel[0].HTID;
+            var xmid = dataSel[0].ID;
+            var pch = dataSel[0].PCH;
+            var zt = dataSel[0].ZT;
+            var xmmc = dataSel[0].XMMC;
+            var htmc = dataSel[0].HTMC;
+            var jszt = dataSel[0].JSZT;
+            if(xmid == ""||xmid == null){
+                $.dalert({text:"请先选择项目"});
+                return;
+            }
+
+            if (zt == "1"&&jszt!=1) {
+                var dopenjson = [
+                    {
+                        "plug": [
+                            {
+                                "plug": [
+                                    {
+                                        "plug": [
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": "<h4 class='text-center'><b>项目执行登记号</b></h4><p class='text-center' style='margin: -10px 0px 0px 0px;font-size: smaller'>批次号:"+pch+"</p>"
+                                            },
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                                    // '<button class="bootstrap-table-add" type="button" onclick="">增加行</button>' +
+                                                    // '<button class="bootstrap-table-delete" type="button" onclick="">删除行</button>' +
+                                                    '<button class="bootstrap-table-save" type="button" onclick="savedopen1('+eid+')">保存</button>' +
+                                                    // '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                    '<span class="pull-right">单位：元</span>' +
+                                                    '</div>'
+                                            },
+                                            {
+                                                "dtype": "dform",
+                                                "id": "openForm",
+                                                "classes": "tableForm",
+                                                "rownum": 3,
+                                                "labelwidth": "140px",
+                                                "labelAlign": "center",
+                                                "inputs": [
+                                                    {
+                                                        title: "项目名称",
+                                                        name: "XMCOMBOBOX",
+                                                        type: "searchTree",
+                                                        id: "xmcombo",
+                                                        url: "../xmzjgl/getXmmcall.do",
+                                                        rootElement:true,
+                                                        modalTitle: "请选择项目名称",
+                                                        checkType: "radio",
+                                                        defaultValue:xmid,
+                                                        setReadonly: true
+                                                        // onChange: function (n, o, a) {
+                                                        //     if (n != null && n != "" && n != undefined) {
+                                                        //         $("#htcombo")["comboBox"]("clear");
+                                                        //         $("#htcombo").comboBox("reload", {url: "../xmzjgl/getHtmc.do?xmid=" + n})
+                                                        //     }
+                                                        // }
+                                                    },
+                                                    {
+                                                        title: "合同/协议",
+                                                        name: "HTCOMBOBOX",
+                                                        type: "comboBox",
+                                                        id: "htcombo",
+                                                        url: "../xmzjgl/getHTMC.do?xmid=" + eid,
+                                                        multiple:true,
+                                                        defaultValue:hetongid,
+                                                        setReadonly: true
+                                                        // onChange: function (n, o, a) {
+                                                        //     if (n != null && n != "" && n != undefined) {
+                                                        //         getXmzxInfo(pch);
+                                                        //         $("#table1").dtable("refresh", {query: {htid: n}});
+                                                        //         $("#table2").dtable("refresh", {query: {htid: n}});
+                                                        //     }
+                                                        // }
+                                                    },
+                                                    {title: "支付日期", name: "ZFRQ", type: "dateBox",format:"yyyyMMdd"},
+                                                    {title: "摘要",id:"zyid", name: "ZY", type: "textBox"},
+                                                    {title: "本次支付金额",id:"bczfjeid", name: "ZFJE", type: "textBox",textAlign:"right", setReadonly: true},
+                                                    {title: "形象进度", name: "XXJD", type: "decimal",decimalPlaces: 2}
+                                                ]
+                                            },
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": '<div style="height: 300px">' +
+                                                    '<div style="float: left;width: 45%;">' +
+                                                    '<div id="table1"></div>' +
+                                                    '</div>' +
+                                                    '<div style="float: left;width: 55%;">' +
+                                                    '<div id="table2"></div>' +
+                                                    '</div>' +
+                                                    '</div>'
+                                            },
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": '<div style="padding:15px 0 10px 15px;">' +
+                                                    '<b>附件列表:&nbsp;</b>' +
+                                                    '<button class="bootstrap-table-upload" type="button" onclick="pageUploadFile()">上传附件</button>' +
+                                                    '<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button>'+
+                                                    '</div>'
+                                            },
+                                            {
+                                                "dtype": "dtable",
+                                                "height": 250,
+                                                "id":"uploadTable",
+                                                editable :true,
+                                                clickToSelect:true,
+                                                "url": "../xmzjgl/getfile.do?bsid="+eid,
+                                                "columns": [
+                                                    {field:"checkType",radio:true},
+                                                    {field:"xh", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                    {field:"FILEID", title:"附件ID", width:50, align:"center",visible:false},
+                                                    {field:"FILENAME", title:"附件名", width:300, align:"center"},
+                                                    {field:"FILEDL", title:"附件大类", width:120, align:"center",formatter:function(value,row,index){return "项目执行管理";}},
+                                                    // {field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+                                                    {field:"FILESIZE", title:"大小", width:80, align:"center",formatter:function (value,row,index){return formatSize(value)}},
+                                                    {
+                                                        filed:"",title:"操作",width:100,align:"center",formatter:function (value,row,index) {
+                                                            return '<a href=../file/downloadByid.do?id='+row.FILEID+'>下载</a>';
+                                                        }
+                                                    }
+                                                    // {field:"FILEBZ", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+                                                ]
+                                            }
+                                        ],
+                                        "colspan": "12",
+                                        "dtype": "column"
+                                    }
+                                ],
+                                "dtype": "row"
+                            }
+                        ],
+                        "dtype": "body"
+                    }
+                ];
+            }else {
+                var dopenjson = [
+                    {
+                        "plug": [
+                            {
+                                "plug": [
+                                    {
+                                        "plug": [
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": "<h4 class='text-center'>项目执行登记号</h4><p class='text-center' style='margin: 0px'>批次号:"+pch+"</p>"
+                                            },
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                                    // '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                    '<span class="pull-right">单位：元</span>' +
+                                                    '</div>'
+                                            },
+                                            {
+                                                "dtype": "dform",
+                                                "id": "openForm",
+                                                "classes": "tableForm",
+                                                "rownum": 3,
+                                                "labelwidth": "140px",
+                                                "labelAlign": "center",
+                                                "inputs": [
+                                                    {
+                                                        title: "项目名称",
+                                                        name: "XMCOMBOBOX",
+                                                        type: "textbox",
+                                                        id: "xmcombo",
+                                                        defaultValue:xmmc,
+                                                        setReadonly: true
+                                                    },
+                                                    {
+                                                        title: "合同/协议",
+                                                        name: "HTCOMBOBOX",
+                                                        type: "textbox",
+                                                        id: "htcombo",
+                                                        // url:"../xmzjgl/getHtmc.do",
+                                                        url: "../xmzjgl/getHTMC.do?xmid=" + eid,
+                                                        multiple:true,
+                                                        defaultValue:hetongid,
+                                                        setReadonly: true
+                                                    },
+                                                    {title: "支付日期", name: "ZFRQ", type: "dateBox",format:"yyyyMMdd",setReadonly: true},
+                                                    {title: "摘要",id:"zyid", name: "ZY", type: "textBox",setReadonly: true},
+                                                    {title: "本次支付金额",id:"bczfjeid", name: "ZFJE", type: "textBox",textAlign:"right", setReadonly: true},
+                                                    {title: "形象进度", name: "XXJD", type: "decimal",setReadonly: true}
+                                                ]
+                                            },
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": '<div style="height: 300px">' +
+                                                    '<div style="float: left;width: 50%;">' +
+                                                    '<div id="table1"></div>' +
+                                                    '</div>' +
+                                                    '<div style="float: left;width: 50%;">' +
+                                                    '<div id="table2"></div>' +
+                                                    '</div>' +
+                                                    '</div>'
+                                            },
+                                            {
+                                                "dtype": "html",
+                                                "dragHtml": '<div style="padding:15px 0 10px 15px;">' +
+                                                    '<b>附件列表:&nbsp;</b>' +
+                                                    // '<button class="bootstrap-table-upload" type="button" onclick="">上传附件</button>' +
+                                                    // '<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button>'+
+                                                    '</div>'
+                                            },
+                                            {
+                                                "dtype": "dtable",
+                                                "height": 250,
+                                                "id":"uploadTable",
+                                                editable :true,
+                                                "url": "../xmzjgl/getfile.do?bsid="+eid,
+                                                "columns": [
+                                                    {field:"xh", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                    {field:"FILEID", title:"附件ID", width:50, align:"center",visible:false},
+                                                    {field:"FILENAME", title:"附件名", width:300, align:"center"},
+                                                    {field:"FILEDL", title:"附件大类", width:120, align:"center",formatter:function(value,row,index){return "项目执行管理";}},
+                                                    // {field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+                                                    {field:"FILESIZE", title:"大小", width:80, align:"center",formatter:function (value,row,index){return formatSize(value)}},
+                                                    {
+                                                        filed:"",title:"操作",width:100,align:"center",formatter:function (value,row,index) {
+                                                            return '<a href=../file/downloadByid.do?id='+row.FILEID+'>下载</a>';
+                                                        }
+                                                    }
+                                                    // {field:"FILEBZ", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+                                                ]
+                                            }
+                                        ],
+                                        "colspan": "12",
+                                        "dtype": "column"
+                                    }
+                                ],
+                                "dtype": "row"
+                            }
+                        ],
+                        "dtype": "body"
+                    }
+                ];
+            }
+            iIndex = $.dopen({
+                type: 6,
+                area: ["95%", "100%"],
+                title :"项目执行登记",
+                content: dopenjson,
+                btn: ["关闭"],
+                btn1:function(index){
+                    closeDopen();
+                    // layer.close(index);
+                    // $("#table").bootstrapTable("refresh");
+                },
+                cancel:function (iIndex,layer) {
+                    neweid = "";
+                    $("#table").dtable("refresh");
+                }
+            })
+
+            if (zt == "1"&&jszt!=1){
+                $("#table1").dtable({
+                    height: 300,
+                    url: "../xmzjgl/getKxmx.do?zxdjid="+eid,
+                    columns: [
+                        {field: 'checkType', radio: true, width: 10},
+                        {field: "XH", title: "序号", width: 30, align: "center", formatter:function(value,row,index){return index+1;}},
+                        {field: "BM", title: "类型编码", width: 50, align: "center",visible: false},
+                        {field: "MC", title: "支付款项类型", width: 100, align: "left"},
+                        {field: "JE", title: "金额", width: 100, align: "center",
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2,
+                                onChange:function (n,o,a) {
+                                    if (n!=null&&n!=""&&n!=undefined){
+                                        $("#table1").tableEditor("updateAll");
+                                        $("#table1").tableEditor("initAll");
+                                        var sdata = $("#table1").dtable("getData");
+                                        var countje=0;
+                                        for (var i=0;i<sdata.length;i++){
+                                            if(sdata[i].JE!=""){
+                                                countje = countje + parseFloat(sdata[i].JE);
+                                            }
+                                        }
+                                        $("#openForm").dform("setValueByName","ZFJE",countje);
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    resizable: true, //单元格手动拉伸
+                    // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                    pagination: false,
+                    // "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                    clickToSelect: true
+                });
+
+                $("#table2").dtable({
+                    height: 300,
+                    url: "../xmzjgl/getHTZFmx.do?sid="+eid,
+                    "columns": [
+                        {field: 'checkType', radio: true, width: 10},
+                        {field: "ID", title: "序号", width: 20, align: "center", formatter:function(value,row,index){return index+1;}},
+                        {field: "SID", title: "明细ID", width: 50, align: "center",visible:false},
+                        /*{field: "YJZFSJ", title: "预计支付时间", width: 100, align: "center"},
+                        {field: "YJZFJE", title: "预计支付金额", width: 100, halign:'center',align: "right"},*/
+                        {field: "HTXY", title: "合同/协议名称", width: 100, halign:'center'},
+                        {field: "YFJE", title: "已付金额", width: 50, halign:'center',align: "right"},
+                        {
+                            field: "JE", title: "本次执行金额", width: 50, align: "center",
+                            editor: {
+                                title: "小数",
+                                type: "decimal",
+                                textAlign:"right",
+                                decimalPlaces: 2
+                            }
+                        }
+                    ],
+                    resizable: true, //单元格手动拉伸
+                    pagination: false,
+                    // "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                    clickToSelect: true
+                });
+            }else {
+                $("#table1").dtable({
+                    height: 300,
+                    url: "../xmzjgl/getKxmx.do?zxdjid="+eid,
+                    columns: [
+                        {field: 'checkType', radio: true},
+                        {field: "XH", title: "序号", width: 50, align: "center", formatter:function(value,row,index){return index+1;}},
+                        {field: "BM", title: "类型编码", width: 50, align: "center",visible: false},
+                        {field: "MC", title: "支付款项类型", width: 80, align: "center"},
+                        {field: "JE", title: "金额", width: 100, halign:'center',align: "right"}
+                    ],
+                    resizable: true, //单元格手动拉伸
+                    // queryParams: {jsdw:$("jsdw").val(),nd:$("input[name='ndname']").val(),xmmc:$("xmmc").val()},//查询参数 queryParams(params) params 包含分页参数
+                    pagination: false,
+                    // "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                    clickToSelect: true
+                });
+
+                $("#table2").dtable({
+                    height: 300,
+                    // url: "../xmzjgl/getHtzfmx.do?htid="+htid+"&sid="+eid,
+                    url:"../xmzjgl/getHTZFmx.do?sid="+eid,
+                    "columns": [
+                        {field: 'checkType', radio: true,width: 10},
+                        {field: "ID", title: "序号", width: 20, align: "center", formatter:function(value,row,index){return index+1;}},
+                        {field: "SID", title: "明细ID", width: 50, align: "center",visible:false},
+                        /*{field: "YJZFSJ", title: "预计支付时间", width: 100, align: "center"},
+                        {field: "YJZFJE", title: "预计支付金额", width: 100, halign:'center',align: "right"},*/
+                        {field: "HTXY", title: "合同/协议名称", width: 100, halign:'center'},
+                        {field: "YFJE", title: "已付金额", width: 50, halign:'center',align: "right"},
+                        {field: "JE", title: "本次执行金额", width: 50, halign:'center',align: "right"}
+                    ],
+                    resizable: true, //单元格手动拉伸
+                    pagination: false,
+                    // "queryParams":{xmid:selectxmid,nd:year,zjly:selectbm},
+                    clickToSelect: true
+                });
+            }
+
+            setTimeout(function () {
+                getXmzxInfo(pch)},200);
+            if (zt == "1"){
+                setTimeout(function () {
+                    $("#table1").tableEditor("initAll"),$("#table2").tableEditor("initAll")},200);
+            }
+        }
+
+        function pageUploadFile() {
+            uploadfile({server: '../file/uploader.do?filebstype=16'}, function (rowData) {
+                var $table = $("#uploadTable"),
+                    dataLen = $table.dtable("getData").length;
+                $table.tableEditor("updateAll");
+                for (var i = 0; i < rowData.length; i++) {
+                    var data = {
+                        FILENAME: rowData[i].name,
+                        FILESIZE: rowData[i].size,
+                        FILEID: rowData[i].fileId
+                    };
+                    $table.dtable("insertRow", {index: dataLen + i, row: data});
+                }
+                $table.tableEditor("initAll");
+            });
+        }
+
+        function savedopen1(eid) {
+            $("#table1").tableEditor("updateAll");
+            $("#table2").tableEditor("updateAll");
+            var fdata = $("#openForm").dform("getData");
+            var sdata = $("#table1").dtable("getData");
+            var mxdata = $("#table2").dtable("getData");
+            $("#uploadTable").tableEditor("updateAll");
+            var uploadTableData = $("#uploadTable").dtable("getData");
+            var zfje = fdata.ZFJE;
+            var countje = 0;
+            for (var i = 0;i<sdata.length;i++){
+                if(sdata[i].JE!=""){
+                    countje = countje + parseFloat(sdata[i].JE);
+                }
+            }
+            var countmxje = 0;
+            for (var i = 0;i<mxdata.length;i++){
+                if(mxdata[i].JE!=""){
+                    countmxje = countmxje + parseFloat(mxdata[i].JE);
+                }
+            }
+
+            if(zfje!=countje||countje!=countmxje){
+                $.dalert({text: "总金额与总本次执行金额不相等,保存失败!"});
+                return;
+            }
+
+            //存储dform值
+            $.dajax({
+                url: "../xmzjgl/updateXmzxdj.do",
+                async: false,
+                type: "post",
+                data: {id:eid,xmid:fdata.XMCOMBOBOX,htid:fdata.HTCOMBOBOX,zfrq:fdata.ZFRQ,zy:fdata.ZY,xxjd:fdata.XXJD,sdata:JSON.stringify(sdata),mxdata:JSON.stringify(mxdata),uploadTableData:JSON.stringify(uploadTableData)},
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text:"保存成功"});
+                    }
+                    else{
+                        $.dalert({text:"保存失败"});
+                    }
+                }
+            });
+        }
+
+        function changezt() {
+            var dataSel = $("#table").dtable("getSelections");
+            $.dajax({
+                url: "../xmzjgl/updateXmzxdjzt.do",
+                async:false,
+                type:"post",
+                data: {sdata:JSON.stringify(dataSel)},
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text:"入账成功"});
+                    }else {
+                        $.dalert({text:"入账失败"});
+                    }
+                }
+            })
+            $("#table").dtable("refresh");
+        }
+
+        function deleteFile(){
+            var $table = $("#uploadTable");
+            var data = $("#uploadTable").dtable("getSelections");
+            var tableData = $("#uploadTable").dtable("getData");
+            if(data.length==0){
+                $.dalert({text:'请选择您要删除的附件',icon:7});
+                return;
+            }else{
+                layer.confirm('确定删除吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function() {
+                    $.dajax({
+                        type: 'post',
+                        url: '../file/deleteById.do',
+                        data: {
+                            id: data[0].FILEID
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.success) {
+                                $.dalert({text: '操作成功', icon: 1});
+                                $("#uploadTable").dtable("refresh");
+                                $.each(data, function (i) {
+                                    var dataIndex = tableData.indexOf(data[i]);
+                                    $table.dtable("removeByRowIndex", dataIndex);
+                                });
+                            } else {
+                                $.dalert({text: '操作失败', icon: 2});
+                            }
+                        }
+                    })
+                });
+            }
+        }
+
+        function closeDopen() {
+            neweid = "";
+            $("#table").dtable("refresh");
+            layer.close(iIndex);
+        }
+
+    </script>
+</head>
+<body>
+<!--<div>-->
+<!--<span>批次号:&nbsp;</span><input id="pch" type="text">-->
+<!--<span>状态:&nbsp;</span><input id="zt" name="ndname" type="text">-->
+<!--<button type="button" onclick="">查询</button>-->
+<!--</div>-->
+<div style="width:100%">
+    <h4 class='text-center'><b>项目执行管理</b></h4>
+    <button id="btnadd" type="button"></button>
+    <button id="btndel" type="button"></button>
+    <button id="btnedit" type="button"></button>
+    <button id="btnsubmit" type="button"></button>
+</div>
+<div>
+    <table id="table"></table>
+</div>
+</body>
+<script>
+    $(function () {
+        $("#btnadd").dbutton({
+            text: " 增加",
+            icon: 'bootstrap-table-add',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                add();
+            }
+        });
+        $("#btndel").dbutton({
+            text: " 删除",
+            icon: 'bootstrap-table-delete',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                remov();
+            }
+        });
+        $("#btnedit").dbutton({
+            text: " 编辑/查看",
+            icon: 'bootstrap-table-edit',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                modify();
+            }
+        });
+        $("#btnsubmit").dbutton({
+            text: " 入账",
+            icon: 'bootstrap-table-submit',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                changezt();
+            }
+        });
+    })
+</script>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<HTML>
+<head>
+	<TITLE>首页</TITLE>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<h2>版本号：dn_bootstrap2-1.1.0-SNAPSHOT(2019-02-13新增版本)</h2>
+<p>版本说明：历史版本均可直接新增新版本配置，与历史版本共存于项目中，新页面需注意样式是否有影响</p>
+<p>2019.05.23 comboBox、comboTree、searchTree组件新增配置项onClickInput，点击输入框触发事件 —— 张璐</p>
+<p>2019.05.21 table新增配置项可配置表头高度 —— 张璐</p>
+<p>2019.05.21 上传组件新增方法：获取所有已上传的文件 —— 张璐</p>
+<p>2019.05.21 新增进度条组件progressBar —— 张璐</p>
+<p>2019.05.20 新增radioBox组件：单/复选框 —— 张璐</p>
+<p>2019.05.14 form新增方法executeByName，根据name值执行某项操作 —— 张璐</p>
+<p>2019.05.10 输入框的validate验证方法新增一个参数：输入框对象 —— 张璐</p>
+<p>2019.05.06 修复IE下侧边菜单可编辑的bug —— 张璐</p>
+<p>2019.04.19 desktop新增addWindow方法，调用该方法后，打开dopen弹窗、底部栏相应增加tab标签 —— 张璐</p>
+<p>2019.04.18 config.js新增配置项plugMiniConfig，设定组件间隙、字体等样式是否最小化 —— 张璐</p>
+<p>2019.04.17 上传组件预览图片时可左右点击切换图片 —— 张璐</p>
+<p>2019.04.17 config.js新增配置项plugAsyncConfig可控制组件是否异步加载 —— 张璐</p>
+<p>2019.04.04 修改上传组件中生成缩略图的方法，避免预览图片时图片过小 —— 张璐</p>
+<p>2019.04.04 修复comboBox、comboTree、searchTree组件执行setValue时没有同步更新data-oldValue的问题 —— 张璐</p>
+<p>2019.04.03 修复comboBox组件某个项的id为空时，无法获取正确值的问题 —— 张璐</p>
+<p>2019.04.03 table组件当有文本溢出的td时，鼠标移入会有弹出层显示全部信息 —— 张璐</p>
+<p>2019.04.03 修复table组件导出至excel按钮重复添加的问题 —— 张璐</p>
+<p>2019.04.03 textBox、decimal输入框新增实时输入的触发事件onInputChange —— 张璐</p>
+<p>2019.04.02 上传组件新增预览功能，预览图片可旋转、鼠标滚轮控制放大缩小 —— 张璐</p>
+<p>2019.04.01 文件数据中新增属性base64Url，用于显示缩略图 —— 张璐</p>
+<p>2019.03.28 上传组件没有配置delUrl时仅在前端展示中删除文件；配置auto:true时，隐藏上传按钮、无提示信息 —— 张璐</p>
+<p>2019.03.21 修复同一页面上有多个webupload组件时 上传按钮位置有错乱的问题 —— 张璐</p>
+<p>2019.03.21 form新增方法setValueByName：根据组件name设置组件值 —— 张璐</p>
+<p>2019.03.19 form中的表单项在隐藏时不做验证 —— 张璐</p>
+<p>2019.03.19 dtable配置clickToEditMode:"td"时，onEditLineSave事件新增一个参数field，返回编辑单元格的列名 —— 张璐</p>
+<p>2019.03.15 form表单新增属性isGetText（boolean）、getTextField（string）：获取表单数据时是否包含该组件对应的文本（默认只有id） —— 张璐</p>
+<p>2019.03.15 form表单新增方法getValueByName：根据某个表单项的name获取该组件的值 —— 张璐</p>
+<p>2019.03.15 comboBox、comboTree、searchTree组件，onChange事件里新增一个参数——所有已选中节点的数据 —— 张璐</p>
+<p>2019.03.13 dopen组件修改按钮点击事件，默认点击按钮后不会关闭弹窗，若没写btn1、btn2...等方法则会直接关闭弹窗 —— 张璐</p>
+<p>2019.03.13 新增布局组件layoutBox —— 张璐</p>
+<p>2019.03.12 form表单项垂直布局 formVertical —— 张璐</p>
+<p>2019.03.08 table组件新增clickToEditMode属性，可设定 初始化编辑状态、点击编辑整行、点击编辑单元格 —— 张璐</p>
+<p>2019.03.05 修复套打组件id被覆盖的问题；comboBox拼音搜索时可上下键选择、回车赋值；修复多行表头的表格编辑时，编辑框错位的问题 —— 张璐</p>
+<p>2019.03.04 comboBox新增属性pinyinSearch，可在输入框输入拼音进行搜索 —— 张璐</p>
+<p>2019.02.27 tree组件新增禁用树节点选择框的方法 —— 张璐</p>
+<p>2019.02.26 修复initPage方法赋值id；修复comboTree父节点不可选 —— 张璐</p>
+<p>2019.02.26 webupload组件新增配置项singleMode，单个文件上传 —— 张璐</p>
+<p>2019.02.21 修复dopen打开iframe页面时向子页面传递数据的方法 —— 张璐</p>
+<p>2019.02.19 新增图标选择组件iconBox —— 张璐</p>
+<p>2019.02.18 form表单项可配置hoverTips，鼠标上移提示文字信息 —— 张璐</p>
+
+
+<h2>版本号：dn_bootstrap2-1.0.0-SNAPSHOT(2018-06-11新增版本)</h2>
+<p>版本说明：历史版本均可直接新增新版本配置，与历史版本共存于项目中，新页面只需修改引入js的路径</p>
+<p>2019.02.01 tree组件修改样式；票据打印新增配置项edit和defaultValue；dalert可直接传入字符串 —— 张璐</p>
+<p>2019.01.31 修复票据打印组件预览返回编辑后不能添加新节点的bug —— 张璐</p>
+<p>2019.01.30 form完善文档；修复类型为纯文本时出现的bug；修复指定rowspan时出现的bug —— 张璐</p>
+<p>2019.01.29 新版日期组件 —— 张璐</p>
+<p>2019.01.24 comboBox, comboTree组件新增parent属性，指定下拉框是否在body节点下插入，避免在编辑表格时 下拉框被表格边框遮挡 —— 张璐</p>
+<p>2019.01.23 isPassword设定在IE下的兼容 —— 张璐</p>
+<p>2019.01.17 bootstrap.datanew.js整理；desktop-addIframe可支持自定义html —— 张璐</p>
+<p>2019.01.17 新增pdf预览、视频播放 —— 张璐</p>
+<p>2019.01.11 桌面组件addIframe方法新增可配置项：是否删除、是否展开收缩 —— 张璐</p>
+<p>2018.12.26 上传组件在ie8下的兼容 —— 张璐</p>
+<p>2018.12.25 优化desktop快捷方式的全屏打开方法，及子页面内的表格高度自适应 —— 张璐</p>
+<p>2018.12.13 dateBox可手动输入 —— 张璐</p>
+<p>2018.12.06 textEditor新增验证方法 —— 张璐</p>
+<p>2018.12.03 table列拖拽,修复table详情模式无法选中问题 —— 李星剑</p>
+<p>2018.11.23 1、新增dforms组件，form内包含多个form表单；2、输入框形式的组件添加属性autocomplete禁止自动填充 —— 张璐</p>
+<p>2018.11.22 desktop组件addIframe方法可自定义图标 —— 张璐</p>
+<p>2018.11.22 新增方法：1、获取查询框内的表单数据。2、获取分页条数据 —— 张璐</p>
+<p>2018.11.21 桌面底部栏的基本信息可自定义配置html字符串 —— 张璐</p>
+<p>2018.11.21 修复 左下角树idKey不是默认值时，点击桌面报错的问题 —— 张璐</p>
+<p>2018.11.21 删除ckeditor和datetimepicker文件夹下的语言配置js文件 —— 张璐</p>
+<p>2018.11.20 desktop组件 桌面右下角弹出菜单可添加自定义菜单项 —— 张璐</p>
+<p>2018.11.20 修复 comboTree多选时会影响到同页面的tree组件的选择框样式 —— 张璐</p>
+<p>2018.11.08 desktop组件桌面快捷方式显示文字长度修改，可通过配置项shortTextLen配置 —— 张璐</p>
+<p>2018.11.01 dform组件新增密码输入框 —— 张璐</p>
+<p>2018.10.31 dform组件新增类型-plainText纯文本；新增属性-rowspan占用列数 —— 张璐</p>
+<p>2018.10.29 bootstrap.datanew.css重命名为bootstrap2.css —— 张璐</p>
+<p>2018.10.26 dform组件新增方法setDisabled、setReadonly，表单项inputs新增配置项setDisabled、setReadonly —— 张璐</p>
+<p>2018.10.18 增加dajax中表单提交后跳转页面的配置项 —— 黄杰忠</p>
+<p>2018.10.16 修复form隐藏域的默认值；修复decimal组件的默认值；上传组件可配置固定高度，超出部分滚动 —— 张璐</p>
+<p>2018.10.15 desktop新增配置项windowFullscreen，windowSizeArea —— 张璐</p>
+<p>2018.10.11 table分页条 可手动输入页码跳转</p>
+<p>2018.10.10 desktop新增方法可添加桌面iframe框 —— 张璐</p>
+<p>2018.09.27 desktop打开窗口默认不全屏，多个窗口错位打开 —— 张璐</p>
+<p>2018.09.26 table 列拖动 优化文字复制问题及拖动显示效果—— 李星剑</p>
+<p>2018.09.25 table 列拖动 —— 李星剑</p>
+<p>2018.09.11 table拉伸列后可在cookie中保存列宽信息；dalert可在config.js中配置自动关闭时间 —— 张璐</p>
+<p>2018.09.07 tree模糊查询后 getValue返回的值包含查询前的勾选节点 —— 张璐</p>
+<p>2018.09.03 更新bootstrap-datetimepicker版本，修复点击左、右上角小箭头时视图切换失效的bug —— 张璐</p>
+<p>2018.08.29 desktop组件可配置任务栏位置、开始菜单是否固定显示 —— 张璐</p>
+<p>2018.08.27 desktop组件可自定义配置右键菜单项 —— 张璐</p>
+<p>2018.08.20 desktop组件新增桌面文件夹 —— 张璐</p>
+<p>2018.08.17 table列错位 —— 张璐</p>
+<p>2018.08.15 调用组件clear方法后oldValue值清空、根据表单dname加载表单数据、table编辑行时根据新增&修改操作显示不同样式 —— 张璐</p>
+<p>2018.08.07 demo中所有.bootstrapTable方法全部改成.dtable —— 张璐</p>
+<p>2018.08.03 form必填项新增红色"*"号标记、form新增initDefault方法加载默认值 —— 张璐</p>
+<p>2018.07.31 table新增编辑所有行、更新所有行 方法 —— 张璐</p>
+<p>2018.07.26 树组件 新增getTextById方法（根据id获取对应的文本内容）、配置项searchAttr（根据不同属性进行模糊查询） —— 张璐</p>
+<p>2018.07.04 上传ckeditor，form新增富文本编辑器 —— 张璐</p>
+<p>2018.07.03 searchTree新增editInput配置项，控制输入框是否可直接输入 —— 张璐</p>
+<p>2018.06.26 form新增readonly方法 —— 张璐</p>
+<p>2018.06.22 table新增导出至excel功能 —— 张璐</p>
+<p>2018.06.19 上传desktop组件 —— 张璐</p>
+<p>2018.06.14 增加了index_desk.html的全屏显示 —— 董新新</p>
+<p>2018.06.11 解决多版本不可直接升级的问题，本版本可和历史版本共存，指需修改引入路径 —— 黄杰忠</p>
+
+<h2>版本号：1.0.0-SNAPSHOT(2018-05-24新增版本)</h2>
+<p>版本说明：原0.0.5版本可直接升级</p>
+<p>2018.06.08 增加了表格中自定义组件可编辑的功能 —— 董新新</p>
+<p>2018.05.29 修复了dopen打开tab页时无法获取到type值导致的页面样式错误 —— 张璐</p>
+
+<h2>版本号：0.0.5-SNAPSHOT(2018-04-13新增版本)</h2>
+<p>版本说明：原0.0.4版本不可直接升级</p>
+<p>2018.05.24 修复了dtable行编辑后无法取数据的问题 —— 董新新</p>
+<p>2018.05.09 增加了组件demo中目录结构，增加了组件demo查看代码功能，修复了目录结构的样式重叠问题 —— 董新新</p>
+<p>2018.05.07 修复 table有隐藏列visible:false时，编辑列会出现td不正确匹配的问题 —— 张璐</p>
+<p>2018.05.03 增加了table_demo.html中目录结构 —— 董新新</p>
+<p>2018.04.13 删除了dform中input上动态添加的id，避免name重复的情况 —— 张璐</p>
+<p>2018.04.13 新增index_desk.html —— 张璐</p>
+<p>2018.04.12 dtable新增removeByRowIndex方法 —— 张璐</p>
+
+<h2>版本号：0.0.4-SNAPSHOT(2017-12-31新增版本)</h2>
+<p>2018.01.12 js,css压缩，减少加载的时间消耗 —— 黄杰忠</p>
+<p>2017.12.31 组件bug修改，组件扩展 —— 未知</p>
+
+
+<h2>版本号：0.0.2-SNAPSHOT(2016-10-19新增版本)</h2>
+<p>2017.02.24 新增bootstrap组件属性配置框并导出json数据，更新文件index_drag.html, bootstrap-table_v1.js, bootstrap-table-custom.css, core1.0.js, script.js, openOptions.js —— 张璐</p>
+<p>2016.11.23 修改了dtable,dopen的文档说明—— 黄杰忠</p>
+<p>2016.11.22 table组件新增单元格拉伸功能，更新table_demo.html, bootstrap.datanew.js, bootstrap-table_v1.js, 新增bootstrap-table-resizable.js, colResizable-1.6.js —— 张璐</p>
+<p>2016.11.04 新增 按钮图标，新增form表单验证方法—— 黄杰忠</p>
+<p>2016.11.02 表单 dform 组件 新增上传文件方法 详情见form_demo.html —— 何志钧</p>
+<p>2016.10.31 表单 dform 组件 新增 1.disabled 禁用表单元素方法 2.enable 启用表单元素方法 详情见form_demo.html —— 何志钧</p>
+<p>2016.10.26 新增了dalert，dconfirm组件  —— 黄杰忠</p>
+<p>2016.10.20 新增了dtable的一些默认属性， —— 黄杰忠</p>
+<p>2016.10.20 表格组件，页面出现滚动条时，左侧内容宽度不变，更新index.css, table_demo.html <br />首页导航左右滑动效果，更新index_demo.html, index.js —— 张璐</p>
+<p>2016.10.19 首页导航条左右滑动，更新index_demo.html， bootstrap.datanew.js，index.css —— 张璐</p>
+
+<h2>版本号：0.0.1-SNAPSHOT</h2>
+<p>2016.10.9 更新dragtree_demo.html， edittree_demo.html， bootstrap.datanew.js</p>
+<p>2016.10.11 完善树的搜索功能，完善dtree组件，更新searchtree_demo.html，tree_demo.html， bootstrap.datanew.js</p>
+<p>2016.10.12 完善树的相关页面，完善首页，更新tree_demo.html， bootstrap.datanew.js，index_demo.html</p>
+</body>
+</html>

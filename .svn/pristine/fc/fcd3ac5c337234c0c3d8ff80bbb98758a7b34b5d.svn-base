@@ -1,0 +1,71 @@
+package com.datanew.service.xmgcjjs;
+
+import com.datanew.model.ZftzXmjgjs;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author inRush
+ * @date 2019/6/3
+ **/
+public interface XmgcjsbzService {
+    /**
+     * 获取项目列表
+     *
+     * @param yhdw
+     * @return
+     */
+    List getXmList(String yhdw, boolean excludeExistItem);
+
+
+    Map getXmInfo(Integer xmId,boolean getDefaultData);
+
+    /**
+     * 保存或更新
+     *
+     * @param model
+     * @param fjs
+     * @return
+     */
+    Long saveOrUpdate(ZftzXmjgjs model, ArrayList<Map> fjs);
+
+    /**
+     * 获取列表
+     *
+     * @param dwId
+     * @return
+     */
+    List<Map> list(String dwId, Integer status);
+
+    /**
+     * 获取详情
+     *
+     * @param id
+     * @return
+     */
+    Map getDetail(Integer id);
+
+    /**
+     * 删除，可批量删除
+     *
+     * @param ids
+     */
+    void delete(List<Integer> ids);
+
+    /**
+     * 待办列表
+     *
+     * @return
+     */
+    List<Map> todoList(Long userId, Integer status);
+
+    /**
+     * 更新审批意见
+     *
+     * @param ids
+     * @param comment
+     */
+    void updateComment(List<Integer> ids, String comment);
+}

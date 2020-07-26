@@ -1,0 +1,101 @@
+package com.datanew.service.xmgcjjs.impl;
+
+import com.datanew.dao.BaseDao;
+import com.datanew.service.xmgcjjs.FlowService;
+import com.datanew.service.xmgcjjs.XmgcjjsFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author inRush
+ * @date 2019/6/6
+ **/
+@Service
+public class XmgcjjsFlowServiceImpl implements XmgcjjsFlowService {
+    @Autowired
+    BaseDao baseDao;
+    @Autowired
+    FlowService flowService;
+
+    private static final Map<String, String> TYPE_MAP = new HashMap<String, String>(2) {
+        {
+            put("9", "ZFTZ_XMGCJSBA");
+            put("11", "ZFTZ_XMJGJS");
+        }
+    };
+
+    private Long updateSubmitModel(String type, Integer id, String lcbm, String comment) {
+        String updateSql = "update " + TYPE_MAP.get(type) + " set LCHJ='" + lcbm + "',CZSPYJ='" + comment + "' where ID=" + id;
+        baseDao.executeBySql(updateSql);
+        // 返回业务ID
+        return Long.valueOf(id.toString());
+    }
+
+    private String getDqLchj(String type, Integer ywId) {
+        String sql = "select LCHJ from " + TYPE_MAP.get(type) + " where ID=" + ywId;
+        List<Map> list = baseDao.selectMapsBySQL(sql);
+        return list.get(0).get("LCHJ").toString();
+    }
+
+    private FlowService.SubmitEvent getSubmitEvent(final String type, final List<String> lchjs) {
+        return new FlowService.SubmitEvent() {
+            public String onPrepare(Integer ywId, int index) {
+                // 返回当前环节编码
+                String realLchj = getDqLchj(type, ywId);
+                // 校验流程编码，判断是否已经被处理
+                if (!realLchj.equals(String.valueOf(lchjs.get(index)))) {
+                    throw new IllegalArgumentException("流程已被处理！请刷新页面");
+                }
+                return realLchj;
+            }
+
+            public Long onSubmit(Integer id, String nextFlowCode, String comment) {
+                // 更新环节编码并且返回业务ID
+                return updateSubmitModel(type, id, nextFlowCode, comment);
+            }
+        };
+    }
+
+    public List<Map> getShjl(String type, Integer ywId) {
+        String sql = "select t2.XM,\n" +
+                "       t1.DDRQ,\n" +
+                "       t1.CLSJ,\n" +
+                "       t1.CLYJ,\n" +
+                "       case when t1.DQHJBM = '-1' then '提交流程' else t3.DQHJMC end DQHJMC,\n" +
+                "       case when t1.CZLX = '1' then '提交' else '退回' end           CZLX\n" +
+                "from YHGL_YW_YH t2,\n" +
+                "     ZFTZ_SHJL t1\n" +
+                "         left join ZFTZ_SPLC t3 on t3.DQHJBM = t1.DQHJBM and t3.SXBM='11'\n" +
+                "where t2.GUID = t1.CLYHID\n" +
+                "  and t1.XMID = " + ywId + "\n" +
+                "  and SXLX = '" + type + "'\n" +
+                "order by t1.GUID";
+        return baseDao.selectMapsBySQL(sql);
+    }
+
+
+    public void submit(String type, Long yhId, List<Integer> ids) throws Exception {
+        List<String> lchjs = new ArrayList<String>();
+//        List<String> comments = new ArrayList<String>();
+        for (Integer id : ids) {
+            lchjs.add("-1");
+//            comments.add("提交流程");
+        }
+        this.nextFlow(type, yhId, ids, lchjs, null);
+    }
+
+    public void nextFlow(String type, Long yhId, List<Integer> ids, List<String> lchjs, List<String> comments) throws Exception {
+        flowService.submit(yhId, ids, type,
+                FlowServiceImpl.OperateCode.NEXT, comments, getSubmitEvent(type, lchjs));
+    }
+
+    public void backFlow(String type, Long yhId, List<Integer> ids, List<String> lchjs, List<String> comments) throws Exception {
+        flowService.submit(yhId, ids, type,
+                FlowServiceImpl.OperateCode.BACK, comments, getSubmitEvent(type, lchjs));
+    }
+}

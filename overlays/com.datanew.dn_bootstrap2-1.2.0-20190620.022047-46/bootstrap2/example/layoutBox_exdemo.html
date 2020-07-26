@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>布局组件说明文档</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#demo").layoutBox({
+                styles:"border:1px solid #dedede;",
+                items:[
+                    {width:"30%", height:300, children:{
+                            dtype:"html", dragHtml:'<pre>' +
+                            '{width:"30%", height:300, children:{\n' +
+                            '    dtype:"tree", \n' +
+                            '    url: "./json/treeData.json",\n' +
+                            '    checkType: "radio",\n' +
+                            '    rootElement: true, \n' +
+                            '    onlyLeaf: false\n' +
+                            '}}</pre>'
+                        }},
+                    {width:"70%", height:80, children:{
+                            dtype:"html", dragHtml:'<pre style="padding:3px 10px; margin:0;">{width:"70%", height:80, id:"initHtml", classes:"text-danger",\n' +
+                            '    styles:"font-weight:600; font-size:30px;", children:{\n' +
+                            '        dtype:"html", dragHtml:"这是一个自定义div"\n' +
+                            '    }}</pre>'
+                        }},
+                    {width:"70%", height:220, children:{
+                            dtype:"html", dragHtml:'<pre>{width:"70%", height:220, children:{\n' +
+                            '    dtype:"dform", rownum: 2, labelwidth:"100px",\n' +
+                            '    inputs:[\n' +
+                            '        {title:"输入框", name:"textbox", type:"textBox"},\n' +
+                            '        {title:"弹出树", name:"searchtree", type:"searchTree"},\n' +
+                            '        {title:"日期", name:"datebox", type:"dateBox"}\n' +
+                            '    ]\n' +
+                            '}}</pre>'
+                        }},
+                    {width:"50%", height:$(window).height()/2, children:{
+                            dtype:"html", dragHtml:'<pre>{width:"50%", height:$(window).height()/2, children:{\n' +
+                            '    dtype:"mediaBox", id:"viewFile",\n' +
+                            '    src: "http://jquery.malsup.com/media/guice.pdf"\n' +
+                            '}}</pre>'
+                        }},
+                    {width:"50%", height:$(window).height()/2, children:{
+                            dtype:"html", dragHtml:'<pre>{width:"50%", height:$(window).height()/2, children:{\n' +
+                            '    dtype:"tree", checkType: "checkbox"\n' +
+                            '    url: "./json/treeData.json",\n' +
+                            '}}</pre>'
+                        }},
+                    {width:"100%", height:$(window).height()/2, children:{
+                            dtype:"html", dragHtml:'<pre>{width:"100%", height:$(window).height()/2, children:{\n' +
+                            '    dtype:"videoBox", id:"videoDemo",\n' +
+                            '    video: "http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4"\n' +
+                            '}}</pre>'
+                        }},
+                    {width:"100%", height:300, children:{
+                            dtype:"html", dragHtml:'<pre>{width:"100%", height:300, children:{\n' +
+                            '    dtype:"dtable", url:"./json/tableData.json", columns:[\n' +
+                            '        {field: \'accountname\', title: \'银行\', width: 100, align: \'center\'},\n' +
+                            '        {field: \'startdate\', title: \'开始日期\', width: 100, align: \'center\'},\n' +
+                            '        {field: \'enddate\', title: \'结束日期\', width: 100, align: \'center\'},\n' +
+                            '        {field: \'writeusername\', title: \'用户名\', width: 100, align: \'center\'},\n' +
+                            '        {field: \'appName\', title: \'名称\', width: 100, align: \'center\'}\n' +
+                            '    ]\n' +
+                            '}}</pre>'
+                        }}
+                ]
+            });
+        })
+    </script>
+</head>
+<body>
+<section class="parser spacetop">
+    <div class="page-header"><h1>布局组件</h1></div>
+    <h4>属性：</h4>
+    <table class="table-border">
+        <thead>
+        <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>classes</td><td>String</td><td>格子公共的样式名</td><td></td></tr>
+        <tr><td>styles</td><td>String</td><td>格子公共的样式</td><td></td></tr>
+        <tr><td>items</td><td>Array</td><td>定义每个格子的属性，属性包括： <br>
+            <b>id</b>（唯一标识），String<br>
+            <b>width</b>（宽度），Number/String，可以使用 数字、百分比<br>
+            <b>height</b>（高度），Number/String，可以使用 数字，也可以通过$(window).height()/3、$(window).height()-200等方式计算<br>
+            <b>children</b>（格子内的组件配置项），Object<br>
+            <b>classes</b>（单个格子自定义样式名，多个样式名用空格隔开），String<br>
+            <b>styles</b>（单个格子自定义样式，多个样式语句用分号隔开），String</td><td>[]</td></tr>
+        </tbody>
+    </table>
+    <h4>代码：</h4>
+    <div>
+        <pre style="padding: 0;">
+            <ol style="display:table">
+                <li><span><b>html部分：</b></span></li>
+                <li><span>&lt;div id="layoutDemo"&gt;&lt;/div&gt;</span></li>
+                <li><span></span></li>
+                <li><span><b>js部分：</b></span></li>
+                <li><span>$("#layoutDemo").layoutBox({</span></li>
+                <li><span>    items:[</span></li>
+                <li><span>        {width:"30%", height:300, children:{</span></li>
+                <li><span>                dtype:"tree", url: "./json/treeData.json", checkType: 'radio', rootElement: true, onlyLeaf: false</span></li>
+                <li><span>            }},</span></li>
+                <li><span>        {width:"70%", height:60, id:"initHtml", classes:"text-danger", styles:"font-weight:600; font-size:30px;",</span></li>
+                <li><span>            children:{</span></li>
+                <li><span>                dtype:"html", dragHtml:'这是一个自定义div'</span></li>
+                <li><span>            }},</span></li>
+                <li><span>        {width:"70%", height:240, children:{</span></li>
+                <li><span>                dtype:"dform", rownum: 2, labelwidth:"100px",</span></li>
+                <li><span>                inputs:[</span></li>
+                <li><span>                    {title:"输入框", name:"textbox", type:"textBox"},</span></li>
+                <li><span>                    {title:"弹出树", name:"searchtree", type:"searchTree"},</span></li>
+                <li><span>                    {title:"日期", name:"datebox", type:"dateBox"}</span></li>
+                <li><span>                ]</span></li>
+                <li><span>            }},</span></li>
+                <li><span>        {width:"50%", height:$(window).height()/2, children:{</span></li>
+                <li><span>                dtype:"mediaBox", id:"viewFile", src: "http://jquery.malsup.com/media/guice.pdf"</span></li>
+                <li><span>            }},</span></li>
+                <li><span>        {width:"50%", height:$(window).height()/2, children:{</span></li>
+                <li><span>                dtype:"tree", url: "./json/treeData.json", checkType: 'checkbox'</span></li>
+                <li><span>            }},</span></li>
+                <li><span>        {width:"100%", height:$(window).height()/2, children:{</span></li>
+                <li><span>                dtype:"videoBox", id:"videoDemo", video: "http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4"</span></li>
+                <li><span>            }},</span></li>
+                <li><span>        {width:"100%", height:300, children:{</span></li>
+                <li><span>                dtype:"dtable", url:"./json/tableData.json", columns:[</span></li>
+                <li><span>                    {field: 'accountname', title: '银行', width: 100, align: 'center'},</span></li>
+                <li><span>                    {field: 'startdate', title: '开始日期', width: 100, align: 'center'},</span></li>
+                <li><span>                    {field: 'enddate', title: '结束日期', width: 100, align: 'center'},</span></li>
+                <li><span>                    {field: 'writeusername', title: '用户名', width: 100, align: 'center'},</span></li>
+                <li><span>                    {field: 'appName', title: '名称', width: 100, align: 'center'}</span></li>
+                <li><span>                ]</span></li>
+                <li><span>            }}</span></li>
+                <li><span>    ]</span></li>
+                <li><span>});</span></li>
+            </ol>
+        </pre>
+    </div>
+    <br>
+    <h4 style="color:#FF0000;">以上代码展示的大致布局及相应代码如下（完整展示请点击<a href="layoutBox_demo.html" target="_blank">查看案例</a>）：</h4>
+    <div id="demo" class="preBgNone"></div>
+
+    <br><br><br><br><br>
+</section>
+<br><br>
+</body>
+</html>

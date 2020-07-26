@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>进度条</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#progress1").progressBar({
+                width:200,
+                showPercent:true,
+                defaultValue:"30%"
+            });
+            $("#progress2").progressBar({
+                parent:"#parent",
+                width:200,
+                bgColor:"#f33",
+                defaultValue:"87%"
+            });
+        });
+        function setVal() {
+            $("#progress1").progressBar("setValue", "58%");
+        }
+        function getVal() {
+            alert($("#progress1").progressBar("getValue"));
+        }
+    </script>
+</head>
+<body>
+
+<section class="parser">
+    <div class="page-header"><h1>语法解析</h1></div>
+
+    <h4>表格参数:</h4>
+    <pre>
+        <ol style="display: table">
+            <li><span>$("#progress1").progressBar({</span></li>
+			<li><span>    height:20,</span></li>
+			<li><span>    bgColor:"#f33",</span></li>
+			<li><span>    defaultValue:"40%"</span></li>
+			<li><span>})</span></li>
+        </ol>
+    </pre>
+    <div class="row">
+        <div class="col-xs-6">
+            <h3>属性</h3>
+            <table class=" table-border">
+                <thead>
+                <tr><th>名称</th><th>类型</th><th>描述</th><th>默认值</th></tr>
+                </thead>
+                <tbody>
+                <tr><td>width</td><td>Number</td><td>进度条宽度</td><td>100%</td></tr>
+                <tr><td>height</td><td>Number</td><td>进度条高度</td><td>10</td></tr>
+                <tr><td>parent</td><td>null</td><td>进度条展示位置，可以是jquery选择器 如$("#parent")；也可以是选择器字符串 如"#parent"</td><td>null</td></tr>
+                <tr><td>bgColor</td><td>String</td><td>进度条颜色</td><td>#2F4056</td></tr>
+                <tr><td>defaultValue</td><td>String</td><td>默认值</td><td>0%</td></tr>
+                <tr><td>showPercent</td><td>Boolean</td><td>是否显示进度比文本</td><td>false</td></tr>
+                <tr><td>percentPos</td><td>String</td><td>进度比文本位置，inside显示在进度条内，outside显示在进度条上方</td><td>outside</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-6">
+            <h3>方法</h3>
+            <table class=" table-border">
+                <thead>
+                <tr><th>名称</th><th>参数</th><th>描述</th></tr>
+                </thead>
+                <tbody>
+                <tr><td>setValue</td><td>value</td><td>设值，百分比格式</td></tr>
+                <tr><td>getValue</td><td>value</td><td>取值</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h4>案例1：基本进度条 <button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn1">查看代码</button></h4>
+    <div>
+        <button class="btn btn-primary btn-xs" type="button" onclick="setVal()">设值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button>
+        <button class="btn btn-primary btn-xs" type="button" onclick="getVal()">取值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button>
+    </div>
+    <br><br>
+    <div id="progress1"></div>
+    <br><br>
+
+    <h4>案例2：指定位置插入进度条（<span style="color:#F00;">属性parent</span>） <button type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn2">查看代码</button></h4>
+    <h5><b style="color:#f00;">将进度条显示到下方黑框内</b></h5>
+    <div id="progress2"></div>
+    <div id="parent" style="width:250px; height:30px; margin-left:150px; border:2px solid #000;"></div>
+</section>
+<br><br><br><br><br><br><br><br><br><br>
+
+<div style="width:1px;height:1px;overflow:hidden;">
+    <textarea id="copyTarget1">
+    $("#progress1").progressBar({
+        width:200,
+        showPercent:true,
+        defaultValue:"30%"
+    });
+    </textarea>
+    <textarea id="copyTarget2">
+    html部分：
+    &lt;div id="progress2"&gt;&lt;/div&gt;
+    &lt;div id="parent" style="width:250px; height:30px; margin-left:150px; border:2px solid #000;"&gt;&lt;/div&gt;
+
+    js部分：
+    $("#progress2").progressBar({
+        parent:"#parent",
+        width:200,
+        bgColor:"#f33",
+        defaultValue:"87%"
+    });
+    </textarea>
+    <textarea id="copyTarget3">
+    $("#progress1").progressBar("setValue", "58%");
+    </textarea>
+    <textarea id="copyTarget4">
+    alert($("#progress1").progressBar("getValue"));
+    </textarea>
+</div>
+<script>
+    $(function () {
+        $(".copyBtn").on("click", function () {
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var target = $("#copyTarget" + num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>" + target.html() + "</pre>",
+                area: ["600px", "auto"],
+                btn: ["复制", "取消"],
+                btn1: function (index) {
+                    var res = $.copyToClipboard(target.get(0));
+                    if (res) {
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    } else {
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

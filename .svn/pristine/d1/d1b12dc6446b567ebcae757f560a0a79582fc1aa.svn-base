@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="<%=basePath%>">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../../bootstrap2/js/jquery.js"></script>
+    <script src="../../bootstrap2/js/bootstrap.datanew.js"></script>
+    <script src="../../js/file.js"></script>
+    <script src="../../js/progcmc.js"></script>
+    <script src="../../js/common.js"></script>
+    <link rel="stylesheet" href="../../css/common.css">
+    <script>
+        var iIndex;
+        var selectxmid="";
+        var gsid;
+        var jldw;
+        var gcl;
+        var djhfl;
+        var gcmc;
+        var yhlx = "";
+        var buttonIds;
+        var iRowIndex;
+        var newtzid = "";
+        $(function () {
+            $.dajax({
+                type: 'post',
+                url: "../../user/getButtons.do",
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    buttonIds = data;
+                    yhlx = data.yhlx;
+                    if(data.buttons.indexOf('7002801')==-1){
+                        $("#btnadd").hide();
+                    }
+                    if(data.buttons.indexOf('7002802')==-1){
+                        $("#btndel").hide();
+                    }
+                    if(data.buttons.indexOf('7002803')==-1){
+                        $("#btnedit").hide();
+                    }
+                    if(data.buttons.indexOf('7002804')==-1){
+                        $("#btnba").hide();
+                    }
+                    if(data.buttons.indexOf('7002805')==-1){
+                        $("#btnhs").hide();
+                    }
+                    if(data.buttons.indexOf('7002806')==-1){
+                        $("#btnth").hide();
+                    }
+                }
+            });
+
+            $("#table").dtable({
+//                 height: 480,
+                url: "../../pro/getTzbadj.do",
+                columns: [
+                    {field: 'checkType', checkbox: true},
+                    {field: 'XH', title: '序号', align: 'center', visible: false},
+                    {field: 'ID', title: '项目编号', align: 'center', visible: false},
+                    {field: 'SID', title: '调整ID', align: 'center', visible: false},
+                    {field: 'GSID', title: '概算ID', align: 'center', visible: false},
+                    {field: 'XMMC', title: '项目名称', align: 'center'},
+                    {field: 'ZGBM', title: '主管部门', align: 'center'},
+                    {field: 'XMLX', title: '项目类型', align: 'center'},
+                    {field: 'JSDW', title: '建设单位', align: 'center'},
+                    {field: 'YDMJ', title: '用地面积(亩)', align: 'center'},
+                    {field: 'GSXMZTZ', title: '概算项目总投资(万元)',halign:'center', align: 'right'},
+                    {field: 'TZXE', title: '投资限额(万元)',halign:'center', align: 'right'},
+                    {field: 'XMZTZ', title: '项目总投资(万元)',halign:'center',  align: 'right'},
+                    {field: 'LCHJ', title: '流程环节', align: 'center',visible:false},
+                    {field: 'JSZT', title: '决算状态', align: 'center',visible:false},
+                    {field: 'LCMC', title: '状态', align: 'center', visible: false},
+                    {field: 'CZR', title: '申请人', align: 'center'},
+                    {field: 'CZSJ', title: '申请时间', align: 'center'},
+                    {field: "ZT1", title: "状态", width: 100, align: "center",
+                        formatter : function(value, row, index) {
+                            if(value=='退回'){
+                                return '<a href="javascript:void(0)" onclick="selThyj('+row.SID+')">退回</a>';
+                            }else{
+                                return value;
+                            }
+
+                        }
+                    }
+
+                ],
+                clickToSelect: true,
+                resizable: true, //单元格手动拉伸
+                pageNumber: 1,//起始页
+                pageSize: 20,//页面大小
+                pagination: true,
+                height:$(window).height() - 80,
+                paginationHAlign: 'left',//分页按钮位置  left/right
+                sidePagination: 'client',
+                searchbar: {
+                    rownum: 2,
+                    inputs: [//搜索栏表单参数
+                        {
+                            title: '项目名称',//表单lable显示名
+                            name: 'xmmc',//表单name属性
+                            type: 'textBox'//表单类型：目前支持 select/text
+                        },
+                        {
+                            name: 'lchj',
+                            title: '状态',
+                            id:'ztid',
+                            type: 'comboBox',
+                            localdata:[{id:1,text:"未备案"}, {id:2,text:"已备案"},{id:3,text:"经办项目"}],
+                            defaultValue:1,
+                            onChange:function (newValue,oldValue) {
+                                if (3 == newValue) {
+                                    disableButton(['btndel', 'btnba','btnhs','btnth']);
+                                }else {
+                                    showButton(['btndel', 'btnba','btnhs','btnth'])
+                                }
+                            }
+//                          isLeafCheck: false //checkType为checkbox或radio时，非叶子节点是否有选择框，false为不可选
+                        }
+                    ]
+                }
+            });
+            if(yhlx=='1'){
+                $("#ztid").comboBox("setValue",1);
+                $("#table").dtable("refresh");
+            }else if(yhlx=='2'){
+                $("#ztid").comboBox("setValue",2);
+                $("#table").dtable("refresh");
+            }
+        })
+
+        function add() {
+            selectxmid = "";
+            newtzid = "";
+            var dopenjson = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": "<h4 class='text-center'>项目概算调整备案登记</h4>"
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div class="toolbar layout_toolbar clearfix">' +
+                                                '<button class="bootstrap-table-add" type="button" onclick="addRow()">增加行</button>' +
+                                                '<button class="bootstrap-table-delete" type="button" onclick="removba()">删除行</button>' +
+                                                '<button class="bootstrap-table-save" type="button" onclick="saveadddata()">保存</button>' +
+                                                // '<button class="bootstrap-table-save" type="button" onclick="">备案</button>' +
+                                                // '<button class="bootstrap-table-save" type="button" onclick="">核实</button>' +
+                                                // '<button class="bootstrap-table-save" type="button" onclick="">退回</button>' +
+//                                                 '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                '<span class="pull-right">单位：万元</span>' +
+                                                '</div>'
+                                        },
+                                        {
+                                            "dtype": "dform",
+                                            "id": "openForm",
+                                            "classes": "tableForm",
+                                            "rownum": 3,
+                                            "labelwidth": "140px",
+                                            "labelAlign": "center",
+                                            "inputs": [
+                                                {
+                                                    title: "项目名称",
+                                                    name: "XMCOMBOBOX",
+                                                    type: "searchTree",
+                                                    id:"xmcombo",
+                                                    url:"../../pro/getXmmc2.do",
+                                                    // rootElement:true,
+                                                    modalTitle: "请选择项目名称",
+                                                    checkType: "radio",
+                                                    onChange: function (n, o, a) {
+                                                        if(n!=null&&n!=""&&n!=undefined){
+                                                            selectxmid = a.id;
+                                                            getXmgsinfo(a.id);
+                                                            $("#gstzbaTable").dtable("removeAll");
+                                                            // $("#gcmccombo")["comboBox"]("clear");
+                                                            // $("#gcmccombo").comboBox("reload",{url:"../../pro/getGcfymc.do"})
+                                                        }
+                                                    }
+                                                },
+                                                {title: "建设单位", name: "JSDW", type: "comboBox",url:"../../pro/getJsdw.do",setReadonly:true},
+                                                {
+                                                    title: "主管部门", name: "ZGCOMBOBOX", type: "comboBox",id:"zgcombo",
+                                                    url:"../../pro/getZgbm.do",setReadonly:true
+                                                },
+                                                {title: "项目规划选址",id:"xmghxzid", name: "XMGHXZ", type: "textBox",setReadonly:true},
+                                                {
+                                                    title: "项目类型", name: "XMLXCOMBOBOX", type: "comboBox",id:"xmlxcombo",
+                                                    url:"../../pro/getXmlx.do",setReadonly:true
+                                                },
+                                                {title: "容积率",id:"rjlid", name: "RJL", type: "textBox",textAlign:"right"},
+                                                {title: "用地面积(平方米)",id:"ydmjid", name: "YDMJ", type: "textBox",textAlign:"right"},
+                                                {title: "建筑总面积(平方米)",id:"jzzmjid", name: "JZZMJ", type: "textBox",textAlign:"right"},
+                                                {title: "其中:地上建筑面积",id:"dsjzmjid", name: "DSJZMJ", type: "textBox",textAlign:"right"},
+                                                {title: "投资限额",id:"tzxeid", name: "TZXE", type: "textBox",textAlign:"right"},
+                                                {title: "建议控制造价标准(元)",id:"jykzzjbzid", name: "JYKZZJBZ", type: "textBox",textAlign:"right"},
+                                                {title: "项目单位造价标准(元)",id:"xmdwzjid", name: "XMDWZJ", type: "textBox",textAlign:"right"},
+                                                {title: "标准库",id:"bzkid", name: "BZK", type: "html",html:'<a onclick="selectzbk()" style="text-align: right;color: red" >点击查看</a>'},
+                                                {title: "建设内容",id:"jsnrid", name: "JSNR", type: "textBox",multiline:true,colspan:3},
+                                            ]
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "height": 250,
+                                            "id": "gstzbaTable",
+                                            "editable": "true",
+                                            "url": "",
+                                            "columns": [
+                                                [
+                                                    {field:"checkType", radio: true,rowspan:2},
+                                                {
+                                                    field: "xh",
+                                                    title: "序号",
+                                                    width: 30,
+                                                    align: "center",
+                                                    rowspan: 2,
+                                                    formatter: function (value, row, index) {
+                                                        return index + 1;
+                                                    }
+                                                },
+                                                    {
+                                                        field: "ID",
+                                                        title: "调整明细id",
+                                                        align: "center",
+                                                        rowspan: 2,
+                                                        visible: false
+                                                    },
+                                                    {
+                                                        field: "GCFYID",
+                                                        title: "工程费用id",
+                                                        align: "center",
+                                                        rowspan: 2,
+                                                        visible: false
+                                                    },
+                                                    {
+                                                        field: "GCFYMC",
+                                                        title: "工程或费用名称",
+                                                        width: 100,
+                                                        // id:'gcmccombo',
+                                                        align: "center",
+                                                        rowspan: 2,
+                                                        clickToSelect: true,
+                                                        editor: {
+                                                            type:"textBox",
+                                                            onLoaded: function($el) {
+                                                                openProj($el, function (node) {
+                                                                    if(node.isnew == '1'){
+                                                                        $("#gstzbaTable").dtable("updateCell",{index:iRowIndex,field:"ISNEW",value:node.isnew});
+                                                                    }
+                                                                    $("#gstzbaTable").dtable("updateCell",{index:iRowIndex,field:"GCFYID",value:node.id});
+                                                                    $("#gstzbaTable").dtable("updateCell",{index:iRowIndex,field:"GCFYMC",value:node.name});
+                                                                    if (node.id != 0){
+                                                                        $.dajax({
+                                                                            type:"post",
+                                                                            url:"../../pro/getFylxbygsmxid.do",
+                                                                            async:false,
+                                                                            data: {gsmxid:node.id},
+                                                                            success: function (data) {
+                                                                                $("#gstzbaTable").dtable("updateCell",{index:iRowIndex,field:"FYLX",value:data});
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                    $("#gstzbaTable").tableEditor("initAll");
+                                                                }, selectxmid)
+                                                            }
+                                                        }
+                                                    },
+                                                    {field:"ISNEW",title: "是否新增", align: "center",rowspan:2,visible:false},
+                                                {
+                                                    field: "FYLX",
+                                                    title: "费用类型",
+                                                    width: 100,
+                                                    // id:'fycombo',
+                                                    align: "center",
+                                                    rowspan: 2,
+                                                    clickToSelect: true,
+                                                    editor: {
+                                                        type: "searchTree",
+                                                        url: "../../pro/getFylx.do",
+                                                        rootElement:true,
+                                                        modalTitle: "请选择费用类型",
+                                                        checkType: "radio",
+                                                        onChange: function (n, o, aa) {
+                                                            if (n != undefined && n != null && n != "") {
+                                                                //获取到总投资
+                                                                $("#gstzbaTable").tableEditor("updateAll");
+                                                                var sdata = $("#gstzbaTable").dtable("getSelections");
+                                                                var gc = sdata[0].GCFYID;
+                                                                var fy =sdata[0].FYLX;
+                                                                var tze = sdata[0].TZEFL;
+                                                                getGstzje(gc,fy,tze);
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    field: "TZEFL",
+                                                    title: "投资额分类",
+                                                    width: 100,
+                                                    // id:'tzecombo',
+                                                    align: "center",
+                                                    rowspan: 2,
+                                                    clickToSelect: true,
+                                                    editor: {
+                                                        type: "comboBox",
+                                                        required: true,
+                                                        multiple: false,
+                                                        // clickToReload:true,
+                                                        // localdata: [{id: 1, text: "单位"}, {id: 2, text: "角色"}, {id: 3, text: "用户"}, {id: 3, text: "sql查询"}]
+                                                        url: "../../pro/getTzefl.do",
+                                                        onChange: function (n, o, aa) {
+                                                            if (n != undefined && n != null && n != "") {
+                                                                //获取到总投资
+                                                                $("#gstzbaTable").tableEditor("updateAll");
+                                                                var sdata = $("#gstzbaTable").dtable("getSelections");
+                                                                var gc = sdata[0].GCFYID;
+                                                                var fy =sdata[0].FYLX;
+                                                                var tze = sdata[0].TZEFL;
+                                                                getGstzje(gc,fy,tze);
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {field: "TZE", title: "投资额(万元)",width: 500, align: "center",colspan:5},
+                                            ],
+                                            [
+                                                {field: "YTZJE", title: "原投资金额",width: 100,halign:"center",  align: "center"},
+                                                {field: "TZHJE", title: "调整后金额",width: 100,align: "center",editor:{
+                                                        title: "小数",
+                                                        type: "decimal",
+                                                        textAlign:"right",
+                                                        decimalPlaces: 2
+                                                    }},
+                                                {field: "TZJE", title: "调增金额", width: 100,halign:"center",  align: "center"},
+                                                {field: "TJJE", title: "调减金额", width: 100,halign:"center",  align: "center"},
+                                                {field: "TZSM", title: "调整说明",  width: 100,align: "center",editor:{
+                                                        title: "小数",
+                                                        type: "textBox",
+                                                        // textAlign:"right",
+                                                        // decimalPlaces: 2
+                                                    }}
+                                                ]
+                                        ],
+                                            "clickToSelect":"true",
+                                            onClickRow(a,b,c){
+                                                var rowdata = a;
+                                                var tabledata = $("#gstzbaTable").dtable("getData");
+                                                iRowIndex = tabledata.indexOf(rowdata);
+                                            }
+                                        },
+                                        {
+                                            "dtype": "html",
+                                            "dragHtml": '<div style="padding:15px 0 10px 15px;">' +
+                                                '<span class="pull-left">附件列表:&nbsp;</span>' +
+                                                '<button class="bootstrap-table-upload" type="button" onclick="pageUploadFile()">上传附件</button>' +
+                                                '<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button>'+
+                                                '</div>'
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "height": 250,
+                                            "id":"uploadTable",
+                                            editable :true,
+                                            clickToSelect:true,
+                                            "url": "",
+                                            "columns": [
+                                                {field:"checkType",radio:true},
+                                                {field:"xh", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                {field:"FILENAME", title:"附件名", width:300, align:"center"},
+                                                {field:"FILEDL", title:"附件大类", width:120, align:"center",type:'comboBox',selected: 1,localdata:[{id:7,text:"变更联系单备案"}],formatter:function(value,row,index){return "变更联系单备案";}},
+                                                // {field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+                                                {field:"FILESIZE", title:"大小", width:80, align:"center",formatter:function (value,row,index){return formatSize(value)}},
+                                                {
+                                                    field : '',
+                                                    title : '操作 ',
+                                                    width : 100,
+                                                    align : 'center',
+                                                    formatter : function(value, row, index) {
+                                                        return  '<a href=../../file/downloadByid.do?id='+row.FILEID+'>下载</a>';
+                                                    }
+                                                }
+                                                // {field:"filebz", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+                                            ]
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+
+            iIndex = $.dopen({
+                type: 6,
+                area: ["95%", "100%"],
+                title :"项目概算调整备案",
+                content: dopenjson,
+                btn: ["关闭"],
+                btn1:function(index){
+                    closeDopen();
+                    // layer.close(index);
+                    // $("#table").bootstrapTable("refresh");
+                },
+                cancel:function (iIndex,layer) {
+                    selectxmid = "";
+                    newtzid = "";
+                    $("#table").dtable("refresh");
+                }
+            });
+
+            setTimeout(function () {
+                $("#gstzbaTable").tableEditor("initAll")},200);
+        }
+
+        function modify() {
+            var curdata = $("#table").dtable("getSelections");
+            if(curdata.length == 0){
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+            if(curdata.length > 1){
+                $.dalert({text:"请选择一条数据"});
+                return;
+            }
+            selectxmid = "";
+            newtzid = "";
+            var tzid = curdata[0].SID;
+            var gsid = curdata[0].GSID;
+            var lchj = curdata[0].LCHJ;
+            selectxmid = curdata[0].ID;
+
+            var btnstr = '';
+            if(yhlx=='1'){
+                btnstr += '<button id="addrowbtn" class="bootstrap-table-add" type="button" onclick="addRow()">增加行</button>&nbsp;';
+                btnstr += '<button id="delrowbtn" class="bootstrap-table-delete" type="button" onclick="removba1()">删除行</button>&nbsp;';
+                btnstr += '<button id="savebtn" class="bootstrap-table-save" type="button" onclick="saveadddata1('+tzid+')">保存</button>&nbsp;';
+            }
+            if(buttonIds.buttons.indexOf('7002804')!=-1){
+                btnstr += '<button id="babtn" class="bootstrap-table-submit" type="button" onclick="Ba1('+tzid+','+lchj+')">备案</button>&nbsp;';
+            }
+            if(buttonIds.buttons.indexOf('7002805')!=-1){
+                btnstr += '<button class="bootstrap-table-save" type="button" onclick="Hs1('+tzid+','+lchj+')">核实</button>&nbsp;';
+            }
+            if(buttonIds.buttons.indexOf('7002806')!=-1){
+                btnstr += '<button class="bootstrap-table-save" type="button" onclick="Th1('+tzid+','+lchj+')">退回</button>'
+            }
+            btnstr +=  '<span class="pull-right">单位：万元</span>' + '</div>';
+            var dopenjson1 = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    // "colspan": "12",
+                                    // "dtype": "column",
+                                    // "plug":[
+                                    //     {
+                                    //         "dtype": "div",
+                                    //         "classes": "tab-content",
+                                    //         "plug": [
+                                    //             {
+                                    //                 "dtype": "div",
+                                    //                 "classes": "tab-pane active",
+                                                    "plug": [
+                                                        {
+                                                            "dtype": "html",
+                                                            "dragHtml": "<h4 class='text-center'>项目概算调整备案登记</h4>"
+                                                        },
+
+                                                        {
+                                                            "dtype": "html",
+                                                            "dragHtml": btnstr
+                                                                // '<div class="toolbar layout_toolbar clearfix">' +
+                                                                // '<button class="bootstrap-table-add" type="button" onclick="addRow()">增加行</button>' +
+                                                                // '<button class="bootstrap-table-delete" type="button" onclick="removba1()">删除行</button>' +
+                                                                // '<button class="bootstrap-table-save" type="button" onclick="saveadddata1(' + tzid + ')">保存</button>' +
+                                                                // '<button class="bootstrap-table-save" type="button" onclick="Ba1(' + tzid + ',' + lchj + ')">备案</button>' +
+                                                                // '<button class="bootstrap-table-verify" type="button" onclick="Hs1(' + tzid + ',' + lchj + ')">核实</button>' +
+                                                                // '<button class="bootstrap-table-save" type="button" onclick="Th1(' + tzid + ',' + lchj + ')">退回</button>' +
+                                                                // '<button class="bootstrap-table-clear" type="button" onclick="closeDopen()">关闭</button>' +
+                                                                // '<span class="pull-right">单位：万元</span>' +
+                                                                // '</div>'
+
+                                                        },
+                                                        {
+                                                            "dtype": "dform",
+                                                            "id": "openForm",
+                                                            "classes": "tableForm",
+                                                            "rownum": 3,
+                                                            "labelwidth": "140px",
+                                                            "labelAlign": "center",
+                                                            "inputs": [
+                                                                {
+                                                                    title: "项目名称",
+                                                                    name: "XMCOMBOBOX",
+                                                                    // type: "comboBox",
+                                                                    type: "searchTree",
+                                                                    id: "xmcombo",
+                                                                    url: "../../xmzjgl/getXmmcall.do",
+                                                                    rootElement:true,
+                                                                    modalTitle: "请选择项目名称",
+                                                                    checkType: "radio",
+                                                                    setReadonly: true,
+                                                                    onChange: function (n, o, a) {
+                                                                        if (n != null && n != "" && n != undefined) {
+                                                                            selectxmid = a.id;
+                                                                            getXmgsinfo(a.id);
+                                                                            // $("#gstzbaTable").dtable("removeAll");
+                                                                            // $("#gcmccombo")["comboBox"]("clear");
+                                                                            // $("#gcmccombo").comboBox("reload",{url:"../../pro/getGcfymc.do"})
+                                                                        }
+                                                                    }
+                                                                },
+                                                                {
+                                                                    title: "建设单位",
+                                                                    name: "JSDW",
+                                                                    type: "comboBox",
+                                                                    url: "../../pro/getJsdw.do",setReadonly:true
+                                                                },
+                                                                {
+                                                                    title: "主管部门",
+                                                                    name: "ZGCOMBOBOX",
+                                                                    type: "comboBox",
+                                                                    id: "zgcombo",
+                                                                    url: "../../pro/getZgbm.do",setReadonly:true
+                                                                },
+                                                                {
+                                                                    title: "项目规划选址",
+                                                                    id:"xmghxzid",
+                                                                    name: "XMGHXZ",
+                                                                    type: "textBox",setReadonly:true
+                                                                },
+                                                                {
+                                                                    title: "项目类型",
+                                                                    name: "XMLXCOMBOBOX",
+                                                                    type: "comboBox",
+                                                                    id: "xmlxcombo",
+                                                                    url: "../../pro/getXmlx.do",setReadonly:true
+                                                                },
+                                                                {title: "容积率",id:"rjlid", name: "RJL", type: "textBox",textAlign:"right"},
+                                                                {title: "用地面积(平方米)",id:"ydmjid", name: "YDMJ", type: "textBox",textAlign:"right"},
+                                                                {title: "建筑总面积(平方米)",id:"jzzmjid", name: "JZZMJ", type: "textBox",textAlign:"right"},
+                                                                {title: "其中:地上建筑面积",id:"dsjzmjid", name: "DSJZMJ", type: "textBox",textAlign:"right"},
+                                                                {title: "投资限额",id:"tzxeid", name: "TZXE", type: "textBox",textAlign:"right"},
+                                                                {title: "建议控制造价标准(元)",id:"jykzzjbzid", name: "JYKZZJBZ", type: "textBox",textAlign:"right"},
+                                                                {title: "项目单位造价标准(元)",id:"xmdwzjid", name: "XMDWZJ", type: "textBox",textAlign:"right"},
+                                                                {
+                                                                    title: "标准库",
+                                                                    name: "BZK",
+                                                                    type: "html",
+                                                                    html: '<a onclick="selectzbk()" style="text-align: right;color: red" >点击查看</a>'
+                                                                },
+                                                                {
+                                                                    title: "建设内容",
+                                                                    id:"jsnrid",
+                                                                    name: "JSNR",
+                                                                    type: "textBox",
+                                                                    multiline: true,
+                                                                    colspan: 3
+                                                                },
+                                                            ]
+                                                        },
+                                                        {
+                                                            "dtype": "dtable",
+                                                            "height": 250,
+                                                            "id": "gstzbaTable",
+                                                            editable: true,
+                                                            "url": "../../pro/getBatzmx.do",
+                                                            "columns": [
+                                                                [
+                                                                    {field: 'checkType', radio: true, rowspan: 2},
+                                                                    {
+                                                                        field: "XH",
+                                                                        title: "序号",
+                                                                        width: 50,
+                                                                        align: "center",
+                                                                        rowspan: 2,
+                                                                        formatter: function (value, row, index) {
+                                                                            return index + 1;
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        field: 'ID',
+                                                                        title: '调整明细id',
+                                                                        align: 'center',
+                                                                        rowspan: 2,
+                                                                        visible: false
+                                                                    },
+                                                                    {
+                                                                        field: 'GCFYID',
+                                                                        title: '工程费用id',
+                                                                        align: 'center',
+                                                                        rowspan: 2,
+                                                                        visible: false
+                                                                    },
+                                                                    {
+                                                                        field: 'GCFYMC',
+                                                                        title: '工程或费用名称',
+                                                                        // id:'gcmccombo',
+                                                                        align: 'center',
+                                                                        width:80,
+                                                                        rowspan: 2,
+                                                                        clickToSelect: true,
+                                                                        editor: {
+                                                                            type: "textBox",
+                                                                            onLoaded: function ($el) {
+                                                                                openProj($el, function (node) {
+                                                                                    if (node.isnew == '1') {
+                                                                                        $("#gstzbaTable").dtable("updateCell", {
+                                                                                            index: iRowIndex,
+                                                                                            field: "ISNEW",
+                                                                                            value: node.isnew
+                                                                                        });
+                                                                                    }
+                                                                                    ;
+                                                                                    $("#gstzbaTable").dtable("updateCell", {
+                                                                                        index: iRowIndex,
+                                                                                        field: "GCFYID",
+                                                                                        value: node.id
+                                                                                    });
+                                                                                    $("#gstzbaTable").dtable("updateCell", {
+                                                                                        index: iRowIndex,
+                                                                                        field: "GCFYMC",
+                                                                                        value: node.name
+                                                                                    });
+                                                                                    if (node.id != 0){
+                                                                                        $.dajax({
+                                                                                            type:"post",
+                                                                                            url:"../../pro/getFylxbygsmxid.do",
+                                                                                            async:false,
+                                                                                            data: {gsmxid:node.id},
+                                                                                            success: function (data) {
+                                                                                                $("#gstzbaTable").dtable("updateCell",{index:iRowIndex,field:"FYLX",value:data});
+                                                                                            }
+                                                                                        })
+                                                                                    }
+                                                                                    $("#gstzbaTable").tableEditor("initAll");
+                                                                                }, selectxmid)
+                                                                            }
+                                                                            // type: "comboBox",
+                                                                            // required: true,
+                                                                            // multiple: false,
+                                                                            // setReadonly:true,
+                                                                            // // url:"",
+                                                                            // url: "../../pro/getGcfymc.do",
+                                                                            // onChange: function (n, o, aa) {
+                                                                            //     if (n != undefined && n != null && n != "") {
+                                                                            //         $.dajax({
+                                                                            //             url: "../../pro/getGsmxinfo.do",
+                                                                            //             async:false,
+                                                                            //             type:"post",
+                                                                            //             data: {tzid:aa.id},
+                                                                            //             success: function (data) {
+                                                                            //                 jldw = data.jldw;
+                                                                            //                 gcl = data.gcl;
+                                                                            //                 djhfl = data.djhfl;
+                                                                            //                 gcmc = aa.text;
+                                                                            //             }
+                                                                            //         })
+                                                                            //     }
+                                                                            // },
+                                                                            // onClickInput:function (a) {
+                                                                            //     a.comboBox("reload",{url:"../../pro/getGcfymc.do?xmid="+selectxmid})
+                                                                            // }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        field: 'ISNEW',
+                                                                        title: '是否新增',
+                                                                        align: 'center',
+                                                                        rowspan: 2,
+                                                                        visible: false
+                                                                    },
+                                                                    // {field:'GCFYMC',title: '工程费用名称', align: 'center',rowspan:2,visible:false},
+                                                                    {
+                                                                        field: 'FYLX',
+                                                                        title: '费用类型',
+                                                                        width:80,
+                                                                        // id:'fycombo',
+                                                                        align: 'center',
+                                                                        rowspan: 2,
+                                                                        clickToSelect: true,
+                                                                        editor: {
+                                                                            type: 'searchTree',
+                                                                            url: '../../pro/getFylx.do',
+                                                                            // rootElement:true,
+                                                                            modalTitle: '请选择费用类型',
+                                                                            checkType: 'radio',
+
+                                                                            // type: "comboBox",
+                                                                            // required: true,
+                                                                            // multiple: false,
+                                                                            // setReadonly: true,
+                                                                            // // clickToReload:true,
+                                                                            // // localdata: [{id: 1, text: "单位"}, {id: 2, text: "角色"}, {id: 3, text: "用户"}, {id: 3, text: "sql查询"}]
+                                                                            // url: "../../pro/getFylx1.do",
+                                                                            onChange: function (n, o, aa) {
+                                                                                if (n != undefined && n != null && n != "") {
+                                                                                    //获取到总投资
+                                                                                    $("#gstzbaTable").tableEditor("updateAll");
+                                                                                    var sdata = $("#gstzbaTable").dtable("getSelections");
+                                                                                    var gc = sdata[0].GCFYID;
+                                                                                    var fy =sdata[0].FYLX;
+                                                                                    var tze = sdata[0].TZEFL;
+                                                                                    getGstzje(gc,fy,tze);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        field: 'TZEFL',
+                                                                        title: '投资额分类',
+                                                                        // id:'tzecombo',
+                                                                        align: 'center',
+                                                                        width:80,
+                                                                        rowspan: 2,
+                                                                        clickToSelect: true,
+                                                                        editor: {
+                                                                            type: "comboBox",
+                                                                            required: true,
+                                                                            multiple: false,
+                                                                            setReadonly: true,
+                                                                            // clickToReload:true,
+                                                                            // localdata: [{id: 1, text: "单位"}, {id: 2, text: "角色"}, {id: 3, text: "用户"}, {id: 3, text: "sql查询"}]
+                                                                            url: "../../pro/getTzefl.do",
+                                                                            onChange: function (n, o, aa) {
+                                                                                if (n != undefined && n != null && n != "") {
+                                                                                    //获取到总投资
+                                                                                    $("#gstzbaTable").tableEditor("updateAll");
+                                                                                    var sdata = $("#gstzbaTable").dtable("getSelections");
+                                                                                    var gc = sdata[0].GCFYID;
+                                                                                    var fy =sdata[0].FYLX;
+                                                                                    var tze = sdata[0].TZEFL;
+                                                                                    getGstzje(gc,fy,tze);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        field: "TZE",
+                                                                        title: "投资额(万元)",
+                                                                        width: 500,
+                                                                        align: "center",
+                                                                        colspan: 5
+                                                                    },
+                                                                ],
+                                                                [
+                                                                    {
+                                                                        field: 'YTZJE',
+                                                                        title: '原投资金额',
+                                                                        width: 1000,
+                                                                        align: 'center'
+                                                                    },
+                                                                    {
+                                                                        field: 'TZHJE',
+                                                                        title: '调整后金额',
+                                                                        width: 100,
+                                                                        halign:'center',
+                                                                        align: 'right',
+                                                                        editor: {
+                                                                            title: "小数",
+                                                                            type: "decimal",
+                                                                            textAlign:"right",
+                                                                            decimalPlaces: 2
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        field: 'TZJE',
+                                                                        title: '调增金额',
+                                                                        width: 80,
+                                                                        halign:'center',
+                                                                        align: 'center'
+                                                                    },
+                                                                    {
+                                                                        field: 'TJJE',
+                                                                        title: '调减金额',
+                                                                        width: 80,
+                                                                        halign:'center',
+                                                                        align: 'center'
+                                                                    },
+                                                                    {
+                                                                        field: 'TZSM',
+                                                                        title: '调整说明',
+                                                                        width: 80,
+                                                                        align: 'center',
+                                                                        editor: {
+                                                                            title: "文本",
+                                                                            type: "textBox"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            ],
+                                                            resizable: true, //单元格手动拉伸
+                                                            pageNumber: 1,//起始页
+                                                            pageSize: 10,//页面大小
+                                                            queryParams: {tzid: tzid, xmid: selectxmid},//查询参数 queryParams(params) params 包含分页参数
+                                                            pagination: true,
+                                                            paginationHAlign: 'left',//分页按钮位置  left/right
+                                                            sidePagination: 'client',//分页方式 client/server 服务端分页 如为客户端分页 数据格式参考底部pagedata
+                                                            clickToSelect: true,
+                                                            onClickRow(a, b, c) {
+                                                                var rowdata = a;
+                                                                var tabledata = $("#gstzbaTable").dtable("getData");
+                                                                iRowIndex = tabledata.indexOf(rowdata);
+                                                            }
+                                                        },
+                                                        {
+                                                            "dtype": "html",
+                                                            "dragHtml": '<div style="padding:15px 0 10px 15px;">' +
+                                                                '<span class="pull-left">附件列表:&nbsp;</span>' +
+                                                                '<button class="bootstrap-table-upload" type="button" id="uoloadfileid" onclick="pageUploadFile()">上传附件</button>' +
+                                                                '<button type="button" class="bootstrap-table-delete" id="deleteFileId" onclick="deleteFile()">删除附件</button>' +
+                                                                '</div>'
+                                                        },
+                                                        {
+                                                            "dtype": "dtable",
+                                                            "height": 250,
+                                                            "id": "uploadTable",
+                                                            editable: true,
+                                                            clickToSelect:true,
+                                                            "url": "../../pro/getfile.do?bsid=" + tzid,
+                                                            "columns": [
+                                                                {field:"checkType",radio:true},
+                                                                {
+                                                                    field: "xh",
+                                                                    title: "序号",
+                                                                    width: 50,
+                                                                    align: "center",
+                                                                    formatter: function (value, row, index) {
+                                                                        return index + 1;
+                                                                    }
+                                                                },
+                                                                {
+                                                                    field: "FILEID",
+                                                                    title: "附件ID",
+                                                                    width: 50,
+                                                                    align: "center",
+                                                                    visible: false
+                                                                },
+                                                                {
+                                                                    field: "FILENAME",
+                                                                    title: "附件名",
+                                                                    width: 300,
+                                                                    align: "center"
+                                                                },
+                                                                {
+                                                                    field: "FILEDL",
+                                                                    title: "附件大类",
+                                                                    width: 120,
+                                                                    align: "center",
+                                                                    type: 'comboBox',
+                                                                    selected: 1,
+                                                                    localdata: [{id: 7, text: "变更联系单备案"}],
+                                                                    formatter: function (value, row, index) {
+                                                                        return "变更联系单备案";
+                                                                    }
+                                                                },
+                                                                // {field:"filexl", title:"附件小类", width:200, align:"center",editor:{type:'comboBox',localdata:[{id:701,text:"类别1"},{id:702,text:"类别2"}]}},
+                                                                {
+                                                                    field: "FILESIZE",
+                                                                    title: "大小",
+                                                                    width: 80,
+                                                                    align: "center",
+                                                                    formatter:function (value,row,index){return formatSize(value)}
+                                                                },
+                                                                {
+                                                                    field: '',
+                                                                    title: '操作 ',
+                                                                    width: 100,
+                                                                    align: 'center',
+                                                                    formatter: function (value, row, index) {
+                                                                        return '<a href=../../file/downloadByid.do?id=' + row.FILEID + '>下载</a>';
+                                                                    }
+                                                                }
+                                                                // {field:"filebz", title:"备注", width:80, align:"center",editor:{type:'textBox'}}
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "colspan": "12",
+                                                    "dtype": "column"
+                                                }
+                                            ],
+                                            "dtype": "row"
+                                        // }
+                                    // ]
+                                // }
+                            // ]
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+
+            iIndex = $.dopen({
+            	type: 6,
+                area: ["95%", "100%"],  
+                title :"项目概算调整备案",
+                content: dopenjson1,
+                btn: ["关闭"],
+                btn1:function(index){
+                    closeDopen();
+                    // layer.close(index);
+                    // $("#table").bootstrapTable("refresh");
+                },
+                cancel:function (iIndex,layer) {
+                    selectxmid = "";
+                    newtzid = "";
+                    $("#table").dtable("refresh");
+                }
+            })
+
+            setTimeout(function () {
+                getmodifyinfo(tzid),
+                    setInit()
+                },100);
+
+            function setInit() {
+                if (lchj == -1) {
+                    $("#gstzbaTable").tableEditor("initAll");
+                }else {
+                    disableButton(['addrowbtn','delrowbtn','savebtn','babtn','uoloadfileid','deleteFileId']);
+                }
+            }
+
+            function disableButton(arr) {
+                $.each(arr,function (i,v) {
+                    $('#'+v).attr('disabled',true);
+                })
+            }
+        }
+
+        function getmodifyinfo(tzid) {
+            $.dajax({
+                url: "../../pro/getXmgsinfobyid.do",
+                async:false,
+                type:"post",
+                data: {tzid:tzid},
+                success: function (data) {
+                    selectxmid =data.XMID;
+
+                    $("#openForm").dform("setValueByName","XMCOMBOBOX",data.XMID);
+                    $("#openForm").dform("setValueByName","ZGCOMBOBOX",data.ZGBM);
+                    $("#openForm").dform("setValueByName","XMLXCOMBOBOX",data.XMLX);
+
+                    $("#openForm").dform("setValueByName","JSDW",data.JSDW);
+                    // $("#openForm").dform("setValueByName","XMGHXZ",data.XMGHXZ);
+
+                    // $("#openForm").dform("setValueByName","RJL",data.RJL);
+                    // $("#openForm").dform("setValueByName","YDMJ",data.YDMJ);
+                    // $("#openForm").dform("setValueByName","JZZMJ",data.JZZMJ);
+                    // $("#openForm").dform("setValueByName","DSJZMJ",data.DSJZMJ);
+                    // $("#openForm").dform("setValueByName","TZXE",data.TZXE);
+                    // $("#openForm").dform("setValueByName","JYKZZJBZ",data.JYKZZJBZ);
+                    // $("#openForm").dform("setValueByName","XMDWZJ",data.XMDWZJ);
+                    // $("#openForm").dform("setValueByName","JSNR",data.JSNR);
+                    $("#xmghxzid").textBox("setValue",data.XMGHXZ);
+                    $("#rjlid").textBox("setValue",data.RJL);
+                    $("#ydmjid").textBox("setValue",data.YDMJ);
+                    $("#jzzmjid").textBox("setValue",data.JZZMJ);
+                    $("#dsjzmjid").textBox("setValue",data.DSJZMJ);
+                    $("#tzxeid").textBox("setValue",data.TZXE);
+                    $("#jykzzjbzid").textBox("setValue",data.JYKZZJBZ);
+                    $("#xmdwzjid").textBox("setValue",data.XMDWZJ);
+                    $("#jsnrid").textBox("setValue",data.JSNR);
+
+                    gsid = data.ID;
+                }
+            })
+        }
+
+        function getXmgsinfo(xmid) {
+            $.dajax({
+                url: "../../pro/getXmgsinfo.do",
+                async:false,
+                type:"post",
+                data: {xmid:xmid},
+                success: function (data) {
+                    $("#openForm").dform("setValueByName","ZGCOMBOBOX",data.ZGBM);
+                    $("#openForm").dform("setValueByName","XMLXCOMBOBOX",data.XMLX);
+
+                    $("#openForm").dform("setValueByName","JSDW",data.JSDW);
+                    // $("#openForm").dform("setValueByName","XMGHXZ",data.XMGHXZ);
+
+                    // $("#openForm").dform("setValueByName","RJL",data.RJL);
+                    // $("#openForm").dform("setValueByName","YDMJ",data.YDMJ);
+                    // $("#openForm").dform("setValueByName","JZZMJ",data.JZZMJ);
+                    // $("#openForm").dform("setValueByName","DSJZMJ",data.DSJZMJ);
+                    // $("#openForm").dform("setValueByName","TZXE",data.TZXE);
+                    // $("#openForm").dform("setValueByName","JYKZZJBZ",data.JYKZZJBZ);
+                    // $("#openForm").dform("setValueByName","XMDWZJ",data.XMDWZJ);
+                    // $("#openForm").dform("setValueByName","JSNR",data.JSNR);
+                    $("#xmghxzid").textBox("setValue",data.XMGHXZ);
+                    $("#rjlid").textBox("setValue",data.RJL);
+                    $("#ydmjid").textBox("setValue",data.YDMJ);
+                    $("#jzzmjid").textBox("setValue",data.JZZMJ);
+                    $("#dsjzmjid").textBox("setValue",data.DSJZMJ);
+                    $("#tzxeid").textBox("setValue",data.TZXE);
+                    $("#jykzzjbzid").textBox("setValue",data.JYKZZJBZ);
+                    $("#xmdwzjid").textBox("setValue",data.XMDWZJ);
+                    $("#jsnrid").textBox("setValue",data.JSNR);
+
+                    gsid = data.ID;
+                }
+            })
+        }
+
+        function addRow() {
+            var dataLen = $("#gstzbaTable").dtable("getData").length;
+            $("#gstzbaTable").tableEditor("updateAll");
+            $("#gstzbaTable").dtable("insertRow", {index:dataLen, row:{}});
+            $("#gstzbaTable").dtable("refreshOptions",{url:"",height:200+30*dataLen});
+            $("#gstzbaTable").tableEditor("initAll");
+        };
+
+        function removbadj() {
+            var $table = $("#table");
+            var selectData = $table.dtable("getSelections");
+            var tableData = $table.dtable("getData");
+            if (selectData.length === 0) {
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+
+            for (var i=0;i<selectData.length;i++){
+                if (selectData[i].JSZT == 1){
+                    $.dalert({text: "项目:"+selectData[i].XMMC+" 已决算,不允许删除"});
+                    return;
+                }
+
+                if (selectData[i].LCHJ == 1){
+                    $.dalert({text: "项目:"+selectData[i].XMMC+" 已备案,不允许删除"});
+                    return;
+                }
+            }
+
+            layer.confirm('确定删除吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function() {
+                $.dajax({
+                    url: "../../pro/deleteGstzbadj.do",
+                    async: false,
+                    type: "post",
+                    data: {sdata: JSON.stringify(selectData)},
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: "删除数据成功"});
+                            $.each(selectData, function(i){
+                                var dataIndex = tableData.indexOf(selectData[i]);
+                                $table.dtable("removeByRowIndex", dataIndex);
+                            });
+                            setTimeout(function () {
+                                $("#table").dtable("refresh")},200);
+                        } else {
+                            $.dalert({text: "删除失败"});
+                        }
+                    }
+                });
+            });
+        }
+
+        function removba() {
+            $("#gstzbaTable").tableEditor("updateAll");
+            var $table = $("#gstzbaTable");
+            var selectData = getselectdata();
+            var tableData = $table.dtable("getData");
+            if (selectData!=null&&selectData!=""&&selectData!=undefined) {
+                layer.confirm('确定删除吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function() {
+                    $.dajax({
+                        url: "../../pro/deleteGstzba.do",
+                        async: false,
+                        type: "post",
+                        data: {sdata: JSON.stringify(selectData), xmid: selectxmid, gsid: gsid},
+                        success: function (data) {
+                            if (data.success) {
+                                $.dalert({text: "删除数据成功"});
+                                $.each(selectData, function(i){
+                                    var dataIndex = tableData.indexOf(selectData[i]);
+                                    $table.dtable("removeByRowIndex", dataIndex);
+                                });
+                                setTimeout(function () {
+                                    $("#gstzbaTable").tableEditor("initAll")},200);
+                            } else {
+                                $.dalert({text: "删除失败"});
+                            }
+                        }
+                    })
+                });
+            }else
+            {
+                $.each(selectData, function(i){
+                    var dataIndex = tableData.indexOf(selectData[i]);
+                    $table.dtable("removeByRowIndex", dataIndex);
+                });
+                setTimeout(function () {
+                    $("#gstzbaTable").tableEditor("initAll")},200);
+            }
+            // setTimeout(function () {
+            //     $("#gstzbaTable").dtable("refresh")},100);
+        }
+
+        function removba1() {
+            $("#gstzbaTable").tableEditor("updateAll");
+            var $table = $("#gstzbaTable");
+            var selectData = getselectdata();
+            var tableData = $table.dtable("getData");
+            if (selectData!=null&&selectData!=""&&selectData!=undefined) {
+                if (selectData[0].ID!=""&&selectData[0].ID!=null&&selectData[0].ID!=undefined) {
+                    layer.confirm('确定删除吗？', {
+                        btn: ['确定','取消'] //按钮
+                    }, function() {
+                        $.dajax({
+                            url: "../../pro/deleteGstzbamx.do",
+                            async: false,
+                            type: "post",
+                            data: {sdata: JSON.stringify(selectData)},
+                            success: function (data) {
+                                if (data.success) {
+                                    $.dalert({text: "删除数据成功"});
+                                    $.each(selectData, function(i){
+                                        var dataIndex = tableData.indexOf(selectData[i]);
+                                        $table.dtable("removeByRowIndex", dataIndex);
+                                    });
+                                    setTimeout(function () {
+                                        $("#gstzbaTable").tableEditor("initAll")},200);
+                                } else {
+                                    $.dalert({text: "删除失败"});
+                                }
+                            }
+                        })
+                    });
+                }else{
+                    $.each(selectData, function(i){
+                        var dataIndex = tableData.indexOf(selectData[i]);
+                        $table.dtable("removeByRowIndex", dataIndex);
+                    });
+                    setTimeout(function () {
+                        $("#gstzbaTable").tableEditor("initAll")},200);
+                }
+            }
+            // setTimeout(function () {
+            //     $("#gstzbaTable").dtable("refresh")},100);
+        }
+
+        function getselectdata() {
+            var dataArr = $("#gstzbaTable").dtable("getSelections");
+            if (dataArr.length === 0) {
+                $.dalert({text:"请选择数据"});
+                return;
+            }
+            return dataArr;
+        }
+
+        function getGstzje(gc,fy,tze) {
+            $.dajax({
+                url: "../../pro/getGstzje.do",
+                async:false,
+                type:"post",
+                data: {xmid:selectxmid,gc:gc,fylx:fy,tzefl:tze},
+                success: function (data) {
+                    $("#gstzbaTable").tableEditor("updateAll");
+                    // $("#gstzbaTable").tableEditor("initAll");
+                    var dataSel = $("#gstzbaTable").dtable("getSelections");
+                    var dataAll = $("#gstzbaTable").dtable("getData");
+                    var iIndex = dataAll.indexOf(dataSel[0]);
+                    $("#gstzbaTable").dtable("updateCell", {index: iIndex, field: "YTZJE", value: data.GSTZJE});
+                    $("#gstzbaTable").tableEditor("initAll");
+                    // $("#table").dtable("refresh");
+                },
+                error:function (data) {
+                    $("#gstzbaTable").tableEditor("updateAll");
+                    // $("#gstzbaTable").tableEditor("initAll");
+                    var dataSel = $("#gstzbaTable").dtable("getSelections");
+                    var dataAll = $("#gstzbaTable").dtable("getData");
+                    var iIndex = dataAll.indexOf(dataSel[0]);
+                    $("#gstzbaTable").dtable("updateCell", {index: iIndex, field: "YTZJE", value: "0"});
+                    $("#gstzbaTable").tableEditor("initAll");
+                }
+            });
+        }
+        
+        function saveadddata() {
+            var form = $("#openForm").dform("getData");
+            $("#gstzbaTable").tableEditor("updateAll");
+            var sdate = $("#gstzbaTable").dtable("getData");
+
+            for (var i=0;i<sdate.length;i++){
+                if (sdate[i].GCFYID != 0){
+                    for(var j=1;j<sdate.length;j++){
+                        if (i!=j) {
+                            if (sdate[i].GCFYID == sdate[j].GCFYID && sdate[i].GCFYID == sdate[j].GCFYID && sdate[i].GCFYID == sdate[j].GCFYID) {
+                                $.dalert({text: "有数据重复,请检查"});
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            $("#uploadTable").tableEditor("updateAll");
+            var uploadTableData = $("#uploadTable").dtable("getData");
+
+            if (newtzid =="") {
+                $.dajax({
+                    url: "../../pro/insertGstzba.do",
+                    async: false,
+                    type: "post",
+                    data: {
+                        sdata: JSON.stringify(sdate),
+                        uploadTableData: JSON.stringify(uploadTableData),
+                        form: JSON.stringify(form),
+                        xmid: selectxmid,
+                        gsid: gsid,
+                        gcmc: gcmc,
+                        jldw: jldw,
+                        gcl: gcl,
+                        djhfl: djhfl
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text: "保存数据成功"});
+                            newtzid = data.content;
+
+                            setTimeout(function () {
+                                $("#gstzbaTable").dtable("refreshOptions", {
+                                    url: "../../pro/getBatzmx.do?tzid="+newtzid+"&xmid="+selectxmid
+                                    // query: {"tzid": newtzid, "xmid": selectxmid}
+                                }),
+                                $("#openForm").dform("setReadonly",true)
+                            },50);
+
+                        } else {
+                            $.dalert({text: "保存失败"});
+                        }
+                    }
+                });
+                // $("#gstzbaTable").dtable("refreshOptions", {
+                //     url: "../../pro/getBatzmx.do",
+                //     query: {"tzid": newtzid, "xmid": selectxmid}
+                // });
+                // $("#openForm").dform("setReadonly",true);
+            }else {
+                $.dajax({
+                    url: "../../pro/updateGstzbamx.do",
+                    async:false,
+                    type:"post",
+                    data: {
+                        sdata: JSON.stringify(sdate),
+                        uploadTableData: JSON.stringify(uploadTableData),
+                        tzid: newtzid,
+                        formData: form
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            $.dalert({text:"保存数据成功"});
+
+                            setTimeout(function () {
+                                $("#gstzbaTable").dtable("refreshOptions", {
+                                    url: "../../pro/getBatzmx.do?tzid="+newtzid+"&xmid="+selectxmid
+                                    // query: {"tzid": newtzid, "xmid": selectxmid}
+                                }),
+                                    $("#openForm").dform("setReadonly",true)
+                            },50);
+                        } else {
+                            $.dalert({text:"保存失败"});
+                        }
+                    }
+                });
+            }
+
+            setTimeout(function () {
+                $("#gstzbaTable").tableEditor("initAll")
+            },200);
+        }
+
+        function saveadddata1(tzid) {
+            var form = $("#openForm").dform("getData");
+            $("#gstzbaTable").tableEditor("updateAll");
+            var sdate = $("#gstzbaTable").dtable("getData");
+            for (var i=0;i<sdate.length;i++){
+                if (sdate[i].GCFYID != 0){
+                    for(var j=1;j<sdate.length;j++){
+                        if (i!=j){
+                            if(sdate[i].GCFYID==sdate[j].GCFYID&&sdate[i].GCFYID==sdate[j].GCFYID&&sdate[i].GCFYID==sdate[j].GCFYID){
+                                $.dalert({text: "有数据重复,请检查"});
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            $("#uploadTable").tableEditor("updateAll");
+            var uploadTableData = $("#uploadTable").dtable("getData");
+            $.dajax({
+                url: "../../pro/updateGstzbamx.do",
+                async:false,
+                type:"post",
+                data: {sdata: JSON.stringify(sdate), uploadTableData: JSON.stringify(uploadTableData), tzid: tzid,formData:JSON.stringify(form)},
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text:"保存数据成功"});
+                        setTimeout(function () {
+                        $("#gstzbaTable").dtable("refreshOptions", {
+                            url: "../../pro/getBatzmx.do"
+                        })},50);
+
+                        setTimeout(function () {
+                            $("#gstzbaTable").tableEditor("initAll")},200);
+                    } else {
+                        $.dalert({text:"保存失败"});
+                    }
+                }
+            });
+        }
+
+        function pageUploadFile() {
+            uploadfile({server: '../../file/uploader.do?filebstype=12'}, function (rowData) {
+                var $table = $("#uploadTable"),
+                    dataLen = $table.dtable("getData").length;
+                $table.tableEditor("updateAll");
+                for (var i = 0; i < rowData.length; i++) {
+                    var data = {
+                        FILENAME: rowData[i].name,
+                        FILESIZE: rowData[i].size,
+                        FILEID: rowData[i].fileId
+                    };
+                    $table.dtable("insertRow", {index: dataLen + i, row: data});
+                }
+                $table.tableEditor("initAll");
+            });
+        }
+
+        function selectzbk() {
+            var ZBK1 = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype":"html",
+                                            "dragHtml":"<h4 class='text-center'><b>项目指标库</b></h4>"
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "id":"ZBKtab",
+                                            "height": 300,
+                                            columns: [
+                                                {checkbox: true,footerFormatter:function(data){
+                                                        return "合计";
+                                                    }},
+                                                {
+                                                    field: 'ID',
+                                                    title: 'guid',
+                                                    align: 'center',
+                                                    width: 120,
+                                                    visible: false,
+                                                    disabled: "true",
+                                                    setReadonly: true
+                                                },
+                                                {
+                                                    field: 'YJZB', title: '一级指标', align: 'center', width: 120,
+                                                    editor: {
+                                                        type: "textBox",
+                                                    },
+                                                    disabled: "true", setReadonly: true
+                                                },
+                                                {
+                                                    field: 'EJZB', title: '二级指标', align: 'center', width: 120,
+                                                    editor: {
+                                                        type: "textBox"
+                                                    },
+                                                    disabled: "true", setReadonly: true
+                                                },
+                                                {
+                                                    field: 'SJZB', title: '三级指标', align: 'center', width: 150,
+                                                    editor: {
+                                                        type: "textBox"
+                                                    },
+                                                    disabled: "true", setReadonly: true
+                                                },
+                                                {
+                                                    field: 'DWTZE', title: '单位投资额', align: 'center', width: 140,
+                                                    editor: {
+                                                        type: "textBox"
+                                                    },
+                                                    disabled: "true", setReadonly: true
+                                                },
+                                                {
+                                                    field: 'JLDW', title: '计量单位', align: 'center', width: 140,
+                                                    editor: {
+                                                        type: "textBox"
+                                                    },
+                                                    disabled: "true", setReadonly: true
+                                                },
+                                                {
+                                                    field: 'SL', title: '数量', align: 'center', width: 140,
+                                                    editor: {
+                                                        type: "textBox"
+                                                    },
+                                                    disabled: "true", setReadonly: true
+                                                },
+                                                {
+                                                    field: 'XJ', title: '小计', align: 'center', width: 140,
+                                                    editor: {
+                                                        type: "textBox"
+                                                    },
+                                                    footerFormatter:function(data){
+                                                        var DATA = 0;
+                                                        for(var i = 0;i<data.length;i++){
+                                                            DATA += parseFloat(data[i].XJ);
+                                                        }
+                                                        return DATA;
+                                                    },
+                                                    disabled: "true",
+                                                    setReadonly: true
+                                                },
+                                                {field: 'ZBLY', title: '指标类型', align: 'center', width: 140, visible: false},
+                                                {field: 'ZFRQ', title: '作废日期', align: 'center', width: 140, visible: false},
+                                                {field: 'CJSJ', title: '操作时间', align: 'center', width: 140, visible: false},
+                                                {field: 'CZR', title: '操作人', align: 'center', width: 140, visible: false}
+                                            ],
+                                            "url": "../../pro/getZBKData.do",
+                                            "clickToSelect": true,
+                                            showFooter:true,
+                                            "queryParams":{id: selectxmid},
+                                            onPostBody: function () {
+                                                merge_footer();
+                                            }
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+            function merge_footer() {
+                var $table = $("#ZBKtab"),
+                    bootstrapTable = $table.parents(".bootstrap-table"),
+                    footer_tbody = bootstrapTable.find('.fixed-table-footer table tbody'),
+                    footer_tr = footer_tbody.find('>tr'),
+                    footer_td = footer_tr.find('>td'),
+                    footer_td_1 = footer_td.eq(0),
+                    colLength = $table.find("thead > tr:eq(0) > th").length;
+
+                for(var i=1; i<colLength-1; i++) {
+                    footer_td.eq(i).hide();
+                }
+                footer_td_1.width("auto").attr('colspan', colLength-1).show();
+            }
+
+            if (selectxmid == "") {
+                $.dalert("请先选择项目名称");
+            }else {
+                $.dopen({
+                    type: 6,
+                    title: "指标库",
+                    area: ["95%", "100%"],
+                    content: ZBK1,
+                    btn: ["关闭"],
+                    btn1:function(index){
+                        layer.close(index);
+                    }
+                });
+            }
+        }
+
+        function Ba() {
+            var dataArr = $("#table").bootstrapTable("getSelections");
+            var data = new Array();
+            var DqLchjs = new Array();
+            var type = 12;
+            for(var i = 0;i<dataArr.length;i++){
+                data[i] = dataArr[i].SID;
+                DqLchjs[i] = dataArr[i].LCHJ + "";
+            }
+            if (dataArr.length === 0) {
+                return $.dalert("请至少选着一条要提交的数据");
+            }
+
+            $.dajax({
+                url: "../../pro/submit/" + type + ".do",
+                data: JSON.stringify({
+                    ids: data,
+                    lchj: DqLchjs
+                }),
+                cache: true,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text: data.content, icon: 1});
+                        $("#table").dtable("refresh");
+                    } else {
+                        $.dalert({text: data.content, icon: 2});
+                    }
+                }
+            });
+        }
+
+        function Hs() {
+            var dataArr = $("#table").bootstrapTable("getSelections");
+            var data = new Array();
+            var DqLchjs = new Array();
+            var type = 12;
+            for(var i = 0;i<dataArr.length;i++){
+                data[i] = dataArr[i].SID;
+                DqLchjs[i] = dataArr[i].LCHJ + "";
+            }
+            if (dataArr.length === 0) {
+                return $.dalert("请至少选着一条要提交的数据");
+            }
+
+            $.dajax({
+                url: "../../pro/next/" + type + ".do",
+                data: JSON.stringify({
+                    ids: data,
+                    lchjs: DqLchjs
+                }),
+                cache: true,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text: data.content, icon: 1});
+                        $("#table").dtable("refresh");
+                    } else {
+                        $.dalert({text: data.content, icon: 2});
+                    }
+                }
+            });
+        }
+
+        //外面退回
+        function ThTh(thyj) {
+            var dataArr = $("#table").bootstrapTable("getSelections");
+            var data = new Array();
+            var DqLchjs = new Array();
+            var THYJ = [thyj];
+            var type = 12;
+            for(var i = 0;i<dataArr.length;i++){
+                data[i] = dataArr[i].SID;
+                DqLchjs[i] = dataArr[i].LCHJ + "";
+            }
+            if (dataArr.length === 0) {
+                return $.dalert("请至少选着一条要提交的数据");
+            }
+
+            $.dajax({
+                url: "../../pro/back/" + type + ".do",
+                data: JSON.stringify({
+                    ids: data,
+                    lchjs: DqLchjs,
+                    comment: THYJ
+                }),
+                cache: true,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text: data.content, icon: 1});
+                        $("#table").dtable("refresh");
+                    } else {
+                        $.dalert({text: data.content, icon: 2});
+                    }
+                }
+            });
+        }
+
+        function Th(){
+            var ids = '';
+            var data = $("#table").bootstrapTable("getSelections");
+            var lch = data[0].LCHJ;
+            if(data.length==0){
+                $.dalert({text:'请选择数据',icon:7});
+                return;
+            }else if(data.length>1){
+                $.dalert({text:'只能选择一条数据',icon:7});
+                return;
+            } else {
+                setThYj();
+            }
+        }
+
+        function setThYj(){
+            $.dopen({
+                title: "退回意见",
+                //type:6,
+                content: '<div width:98%;height:98%><form id="form"></form></div>',
+                //content:yjJson,
+                area: ['45%','55%'],
+                btn: ['确定', '取消'],
+                btn1:function(index){
+                    var formdata = $("#form").dform("getData");
+                    if(formdata.textBox4!=""){
+                        ThTh(formdata.textBox4);
+                        layer.close(index);
+                    }else{
+                        $.dalert({text:'退回意见不能为空',icon:7});
+                    }
+                },
+                btn2:function(index){
+                    layer.close(index);
+                },
+                cancel:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+                },
+                end: function(){//层被彻底关闭后执行的回调函数。
+                }
+            });
+            $("#form").dform({
+                rownum:2,
+                formVertical: true,
+                inputs: [
+                    {title: "意见输入框：", name: "textBox4", type: "textBox", multiline:true, height: 150, colspan:2},
+                ]
+            })
+        }
+
+
+        function Ba1(tzid,lchj) {
+            saveadddata1(tzid);
+            var data = new Array();
+            var DqLchjs = new Array();
+            var type = 12;
+            data[0] = tzid;
+            DqLchjs[0] = lchj + "";
+
+            $.dajax({
+                url: "../../pro/submit/" + type + ".do",
+                data: JSON.stringify({
+                    ids: data,
+                    lchj: DqLchjs
+                }),
+                cache: true,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text: data.content, icon: 1});
+                        $("#table").dtable("refresh");
+                    } else {
+                        $.dalert({text: data.content, icon: 2});
+                    }
+                }
+            });
+            closeDopen();
+        }
+        function Hs1(tzid,lchj) {
+            var data = new Array();
+            var DqLchjs = new Array();
+            var type = 12;
+            data[0] = tzid;
+            DqLchjs[0] = lchj + "";
+
+            $.dajax({
+                url: "../../pro/next/" + type + ".do",
+                data: JSON.stringify({
+                    ids: data,
+                    lchjs: DqLchjs
+                }),
+                cache: true,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text: data.content, icon: 1});
+                        $("#table").dtable("refresh");
+                    } else {
+                        $.dalert({text: data.content, icon: 2});
+                    }
+                }
+            });
+            closeDopen();
+        }
+        //里面退回
+        function Th1Th1(thyj,tzid,lchj) {
+            var data = new Array();
+            var DqLchjs = new Array();
+            var type = 12;
+            data[0] = tzid;
+            DqLchjs[0] = lchj + "";
+            var THYJ = [thyj];
+            $.dajax({
+                url: "../../pro/back/" + type + ".do",
+                data: JSON.stringify({
+                    ids: data,
+                    lchjs: DqLchjs,
+                    comment: THYJ
+                }),
+                cache: true,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $.dalert({text: data.content, icon: 1});
+                        $("#table").dtable("refresh");
+                    } else {
+                        $.dalert({text: data.content, icon: 2});
+                    }
+                }
+            });
+            closeDopen();
+        }
+
+        function deleteFile(){
+            var $table = $("#uploadTable");
+            var data = $("#uploadTable").dtable("getSelections");
+            var tableData = $("#uploadTable").dtable("getData");
+            if(data.length==0){
+                $.dalert({text:'请选择您要删除的附件',icon:7});
+                return;
+            }else{
+                layer.confirm('确定删除吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function() {
+                    $.dajax({
+                        type: 'post',
+                        url: '../../file/deleteById.do',
+                        data: {
+                            id: data[0].FILEID
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.success) {
+                                $.dalert({text: '操作成功', icon: 1});
+                                $("#uploadTable").dtable("refresh");
+                                $.each(data, function (i) {
+                                    var dataIndex = tableData.indexOf(data[i]);
+                                    $table.dtable("removeByRowIndex", dataIndex);
+                                });
+                            } else {
+                                $.dalert({text: '操作失败', icon: 2});
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        function closeDopen() {
+            selectxmid = "";
+            newtzid = "";
+            $("#table").dtable("refresh");
+            layer.close(iIndex);
+        }
+
+        function Th1(tzid,lchj){
+            $.dopen({
+                title: "退回意见",
+                //type:6,
+                content: '<div width:98%;height:98%><form id="form"></form></div>',
+                //content:yjJson,
+                area: ['45%','55%'],
+                btn: ['确定', '取消'],
+                btn1:function(index){
+                    var formdata = $("#form").dform("getData");
+                    if(formdata.textBox4!=""){
+                        Th1Th1(formdata.textBox4,tzid,lchj);
+                        layer.close(index);
+                    }else{
+                        $.dalert({text:'退回意见不能为空',icon:7});
+                    }
+                },
+                btn2:function(index){
+                    layer.close(index);
+                },
+                cancel:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+                },
+                end: function(){//层被彻底关闭后执行的回调函数。
+                }
+            });
+            $("#form").dform({
+                rownum:2,
+                formVertical: true,
+                inputs: [
+                    {title: "意见输入框：", name: "textBox4", type: "textBox", multiline:true, height: 150, colspan:2},
+                ]
+            })
+        }
+        function disableButton(arr) {
+            $.each(arr,function (i,v) {
+                $('#'+v).attr('disabled',true);
+            })
+        }
+        function showButton(arr) {
+            $.each(arr,function (i,v) {
+                $('#'+v).attr('disabled',false);
+            })
+        }
+    </script>
+</head>
+<body>
+<div style="width:100%">
+    <h4 class='text-center'><b>项目概算调整备案</b></h4>
+    <button id="btnadd" type="button"></button>
+    <button id="btndel" type="button"></button>
+    <button id="btnedit" type="button"></button>
+    <button id="btnba" type="button"></button>
+    <button id="btnhs" type="button"></button>
+    <button id="btnth" type="button"></button>
+</div>
+<div>
+    <table id="table"></table>
+</div>
+</body>
+<script>
+    $(function () {
+        $("#btnadd").dbutton({
+            text: " 新增",
+            icon: 'bootstrap-table-add',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                add();
+            }
+        });
+        $("#btndel").dbutton({
+            text: " 删除",
+            icon: 'bootstrap-table-delete',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                removbadj();
+            }
+        });
+        $("#btnedit").dbutton({
+            text: " 编辑/查看",
+            icon: 'bootstrap-table-edit',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                modify();
+            }
+        });
+        $("#btnba").dbutton({
+            text: " 备案",
+            icon: 'bootstrap-table-submit',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                Ba();
+            }
+        });
+        $("#btnhs").dbutton({
+            text: " 核实",
+            icon: 'bootstrap-table-verify',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                Hs();
+            }
+        });
+        $("#btnth").dbutton({
+            text: " 退回",
+            icon: 'bootstrap-table-submit',
+            size: "xs",
+            type: 'primary',
+            handler: function () {
+                Th();
+            }
+        });
+    })
+    function selThyj(sgtbaid){
+        var yj = '';
+        var type = 12;
+        $.dopen({
+            title: "退回意见",
+            //type:6,
+            content: '<div width:98%;height:98%><form id="form"></form></div>',
+            //content:yjJson,
+            area: ['45%','55%'],
+            btn: ['确定', '取消'],
+            btn1:function(index){
+                layer.close(index);
+            },
+            btn2:function(index){
+                layer.close(index);
+            },
+            cancel:function(index){//层右上角关闭按钮的点击事件触发回调函数。
+            },
+            end: function(){//层被彻底关闭后执行的回调函数。
+            }
+        });
+        $("#form").dform({
+            rownum:2,
+            formVertical: true,
+            inputs: [
+                {title: "意见输入框：", id:"textBox4",name: "textBox4", type: "textBox", multiline:true, height: 150, colspan:2},
+            ]
+        });
+        $.dajax({
+            type:'post',
+            url:'pro/selThyj.do',
+            data:{
+                id:sgtbaid,
+                type,type
+            },
+            dataType:'json',
+            success:function (data) {
+                $("#textBox4").textBox("setValue",data.content);
+                $("#textBox4").textBox("disable");
+            }
+        })
+
+    }
+
+</script>
+</html>

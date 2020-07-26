@@ -1,0 +1,960 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>项目绩效目标申报表</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+</head>
+
+<body>
+<textarea></textarea>
+<h1>项目绩效目标申报表</h1>
+<input type="button" value="保存" id="btsave" onclick="save()" style="width: 10%;height: 30px;color: #00bbee"/>
+<form method="post" id="formdemoUp">
+    <table border="0" cellspacing="0" id="demoTable">
+        <tr>
+            <td class="defaultTitle">项目名称</td>
+            <td colspan="1">
+                <input type="text"
+                       id="itemper_target_xform-iname"
+                       name="itemper_target_xform-iname"/></td>
+            <td rowspan="1" class="defaultTitle">项目开始时间</td>
+            <td rowspan="1">
+                <input type="date"
+                       class="easyui-datebox"
+                       id="itemper_target_xform-overyeartime"
+                       name="itemper_target_xform-overyeartime"/>
+            </td>
+            <td rowspan="1" class="defaultTitle">项目结束时间
+            <td rowspan="1">
+                <input type="date"
+                       class="easyui-datebox"
+                       name="itemper_target_xform-enddatetime"
+                       id="itemper_target_xform-enddatetime"/>
+            </td>
+            <td rowspan="1" class="defaultTitle">项目负责人</td>
+            <td rowspan="1">
+                <input type="text"
+                       id="itemper_target_xform-principalname"
+                       name="itemper_target_xform-principalname"/>
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="1" class="defaultTitle">项目联系人</td>
+            <td rowspan="1">
+                <input type="text"
+                       name="itemper_target_xform-attnname"
+                       id="itemper_target_xform-attnname"/>
+            </td>
+            <td rowspan="1" class="defaultTitle">预算单位业务科室</td>
+            <td rowspan="1">
+                <input type="text"
+                       name="itemper_target_xform-division"
+                       id="itemper_target_xform-division"/>
+            </td>
+            <td rowspan="1" class="defaultTitle">联系电话</td>
+            <td rowspan="1">
+                <input type="text"
+                       name="itemper_target_xform-principalphone"
+                       id="itemper_target_xform-principalphone" onkeyup="this.value=this.value.replace(/[^\d]/g,'');"/>
+            </td>
+            <td rowspan="1" class="defaultTitle">联系邮箱</td>
+            <td rowspan="1">
+                <input type="text"
+                       name="itemper_target_xform-email"
+                       id="itemper_target_xform-email"/>
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="1" class="defaultTitle">项目类型</td>
+            <td colspan="1">
+                <input type="text"
+                       style="display: none"
+                       id="itemper_target_xform-spantype"
+                       name="itemper_target_xform-spantype"/>
+                <select id="spantype-type" onchange="voluation5()"><%--//好（S≥95）|较好（95＞S≥85）|一般（85＞S≥60）|差（S＜60）|无--%>
+                    <option value = "1" >当年项目</option>
+                    <option value = "2" >常年度项目</option>
+                    <option value = "3" >跨年度项目</option>
+                </select>
+            </td>
+            <td rowspan="1" class="defaultTitle">项目口径</td>
+            <td colspan="1">
+                <input type="text"
+                       style="display: none"
+                       id="itemper_target_xform-itempro"
+                       name="itemper_target_xform-itempro"/>
+                <select id="itempro-type" onchange="voluation4()"><%--//好（S≥95）|较好（95＞S≥85）|一般（85＞S≥60）|差（S＜60）|无--%>
+                    <option value = "1" >一次性</option>
+                    <option value = "2" >经常性</option>
+                    <option value = "3" >阶段性</option>
+                </select>
+            </td>
+            <td colspan="4" class="defaultTitle"></td>
+        </tr>
+
+        <tr>
+            <td class="defaultTitle">
+                立项依据
+            </td>
+            <td colspan="7"><textarea
+                    id="itemper_target_xform-accordingto"
+                    name="itemper_target_xform-accordingto"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="defaultTitle">
+                项目概况
+                （包含项目内容、实施计划等）
+            </td>
+            <td colspan="7"><textarea
+                    id="itemper_target_xform-perclasses"
+                    name="itemper_target_xform-perclasses">
+                                  </textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="defaultTitle">
+                项目目标总体描述
+            </td>
+            <td colspan="7"><textarea
+                    id="itemper_target_xform-illustration"
+                    name="itemper_target_xform-illustration">
+                              </textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="defaultTitle">
+                项目其他说明
+            </td>
+            <td colspan="7">
+                      <textarea id="itemper_target_xform-pertarget" name="itemper_target_xform-pertarget"
+                                contenteditable="false">
+                      </textarea>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<br>
+
+<form id="formTable2">
+    近三年项目资金使用情况
+    <table id="demoTable4">
+        <tr>
+            <td rowspan="2" colspan="1" style="width: 150px;" class="defaultTitle">序号</td>
+            <td rowspan="1" colspan="8" class="defaultTitle">属常年项目必须填列，当年新增项目不填</td>
+        </tr>
+        <tr>
+            <td rowspan="1" colspan="2" class="defaultTitle">年度</td>
+            <td rowspan="1" colspan="2" class="defaultTitle">预算安排额</td>
+            <td rowspan="1" colspan="2" class="defaultTitle">实际支出额</td>
+            <td rowspan="1" colspan="2" class="defaultTitle">使用情况说明</td>
+        </tr>
+        <tr>
+            <td rowspan="1" colspan="1">
+                <input type="button" value="增加"
+                       onclick="addRow2(this)"
+                       style="height:25px;width:50px;font-size: 12px;background:#b2c7dc;color: #FFF;margin-right: 55px"/>
+            </td>
+            <td colspan="8">
+            </td>
+        </tr>
+    </table>
+</form>
+
+<br>
+
+<form id="formdemoZJLY">
+    资金来源
+    <table id="tableZJLY">
+        <tr>
+            <td colspan="1" class="defaultTitle">合计</td>
+            <td colspan="1" class="defaultTitle">
+                公共财政预算拨款
+            </td>
+            <td colspan="1" class="defaultTitle">
+                财政专户
+            </td>
+            <td colspan="1" class="defaultTitle">
+                政府性基金
+            </td>
+            <td colspan="1" class="defaultTitle">
+                财政间隙资金
+            </td>
+            <td colspan="1" class="defaultTitle">
+                债务资金
+            </td>
+            <td colspan="1" class="defaultTitle">
+                单位支出户结余
+            </td>
+            <td colspan="1" class="defaultTitle">
+                预算内上年结余
+            </td>
+            <td colspan="1" class="defaultTitle">
+                省补资金
+            </td>
+            <td colspan="1" class="defaultTitle">
+                社会保险基金
+            </td>
+            <td colspan="1" class="defaultTitle">
+                国有资本经营预算
+            </td>
+        </tr>
+    </table>
+</form>
+<br>
+<form id="formdemoTable">
+    <br>
+    <input type="button" value="选择指标" id="btselect" onclick="openTargetTreeA()" style="width: 10%;height: 30px;color: #00bbee"/>★是重点指标，不允许删除
+    <table cellspacing="0" id="demoTable3"  class="tableStyleS">
+        <tr special="1">
+            <td rowspan="1" colspan="5" class="defaultTitle">绩效指标</td>
+            <td rowspan="2" colspan="3" class="defaultTitle">指标描述</td>
+        </tr>
+        <tr special="1">
+            <td rowspan="1" colspan="1" class="defaultTitle">
+                指标类型
+            </td>
+            <td rowspan="1" colspan="1" class="defaultTitle" >
+                操作
+            </td>
+            <td rowspan="1" colspan="2" class="defaultTitle">
+                指标名称
+            </td>
+            <td rowspan="1" colspan="1" class="defaultTitle">
+                指标值
+            </td>
+        </tr>
+    </table>
+</form>
+<br>
+<form id="demoDown">
+    <table>
+        <tr>
+            <td class="defaultTitle" width="250px">
+                评价组织主体
+            </td>
+            <td>
+                <input type="text" style="display: none"
+                       id="itemper_target_xform-object"
+                       name="itemper_target_xform-object"
+                >
+                <select id="object-type" onchange="voluation()">
+                    <option value = "1">单位(部门)</option>
+                    <option value = "2">财政部门</option>
+                    <option value = "0">无</option>
+                </select>
+            </td>
+            <td class="defaultTitle">
+                评价等次
+            </td>
+            <td>
+                <input type="text" style="display: none"
+                       id="itemper_target_xform-pjlevel"
+                       name="itemper_target_xform-pjlevel"
+                >
+                <select id="pjlevel-type" onchange="voluation2()"><%--//好（S≥95）|较好（95＞S≥85）|一般（85＞S≥60）|差（S＜60）|无--%>
+                    <option value = "1" >好（S≥95）</option>
+                    <option value = "2" >较好（95＞S≥85）</option>
+                    <option value = "3" >一般（85＞S≥60）</option>
+                    <option value = "4" >差（S＜60）</option>
+                    <option value = "0" >无 </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="defaultTitle">评价报告列示的主要问题</td>
+            <td colspan="6" >
+
+                        <textarea type="text"
+                                  id="itemper_target_xform-problem"
+                                  name="itemper_target_xform-problem">
+                        </textarea>
+            </td>
+        </tr>
+        <tr style="display: none">
+            <td>
+                <input type="text" id="itemper_target_xform-guid" name="itemper_target_xform-guid" />
+            </td>
+            <td>
+                <input type="text" id="itemper_target_xform-declarationguid" name="itemper_target_xform-declarationguid"/>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+
+<script language="Javascript" src="${pageContext.request.contextPath}/framework/js/config.js"></script>
+<script src="${pageContext.request.contextPath }/framework/easyui/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath }/framework/easyui/jquery.easyui.min.js"></script>
+<script src="${pageContext.request.contextPath }/framework/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script language="Javascript" src="${pageContext.request.contextPath}/framework/js/errorAlert.js"></script>
+<script language="Javascript" src="${pageContext.request.contextPath}/framework/js/setForm.js"></script>
+
+<script type="text/javascript">
+    var content = window.dialogArguments;
+    var outclassid = content.outclassid;
+    var theApp = content.theApp;
+    var year = theApp.getYear();
+    var declarationguid = content.guid;
+    var eid = content.eid;
+    var stepid = content.stepid;
+    var iid = content.iid;
+    var action = content.action;
+    var checkFlag = true;
+    /*项目Grid 行数计数器*/
+    var num= 0;
+    var num2= 0;
+
+    $(function() {
+        // 初始化内容
+        $("#itemper_target_xform-guid").val(declarationguid);
+        $("#itemper_target_xform-declarationguid").val(declarationguid);
+        /*默认加载数据*/
+        loadData();
+        /*隐藏底边滑动栏*/
+        document.documentElement.style.overflowX = 'hidden';
+        /*传入时检查是否需要锁定保存按钮*/
+        if(action == "query"){
+            $('#btsave').attr("disabled",true);
+        }
+    });
+
+    /*
+    * form 表单解析器
+    * 新维护进的表单或table需要纳入前台解析器
+    * 符合使用规范的可以直接进行解析，完成落地
+    * */
+    function arrayResolver(){
+        var formdemoUp = $("#formdemoUp").serializeArray();
+        var formdemoDown = $("#demoDown").serializeArray();
+        var allFormData = JSON.stringify(formdemoUp)+"#%#"+JSON.stringify(formdemoDown);
+        return allFormData;
+    }
+
+    function tableReslover(){
+        var formdemoTable = $("#formdemoTable").serializeArray();
+        /*如果table 也增加的话，请拼接字符串  %#%  */
+        var formdemoTable2 = $("#formTable2").serializeArray();
+        var allTableData = JSON.stringify(formdemoTable)+"%#%"+JSON.stringify(formdemoTable2);
+        return allTableData;
+    }
+
+    function save() {
+        check_all();
+        /*
+        * table 和 Form 必须分开来加载
+        * */
+        var allFormData = arrayResolver();
+
+        var allTableData = tableReslover();
+
+        /* 表 名 维 护， 按 照 顺 序*/
+        // var tableName = "per_item_eva_details"+"#"+"per_wl_zpqk";
+        // /*序列维护，按照顺序*/
+        // var tableseq = "per_item_evadev_sequence"+"#"+"per_wl_sequence";
+        var tableName = "itemper_target_xform";
+        var tableseq = "itemper_target_xform_seq";
+
+        var gridTableName = "itemper_target_grid1"+"#"+"itemper_target_grid2";
+        var gridTableSeq= "itemper_target_grid1_seq"+"#"+"itemper_target_grid2_seq";
+        /*table 计数器的存放 num 间隔用#*/
+        if($(".zb").length>0){
+            num = ($(".controlccsize").attr("rowspan")-1)+($(".controlxysize").attr("rowspan")-1);
+        }
+        var number = num+"#"+num2;
+
+        $.ajax({
+            //几个参数需要注意一下
+            type: "POST",//方法类型
+            // url: top.CONTEXTPATH+ "/perMonitor!saveCommentWL.action" ,//url
+            url: top.CONTEXTPATH+ "/perMonitor!saveZPWL.action",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({ "declarationguid" : declarationguid, "checkFlag" : checkFlag,
+                "eid" : eid,"iid" : iid,"year" : year,
+                "allFormData":allFormData,
+                "tableName":tableName,
+                "tableseq":tableseq,
+                "allTableData":allTableData,
+                "gridTableName":gridTableName,
+                "gridTableSeq":gridTableSeq,
+                "num":number,
+            })  ,
+            success: function (result) {
+                if (result.success) {
+                    isFull();
+                    alert("保存成功");
+                    loadData();
+                }else{
+                    $.messager.alert('提示','发生未知错误');
+                }
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+
+    //保存前的校验
+    function check_all(){
+        /*默认初始化checkFlag=true,即都是填写完整的状态*/
+        checkFlag = true;
+        /*为了提示信息的拼接先定义一个局部变量,用来接收,prompt*/
+        var prompt="";
+        /**/
+        var iname = document.getElementById("itemper_target_xform-iname").value;
+        if(iname==""||iname==null){
+            prompt+="'项目名称'一栏未填写！\r";
+            checkFlag=false;
+        }
+        /*时间类型的比较特殊，仔细看，再复制*/
+        var overyeartime = $("[name=itemper_target_xform-overyeartime]").prev().val();
+        if(overyeartime==""||overyeartime==null){
+            prompt+="'项目开始时间'一栏未填写！\r";
+            checkFlag=false;
+        }
+
+        /*时间类型的比较特殊，仔细看，再复制*/
+        var enddatetime = $("[name=itemper_target_xform-enddatetime]").prev().val();
+        if(enddatetime==""||enddatetime==null){
+            prompt+="'项目结束时间'一栏未填写！\r";
+            checkFlag=false;
+        }
+
+        var principalname = document.getElementById("itemper_target_xform-principalname").value;
+        if(principalname==""||principalname==null){
+            prompt+="'项目负责人'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var attnname = document.getElementById("itemper_target_xform-attnname").value;
+        if(attnname==""||attnname==null){
+
+            prompt+="'项目联系人'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var division = document.getElementById("itemper_target_xform-division").value;
+        if(division==""||division==null){
+            prompt+="'预算单位业务科室'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var principalphone = document.getElementById("itemper_target_xform-principalphone").value;
+        if(principalphone==""||principalphone==null){
+            prompt+="'联系电话'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var email = document.getElementById("itemper_target_xform-email").value;
+        if(email==""||email==null){
+            prompt+="'联系邮箱'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var spantype = document.getElementById("itemper_target_xform-spantype").value;
+        if(spantype==""||spantype==null){
+            prompt+="'项目属性'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var itempro = document.getElementById("itemper_target_xform-itempro").value;
+        if(itempro==""||itempro==null){
+            prompt+="'项目口径'一栏未填写！\r";
+            checkFlag=false;
+        }
+        // var iskeyevaluation = document.getElementById("itemper_target_xform-iskeyevaluation").value;
+        // if(iskeyevaluation==""||iskeyevaluation==null){
+        //     prompt+="'是否纳入重点绩效目标管理'一栏未填写！\r";
+        //     checkFlag=false;
+        // }
+        var accordingto = document.getElementById("itemper_target_xform-accordingto").value;
+        if(accordingto==""||accordingto==null){
+            prompt+="'立项依据'一栏未填写！\r";
+            checkFlag=false;
+        }
+
+        var perclasses = document.getElementById("itemper_target_xform-perclasses").value;
+        if(perclasses==""||perclasses==null){
+            prompt+="'项目概况（包含项目内容、实施计划等）'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var illustration = document.getElementById("itemper_target_xform-illustration").value;
+        if(illustration==""||illustration==null){
+            prompt+="'项目目标总体描述'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var pertarget = document.getElementById("itemper_target_xform-pertarget").value;
+        if(pertarget==""||pertarget==null){
+            prompt+="'项目其他说明'一栏未填写！\r";
+            checkFlag=false;
+        }
+        var object = document.getElementById("itemper_target_xform-object").value;
+        if(object==""||object==null){
+            prompt+="'评价组织主体 '一栏未填写！\r";
+            checkFlag=false;
+        }
+        var pjlevel = document.getElementById("itemper_target_xform-pjlevel").value;
+        if(pjlevel==""||pjlevel==null){
+            prompt+="'评价等次 '一栏未填写！\r";
+            checkFlag=false;
+        }
+        var problem = document.getElementById("itemper_target_xform-problem").value;
+        if(problem==""||problem==null){
+            prompt+="'评价报告列示的主要问题 '一栏未填写！\r";
+            checkFlag=false;
+        }
+        //grid的验证
+        var eleThree = $("#formTable2").serializeArray();
+        if(eleThree==null||eleThree==""){
+            prompt+="'近三年项目资金使用情况 '至少填一栏！\r";
+            checkFlag=false;
+        }
+        var Zhibiao = $("#formdemoTable").serializeArray();
+        if(Zhibiao==null||Zhibiao==""){
+            prompt+="'绩效目标指标 '至少填一栏！\r";
+            checkFlag=false;
+        }
+        if(!checkFlag){
+            alert(prompt);
+        }
+    }
+
+
+    function loadData(){
+        var allFormData = arrayResolver();
+        /*表名维护，按照顺序*/
+        // var tableName = "per_item_eva_details"+"#"+"per_wl_zpqk";
+        var tableName = "itemper_target_xform";
+        /*
+        * 是否回显的三个参数 @param1 是否回显参数控制 @param2回显的表名 @param3 回显的sql
+        * 多个表的回显之间的参数用#分割
+        * */
+        var isReshow = "1";//1需要回显 0不需要回显
+        var isReshowTableName = "itemper_target_xform";
+        /*sql需要注意，必须将回显的字段的别名与页面中的属性字段进行契合*/
+        var isReshowSql="select poi.name iname,poi.manager principalname, poi.spantype spantype,poi.startyear overyeartime,poi.endyear enddatetime,poi.itemgoal illustration, poi.itemcause accordingto, poi.content perclasses" +
+            " from payoutitem poi " +
+            " where poi.iid = ? " +
+            " and poi.year = ? ";
+        /*每一组参数用#隔开*/
+        var isReshowParamList = iid+","+year;
+
+        $.ajax({
+            url: top.CONTEXTPATH+ "/perMonitor!getZpInfo.action" ,//url
+            type: "post",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({ "declarationguid" : declarationguid,
+                "allFormData":allFormData,
+                "tableName":tableName,
+                "isReshow":isReshow,
+                "isReshowTableName":isReshowTableName,
+                "isReshowSql":isReshowSql,
+                "isReshowParamList":isReshowParamList,
+            }),
+            success: function (data) {
+                if(data.success){
+                    if(null!=data.msg&&0!=data.msg.length){
+                        var stra = JSON.parse(data.msg);
+                        $("#formdemoUp").setForm(stra);
+                        $("#demoDown").setForm(stra);
+                    }
+                    autoSetSelect();
+                    RefreshTable();
+                    loadAllTable();
+                    getZJLY();
+                }
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+
+    function delRow2(t){
+        $(t).parent().parent().remove();
+        $("#demoTable4 tbody tr").each(function () {
+            var $tr = $(this),
+                trIndex = $tr.index();
+            $tr.find("td").each(function () {
+                var $td = $(this),
+                    $input = $td.find("input[name]");
+                if($input.length > 0){
+                    var name = $input.attr("name");
+                    if(name){
+                        // alert("截取前："+name);
+                        if(trIndex > 9) name = name.substring(0, name.length-2);
+                        else name = name.substring(0, name.length-1);
+                        // alert("截取后："+name);
+                        // $td.attr("name", name+$tr.index());
+                        $input.attr("name", name+($tr.index()-3));
+                    }
+                }
+            })
+        });
+        num2--;
+    }
+    function loadAllTable(){
+        /*规则 表名，必须以#分割*/
+        num=0;
+        num2 = 0;
+        var gridTableName = "itemper_target_grid2";//"itemper_target_grid1"+"#"+
+        var isReshow = "0";//1需要回显 0不需要回显
+        var isReshowTableName = "";
+        var isReshowSql="";
+        var isReshowParamList = "";
+        $.ajax({
+            url: top.CONTEXTPATH+ "/perMonitor!getZpTableInfo.action" ,//url
+            type: "post",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({ "declarationguid" : declarationguid,
+                "gridTableName":gridTableName,
+                "isReshow":isReshow,
+                "isReshowTableName":isReshowTableName,
+                "isReshowSql":isReshowSql,
+                "isReshowParamList":isReshowParamList,
+            }),
+            success: function (data) {
+                /*解析第一步 将不同表的数据分隔开  ^ 这个符号是特殊符号*/
+                var tableDataArray = data.split("^");
+                if(tableDataArray.length>0){
+                    for(var j = 0 ; j <tableDataArray.length;j++){
+                        var str = "";
+                        var tableInfo =  tableDataArray[j];
+                        var str1,str2,str3,str4,str5,str6,str7,str8,str9,str10;
+                        var ArrayStr = tableInfo.split("#");
+                        if(j==0){
+                            for(var i = 0 ; i < ArrayStr.length ;i++){
+                                if(""!=ArrayStr[i]){
+                                    var stra = JSON.parse(ArrayStr[i]);
+                                    str += '<tr class="load">';
+                                    str+='<td rowspan="1" colspan="1"><input type="button" value="增加" onclick="addRow2(this)" style="height:25px;width:50px;font-size: 12px;background:#b2c7dc;color: #FFF;"/>' +
+                                        ' <input type="button" value="删除" onclick="delRow2(this)" style="height:25px;width:50px;font-size: 12px;background:orangered;color: #FFF;"/></td>';
+                                    $.each(stra, function (key,value) {
+                                        //循环获取数据    
+                                        // alert(JSON.stringify(stra[key]));
+                                        if('itemper_target_grid2-year'==key){
+                                            str1 ='<td colspan="2"><input type="text" id="itemper_target_grid2-year'+i+'" name="itemper_target_grid2-year'+i+'" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');" value="'+stra[key]+'"/></td>' ;
+                                        }else if('itemper_target_grid2-budget_annual'==key){
+                                            str2 ='<td colspan="2"><input type="text" id="itemper_target_grid2-budget_annual'+i+'" name="itemper_target_grid2-budget_annual'+i+'" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');" value="'+stra[key]+'"/></td>' ;
+                                        }else if('itemper_target_grid2-budget_actual'==key){
+                                            str3 ='<td colspan="2"><input type="text" id="itemper_target_grid2-budget_actual'+i+'" name="itemper_target_grid2-budget_actual'+i+'" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');" value="'+stra[key]+'"/></td>' ;
+                                        }else if('itemper_target_grid2-instructions'==key){
+                                            str4 ='<td colspan="2"><input type="text" id ="itemper_target_grid2-instructions'+i+'" name="itemper_target_grid2-instructions'+i+'" value="'+stra[key]+'"/></td>';
+                                        }else if('itemper_target_grid2-guid'==key){
+                                            str5 ='<td style="display: none"><input type="text" id ="itemper_target_grid2-guid'+i+'" name="itemper_target_grid2-guid'+i+'" value="'+stra[key]+'"/></td>';
+                                        }else if('itemper_target_grid2-declarationguid'==key){
+                                            str6 ='<td style="display: none"><input type="text" id ="itemper_target_grid2-declarationguid'+i+'" name="itemper_target_grid2-declarationguid'+i+'" value="'+stra[key]+'"/></td>';
+                                        }
+                                    });
+                                    str += str1+str2+str3+str4+str5+str6;
+                                    str += '</tr>';
+                                    num2++;
+                                }
+                            }
+                            $("#demoTable4").append(str);
+                            loadZB();
+                        }
+                    }
+                }
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+
+    //回显刷新数据
+    function RefreshTable(){
+        $(".load").remove();
+        $(".zb").remove();
+    }
+
+    /*表体自定义必须按照顺序id1,id2,id3...等等进行自定义排序*/
+    function getZJLY(){
+        $.ajax({
+            url: top.CONTEXTPATH+ "/perMonitor!getItemCapitalsList.action" ,//url
+            type: "post",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({ "year" : year,
+                "iid":iid,
+                "eid":eid,
+                "stepid":stepid,
+            }),
+            success: function (data) {
+                $("#tableZJLY").append(data.msg);
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+
+    function voluation(){
+        var selectValue = $('#object-type').val();
+        $("#itemper_target_xform-object").val(selectValue);
+    }
+
+    function voluation2(){
+        var selectValue = $('#pjlevel-type').val();
+        $("#itemper_target_xform-pjlevel").val(selectValue);
+    }
+
+    function addRow2(t){
+        var str="";
+        str+='<tr class="load">';
+        str+='<td rowspan="1" colspan="1"><input type="button" value="增加" onclick="addRow2(this)" style="height:25px;width:50px;font-size: 12px;background:#b2c7dc;color: #FFF;"/>' +
+            ' <input type="button" value="删除" onclick="delRow2(this)" style="height:25px;width:50px;font-size: 12px;background:orangered;color: #FFF;"/></td>';
+        str+='<td colspan="2"><input type="text" id="itemper_target_grid2-year'+num2+'" name="itemper_target_grid2-year'+num2+'" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');"/></td>'+
+            '<td colspan="2"><input type="text" id="itemper_target_grid2-budget_annual'+num2+'" name="itemper_target_grid2-budget_annual'+num2+'" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');"/></td>'+
+            '<td colspan="2"><input type="text" id="itemper_target_grid2-budget_actual'+num2+'" name="itemper_target_grid2-budget_actual'+num2+'" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');"/></td>'+
+            '<td colspan="2"><input type="text" id="itemper_target_grid2-instructions'+num2+'" name="itemper_target_grid2-instructions'+num2+'"/></td>'+
+            '<td style="display: none"><input type="text" id="itemper_target_grid2-guid'+num2+'" name="itemper_target_grid2-guid'+num2+'" /></td>' +
+            '<td style="display: none"><input type="text" id="itemper_target_grid2-declarationguid'+num2+'" name="itemper_target_grid2-declarationguid'+num2+'" />' +
+            '</td>' +
+            '</tr>';
+        $(t).parent().parent().after(str);
+        num2++;
+    }
+
+    function autoSetSelect(){
+        /*第一组下拉*/
+        if($("#itemper_target_xform-pjlevel").val()=='0'){
+            $("#pjlevel-type").val('0');
+        }else if($("#itemper_target_xform-pjlevel").val()=='1'){
+            $("#pjlevel-type").val('1');
+        }else if($("#itemper_target_xform-pjlevel").val()=='2'){
+            $("#pjlevel-type").val('2');
+        }else if($("#itemper_target_xform-pjlevel").val()=='3'){
+            $("#pjlevel-type").val('3');
+        }else if($("#itemper_target_xform-pjlevel").val()=='4'){
+            $("#pjlevel-type").val('4');
+        }else{
+            $("#pjlevel-type").val('0');
+        }
+        /*第二组下拉*/
+        if($("#itemper_target_xform-object").val()=='0'){
+            $("#object-type").val('0');
+        }else if($("#itemper_target_xform-object").val()=='1'){
+            $("#object-type").val('1');
+        }else if($("#itemper_target_xform-object").val()=='2'){
+            $("#object-type").val('2');
+        }else{
+            $("#object-type").val('0');
+        }
+
+        /*第三组下拉*/
+        // if($("#itemper_target_xform-iskeyevaluation").val()=='0'){
+        //     $("#iskeyevaluation-type").val('0');
+        // }else if($("#itemper_target_xform-iskeyevaluation").val()=='1'){
+        //     $("#iskeyevaluation-type").val('1');
+        // }else{
+        //     /*当第一次加载的时候默认展示*/
+        //     $("#iskeyevaluation-type").val('0');
+        // }
+        /*第四组下拉*/
+        if($("#itemper_target_xform-itempro").val()=='1'){
+            $("#itempro-type").val('1');
+        }else if($("#itemper_target_xform-itempro").val()=='2'){
+            $("#itempro-type").val('2');
+        }else if($("#itemper_target_xform-itempro").val()=='3'){
+            $("#itempro-type").val('3');
+        }else{
+            $("#itempro-type").val('1');
+        }
+
+        /*第五组*/
+        if($("#itemper_target_xform-spantype").val()=='1'){
+            $("#spantype-type").val('1');
+        }else if($("#itemper_target_xform-spantype").val()=='2'){
+            $("#spantype-type").val('2');
+        }else if($("#itemper_target_xform-spantype").val()=='3'){
+            $("#spantype-type").val('3');
+        }else{
+            $("#spantype-type").val('1');
+        }
+    }
+
+    /*是否填写完整，刷主表的状态*/
+    function isFull(){
+        //TableName 主表名
+        if(checkFlag){
+            var sql = "update itemper_target_status set isfinished = '1',isaudit = '1' where guid =?";
+            $.ajax({
+                url: top.CONTEXTPATH+ "/perMonitor!updateStatus.action" ,//url
+                type: "post",
+                dataType: "json",//预期服务器返回的数据类型
+                data : $.param({ "guid" : declarationguid,
+                    "sql":sql,
+                }),
+                success: function (result) {
+                    if (result.success) {
+                    }
+                },error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    _myAlert("异常",XMLHttpRequest.responseText);
+                }
+            });
+        }else{
+            var sql = "update itemper_target_status set isfinished = '0',isaudit = '0' where guid =?";
+            $.ajax({
+                url: top.CONTEXTPATH+ "/perMonitor!updateStatus.action" ,//url
+                type: "post",
+                dataType: "json",//预期服务器返回的数据类型
+                data : $.param({ "guid" : declarationguid,
+                    "sql":sql,
+                }),
+                success: function (data) {
+                    if (data.success) {
+                    }
+                },error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    _myAlert("异常",XMLHttpRequest.responseText);
+                }
+            });
+        }
+    }
+
+
+    function voluation3(){
+        var selectValue = $('#iskeyevaluation-type').val();
+        // $("#itemper_target_xform-iskeyevaluation").val(selectValue);
+    }
+
+    function voluation4(){
+        var selectValue = $('#itempro-type').val();
+        $("#itemper_target_xform-itempro").val(selectValue);
+    }
+
+    function voluation5(){
+        var selectValue = $('#spantype-type').val();
+        $("#itemper_target_xform-spantype").val(selectValue);
+    }
+
+    function openTargetTreeA(){
+        var isSelected = 0;
+        if($(".zb").length>0){
+            if(!confirm("页面已选入指标，如果重新选择，将覆盖原选入的指标，您确定执行该操作?")){
+                return;
+            }else{
+                isSelected = 1;
+            }
+        }
+        var a = new Object();
+        a.year = year;
+        a.theApp = theApp;
+        var returnValue = window.showModalDialog("TargetDatabaseTree.htm",a,"dialogWidth:900px;dialogHeight:800px");
+        if(returnValue!=null)
+        {
+            /*返回值解析*/
+            if(""!=returnValue.commentname&&""!=returnValue.personnalname){
+                if(isSelected == 1){
+                    /*为了将已经填写了的数据继续加载在页面上，第二次选择指标时*/
+                    /*默认将已经填写了的数据进行保存，在将保存的数据和新选入的指标进行拼接，完成数据的回显*/
+                    //第一步，仅仅保存Grid
+                    SaveZBGrid();
+                    //第二步，重新reload
+                }else{
+                    stitchTable(returnValue);
+                }
+            }
+        }
+    }
+
+    function stitchTable(obj){
+        $.ajax({
+            url: top.CONTEXTPATH+ "/perMonitor!stitchTable.action" ,//url
+            type: "post",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({
+                "year" : year,
+                "commonzbname" : obj.commentname,
+                "personnalzbname" : obj.personnalname,
+                "xml": obj.xml,
+                "guid" : declarationguid,
+            }),
+            success: function (result) {
+                if (result.success) {
+                    $(".zb").remove();
+                    $("#demoTable3").append(result.msg);
+                }
+            },error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+
+    function loadZB(){
+        $.ajax({
+            url: top.CONTEXTPATH+ "/perMonitor!loadZB.action" ,//url
+            type: "post",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({
+                "declarationguid" : declarationguid,
+            }),
+            success: function (result) {
+                if (result.success) {
+                    $(".zb").remove();
+                    $("#demoTable3").append(result.msg);
+                }
+            },error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+
+    function delZB(t){
+        if($(t).attr("goal")=='1'){
+            var size = $(".controlccsize").attr("rowspan")-1;
+            $(".controlccsize").attr("rowspan",size);
+            if(size == 1){
+                $(".controlccsize").attr("style",'display: none');
+            }
+        }else if($(t).attr("goal")=='2'){
+            var size = $(".controlxysize").attr("rowspan")-1;
+            $(".controlxysize").attr("rowspan",size);
+            if(size == '1'){
+                $(".controlxysize").attr("style",'display: none');
+            }
+        }
+        $(t).parent().parent().remove();
+        $("#demoTable3 tbody tr[special='0']").each(function (i) {
+            var $tr = $(this);
+            $tr.find("td").each(function () {
+                var $td = $(this),
+                    $input = $td.find("input[name]");
+                if($input.length > 0){
+                    var name = $input.attr("name");
+                    if(name){
+                        var tdIndex = name.match(/\d+$/g)[0]+"",
+                            tdText = name.substring(0, name.length-tdIndex.length);
+                        $input.attr("name", tdText+i);
+                    }
+                }
+            })
+        });
+    }
+
+    function SaveZBGrid(){
+        //对ZBGrid 单位进行保存
+        var formdemoTable = $("#formdemoTable").serializeArray();
+        var TableName= "itemper_target_grid1";
+        var seq = "itemper_target_grid1_seq";
+        $.ajax({
+            url: top.CONTEXTPATH+ "/perMonitor!SaveZBData.action" ,//url
+            type: "post",
+            dataType: "json",//预期服务器返回的数据类型
+            data : $.param({
+                "formdemoTable":JSON.stringify(formdemoTable),
+                "TableName":TableName,
+                "seq":seq,
+                "num":($(".controlccsize").attr("rowspan")-1)+($(".controlxysize").attr("rowspan")-1),
+                "declarationguid" : declarationguid,
+            }),
+            success: function (result) {
+                if (result.success) {
+                    $(".zb").remove();
+                    alert(result.msg);
+                }
+            },error : function(XMLHttpRequest, textStatus, errorThrown) {
+                _myAlert("异常",XMLHttpRequest.responseText);
+            }
+        });
+    }
+</script>
+</html>

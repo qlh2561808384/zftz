@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <title>案例库定义</title>
+    <script type="text/javascript" src="../bootstrap2/js/jquery.js"></script>
+    <script type="text/javascript" src="../bootstrap2/js/bootstrap.datanew.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        body {
+            height: 100%;
+        }
+
+        .left-area, .right-area {
+            float: left;
+            height: 100%;
+        }
+
+        .left-area {
+            width: 20%;
+            padding: 0 10px;
+            box-sizing: border-box;
+            border-right: 1px solid #eee;
+            border-radius: 5px;
+            box-shadow: #eee 1px 0 3px;
+        }
+
+        .right-area {
+            width: 80%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .outer-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .outer-container {
+            /*border: 5px solid purple;*/
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inner-container {
+            position: absolute !important;
+            left: 0;
+            top: 0;
+            right: -17px;
+            bottom: 0;
+            overflow-x: hidden !important;
+            overflow-y: scroll !important;
+        }
+
+    </style>
+</head>
+<body>
+<div class="left-area">
+    <h3>项目类型</h3>
+    <div id="project-list"></div>
+</div>
+<!--<div class="splitter"></div>-->
+<div class="right-area">
+    <h3>案例库定义</h3>
+    <table id="table"></table>
+</div>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/dynamic-table.js"></script>
+<script type="text/javascript">
+    var $table;
+    var currentNode;
+    var edited = false;
+    var bsInfo;
+    var columns;
+    var havePrimaryKey = false;
+    // 字段名key资源池
+    var keyPool = [];
+
+    var api = $.extend({}, API, {
+        prefix: "../alk",
+        getColumnsDefine: function (bm, callback) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                _this.doGet(_this.urlGenerator("columnsDefine", bm), {}, function (list) {
+                    callback && callback(list);
+                    resolve(list);
+                });
+            });
+        },
+        saveData: function (xmlx, columns, callback) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                _this.doJsonPost(_this.urlGenerator("admin/columnsDefine/save"), {
+                    xmlx: xmlx,
+                    columns: columns
+                }, function (list) {
+                    callback && callback(list);
+                    resolve(list);
+                });
+            })
+        },
+        deleteData: function (ids, callback) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                _this.doJsonPost(_this.urlGenerator("admin/columnsDefine/delete"), {ids: ids}, function (list) {
+                    callback && callback(list);
+                    resolve(list);
+                });
+            });
+        },
+        getBsTableInfo: function (bm, callback) {
+            var _this = this;
+            return new Promise(function (resolve, reject) {
+                _this.doGet(_this.urlGenerator("admin/bsTable/info", bm), {}, function (result) {
+                    callback && callback(result);
+                    resolve(result);
+                })
+            });
+        }
+    });
+
+    (function () {
+        initLeftArea();
+        initRightArea();
+    })();
+
+    function getColumnKey() {
+        for (var i = 0; i < keyPool.length; i += 1) {
+            if (keyPool[i]) {
+                var tmp = keyPool[i];
+                delete keyPool[i];
+                return tmp;
+            }
+        }
+        return null;
+    }
+
+    function addColumnKey(key) {
+        keyPool.push(key);
+    }
+
+    function initLeftArea() {
+        Promise.all([
+            api.getXx("xmlx")
+        ]).then(function (datas) {
+            var xmlx = datas[0];
+            var treeHeight = $("html").height() - $("h3").height() - 52;
+            $("#project-list").tree({
+                localdata: xmlx,
+                onlyLeaf: true,
+                rootElement: true,
+                fixedTreeHeight: treeHeight,
+                data: {
+                    key: {name: "MC"},
+                    simpleData: {
+                        idKey: "BM",
+                        pIdKey: "FJBM",
+                        rootPId: '0'
+                    }
+                },
+                openSearch: true,
+                callback: {
+                    clickNode: function (e, treeId, treeNode, clickFlag) {
+                        if (treeNode.ISLEAF === 1) {
+                            refreshTable(treeNode["BM"]);
+                        }
+                    }
+                }
+            });
+
+            $(".treeWrap").wrap('<div class="outer-container"></div>').addClass("inner-container");
+            $(".outer-container").height(treeHeight);
+        });
+    }
+
+    function refreshTable(bm) {
+        Promise.all([
+            api.getColumnsDefine(bm),
+            api.getBsTableInfo(bm)
+        ]).then(function (value) {
+            columns = value[0];
+            bsInfo = value[1];
+            for (var i = 1; i <= bsInfo["MAX_COUNT"]; i += 1) {
+                keyPool.push("COL" + i);
+            }
+            $.each(columns, function (index, column) {
+                if (column["SFZJ"] == 1) {
+                    havePrimaryKey = true;
+                }
+                var i = column["ZDM"].substring(3);
+                delete keyPool[i - 1];
+            });
+            $table.dtable("load", columns);
+            $table.dtable("initAll");
+            currentNode = bm;
+            setDataFormatterEvent();
+        });
+    }
+
+    function setDataFormatterEvent() {
+        $("td[data-field2=ZDGS]").on("click", function () {
+            var $inp = $(this).find(".form-control");
+            $inp.blur();
+            var type = $(this).prev().find(".form-control").comboBox("getValue");
+            if (!type) {
+                $.dalert({text: "请先选择字段类型", icon: 2});
+                return;
+            }
+            var value = $inp.textBox("getValue");
+            $.dopen({
+                title: "字段格式",
+                maxmin: false,
+                resize: false,
+                content: '<div id="data-formatter-form" style="padding: 10px;"></div>',
+                area: ['310px', '180px'],
+                btn: ['确定'],
+                btn1: function (index) {
+                    $inp.textBox("setValue", $("#data-formatter-form").dform("getData")["value"]);
+                    layer.close(index);
+                }
+            });
+            var inputs = [];
+            if (type == 1) {
+                inputs.push({
+                    title: "字符长度(最大500)：",
+                    name: "value",
+                    type: "decimal",
+                    decimalPlaces: 0,
+                    defaultValue: value,
+                    colspan: 3,
+                    onInputChange: function (newVal, oldVal) {
+                        if (newVal <= 0) {
+                            $.dalert({text: "字符长度不能小于0或等于0", icon: 2});
+                            $(this)['decimal']("setValue", 1);
+                            return;
+                        }
+                        if (newVal > 500) {
+                            $.dalert({text: "字符最大长度不能超过500", icon: 2});
+                            $(this)['decimal']("setValue", 500);
+                        }
+                    }
+                });
+            } else if (type == 2) {
+                inputs.push({
+                    title: "时间格式：",
+                    name: "value",
+                    type: "radioBox",
+                    radioName: "time",
+                    localdata: [{id: 'yyyy-MM-dd', text: "yyyy-MM-dd (年-月-日)"}, {
+                        id: 'yyyy-MM-dd HH:mm:ss',
+                        text: "yyyy-MM-dd HH:mm:ss (年-月-日 时:分:秒)"
+                    }],
+                    defaultValue: value,
+                    colspan: 3
+                });
+            } else if (type == 3) {
+                inputs.push({
+                    title: "数字精度(0-6)：",
+                    name: "value",
+                    type: "decimal",
+                    decimalPlaces: 0,
+                    defaultValue: value,
+                    colspan: 3,
+                    onInputChange: function (newVal, oldVal) {
+                        if (newVal < 0 || newVal > 6) {
+                            $.dalert({text: "数字精度范围只能0-6之间", icon: 2});
+                            $(this).parents(".ztreeBox_inp").find(".form-control")['decimal']("setValue", 1);
+                        }
+                    }
+                })
+            }
+            $("#data-formatter-form").dform({
+                formVertical: true,
+                labelwidth: '80px',
+                inputs: inputs
+            });
+            setTimeout(function () {
+                $("input[name=value]").prev().focus();
+            }, 300);
+        });
+    }
+
+    function initRightArea() {
+        // toolBar btn event
+        window.addBtnCallback = function () {
+            if (!currentNode) {
+                $.dalert({text: "请先选择一个项目类型", icon: 2});
+                return;
+            }
+            if (bsInfo["MAX_COUNT"] <= bsInfo["CURRENT_COUNT"]) {
+                $.dalert({text: "已到列数上限，不能再增加列数！请停用或删除其他列", icon: 2});
+                return;
+            }
+            bsInfo["CURRENT_COUNT"] += 1;
+            var dataLen = $table.dtable("getData").length;
+            var editRows = $table.dtable("getEditRowsIndex");
+            editRows.push(dataLen);
+            $table.dtable("updateAll");
+            $table.dtable("insertRow", {
+                index: dataLen,
+                row: {ZDM: getColumnKey(), SFZJ: 2, ZDCD: '0', ZT: 1}
+            });
+            for (var i = 0; i < editRows.length; i += 1) {
+                $table.dtable("init", i);
+            }
+            edited = true;
+            setDataFormatterEvent();
+        };
+        window.deleteBtnCallback = function () {
+            var ids = getSelectedIds($table);
+            if (!ids) {
+                return;
+            }
+            showConfirm("确认删除？", function () {
+                api.deleteData(ids, function (result) {
+                    $.dalert({text: result, icon: 1});
+                    var selectedDatas = getSelectedData($table, true);
+                    var data = $table.dtable("getData");
+                    var editRows = $table.dtable("getEditRowsIndex");
+                    $table.dtable("updateAll");
+                    $.each(selectedDatas, function (index, item) {
+                        bsInfo["CURRENT_COUNT"] -= 1;
+                        addColumnKey(item["ZDM"]);
+                        var dataIndex = data.indexOf(item);
+                        $table.dtable("removeByRowIndex", dataIndex);
+                        for (var i = 0; i < editRows.length; i += 1) {
+                            if (editRows[i] >= dataIndex) {
+                                if (editRows[i] == dataIndex) {
+                                    delete editRows[i];
+                                }
+                                for (var j = editRows[i] ? i : i + 1; j < editRows.length; j += 1) {
+                                    if (editRows[j]) {
+                                        editRows[j] -= 1;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    });
+                    for (var i = 0; i < editRows.length; i++) {
+                        if (editRows[i] || editRows[i] === 0) {
+                            $table.dtable("init", editRows[i]);
+                        }
+                    }
+                });
+            });
+        };
+        window.saveBtnCallback = function () {
+            $table.dtable("updateAll");
+            $table.dtable("initAll");
+            var columns = $table.dtable("getData");
+            if (columns.length === 0) {
+                $.dalert({text: "没有数据需要保存", icon: 2});
+                return;
+            }
+            for (var i = 0; i < columns.length; i += 1) {
+                delete columns[i][0];
+                if ($.checkIsEmptyOrHaveEmptyProperties(columns[i], ["ZDCD"])) {
+                    $.dalert({text: "第" + (i + 1) + "行有空，请填写完整", icon: 2});
+                    return;
+                }
+            }
+            api.saveData(currentNode, columns).then(function (result) {
+                $.dalert({text: result, icon: 1});
+                edited = false;
+                refreshTable(currentNode);
+            });
+        };
+        window.previewBtnCallback = function () {
+            if (edited) {
+                $.dalert({text: "页面已编辑，请先保存！", icon: 2});
+                return;
+            }
+            $.dopen({
+                // type: 6,
+                title: "案例维护",
+                anim: 0,
+                area: ["100%", "100%"],
+                content: '<div id="dynamic-table-preview"></div>'
+            });
+            DynamicTable.init('dynamic-table-preview', currentNode, {isPreview: true});
+        };
+        window.moveUp = function (index) {
+            if (index === 0) {
+                $.dalert({text: "第一条不能上移", icon: 2});
+                return;
+            }
+            var list = $table.dtable("getData");
+            var temp = list[index];
+            list[index] = list[index - 1];
+            list[index - 1] = temp;
+            $table.dtable("load", list);
+            $table.dtable("initAll");
+            edited = true;
+        };
+        window.moveDown = function (index) {
+            var list = $table.dtable("getData");
+            if (index + 1 == list.length) {
+                $.dalert({text: "最后一条不能下移", icon: 2});
+                return;
+            }
+            var temp = list[index];
+            list[index] = list[index + 1];
+            list[index + 1] = temp;
+            $table.dtable("load", list);
+            $table.dtable("initAll");
+            edited = true;
+        };
+        var toolBar = [
+            createToolBarBtn("新增行", "add", "add-btn", addBtnCallback),
+            // createToolBarBtn("删除行", "delete", "delete-btn", deleteBtnCallback),
+            createToolBarBtn("保存", "save", "save-btn", saveBtnCallback),
+            createToolBarBtn("预览", "review", "preview-btn", previewBtnCallback)
+        ];
+        // 列定义
+        var columns = [
+            {checkbox: true},
+            {
+                field: 'INDEX',
+                title: '序号',
+                width: 50,
+                align: 'center',
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },
+            {field: 'ZDM', title: '字段名', align: 'center', width: 100},
+            {
+                field: 'XSMC', title: '列名', align: 'center', width: 200, editor: InputType.TextBox({
+                    onInputChange: function (newVal, oldVal) {
+                        edited = true;
+                    }
+                })
+            },
+            {
+                field: 'ZDLX', title: '字段类型', align: 'center', width: 90, editor: InputType.ComboBox({
+                    localdata: [{id: 1, text: '字符'}, {id: 2, text: '时间'}, {id: 3, text: '数字'}],
+                    onChange: function (newVal, oldVal) {
+                        edited = true;
+                        var $zdgs = $(this.$textBox[0]).parents("td[data-field2=ZDLX]").next().find(".form-control");
+                        console.log($(this.$textBox[0]).parents("td[data-field2=ZDLX]").next().find(".form-control"));
+                        if (newVal === '1') {
+                            $zdgs.textBox("setValue", 10);
+                        } else if (newVal === '2') {
+                            $zdgs.textBox("setValue", 'yyyy-MM-dd');
+                        } else if (newVal === '3') {
+                            $zdgs.textBox("setValue", 1);
+                        }
+                    }
+                })
+            },
+            {
+                field: 'ZDGS', title: '字段格式', align: 'center', width: 100, editor: InputType.TextBox({})
+            },
+            {
+                field: 'SFZJ', title: '是否主键', align: 'center', width: 50, editor: InputType.ComboBox({
+                    localdata: [{id: 1, text: '是'}, {id: 2, text: '否'}],
+                    onChange: function (newVal, oldVal) {
+                        edited = true;
+                        if (newVal === '1' && havePrimaryKey) {
+                            $.dalert({text: "只能设置一个主键，如需设置，请取消现有主键", icon: 2});
+                            $(this.$textBox[0]).comboBox("setValue", 2);
+                        }
+                        if (oldVal === '1' && newVal === '2') {
+                            havePrimaryKey = false;
+                        }
+                        if (newVal === '1') {
+                            havePrimaryKey = true;
+                        }
+                    }
+                })
+            },
+            {
+                field: 'ZT', title: '状态', align: 'center', width: 50, editor: InputType.ComboBox({
+                    localdata: [{id: 1, text: '启用'}, {id: 2, text: '停用'}],
+                    onChange: function (newVal, oldVal) {
+                        edited = true;
+                        // if (newVal === '1') {
+                        //     if (bsInfo["MAX_COUNT"] <= bsInfo["CURRENT_COUNT"]) {
+                        //         $.dalert({text: "已到列数上限，不能启用该列！请停用或删除其他列", icon: 2});
+                        //         $(this.$textBox[0]).comboBox("setValue", 2);
+                        //     }
+                        // }
+                    }
+                })
+            },
+            {
+                field: "OP", title: "操作", align: "center", width: 100, formatter: function (value, row, index) {
+                    return '<input value="上移" onclick="moveUp(' + index + ')" style="margin: 2px;" class="bootstrap-table-upload" type="button" />' +
+                        '<input value="下移" onclick="moveDown(' + index + ')" style="margin: 2px;" class="bootstrap-table-download" type="button" />'
+                }
+            }
+        ];
+
+        // 计算table适应适应页面的高度
+        var tableHeight = $("html").height() - $("h3").height() - 30;
+        $table = $("#table").dtable({
+            toolbar: toolBar,
+            columns: columns,
+            height: tableHeight,
+            sortable: false,
+            pageNumber: 1,//起始页
+            pageSize: calcTablePageSize(tableHeight),//页面大小
+            pagination: true,
+            paginationHAlign: 'left',//分页按钮位置  left/right
+            sidePagination: 'client',
+            clickToSelect: true,//点击选中
+            showRefresh: false
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片选择</title>
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <link href="../css/bootstrap-parser.css" rel="stylesheet" type="text/css" />
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.datanew.js"></script>
+    <script>
+        $(function () {
+            $("#selectIcon").iconBox({
+                multiple: true,
+                localdata: [
+                    {id:"1112",  icon:"../css/zTreeStyle/img/diy/2.png"},
+                    {id:"9021",  classes:"min-icon-1"},
+                    {id:"8542",  classes:"min-icon-2"},
+                    {id:"2833",  classes:"min-icon-3"},
+                    {id:"0643",  classes:"min-icon-4"},
+                    {id:"0569",  classes:"min-icon-5"},
+                    {id:"6238",  classes:"min-icon-6"},
+                    {id:"3824",  classes:"min-icon-7"},
+                    {id:"8060",  classes:"min-icon-8"},
+                    {id:"2392",  classes:"min-icon-9"},
+                    {id:"1022", classes:"min-icon-10"},
+                    {id:"1231", classes:"min-icon-11"},
+                    {id:"8112", classes:"min-icon-12"},
+                    {id:"1233", classes:"min-icon-13"}
+                ],
+                defaultValue:"8112"
+            })
+        });
+        function getValue(){
+            alert($("#selectIcon").iconBox("getValue"));
+        }
+        function setValue(){
+            $("#selectIcon").iconBox("setValue", "1112,2833,2392");
+        }
+        function clear1(){
+            $("#selectIcon").iconBox("clear");
+        }
+        function destroy(){
+            $("#selectIcon").iconBox("destroy");
+        }
+        function setDisabled(){
+            $("#selectIcon").iconBox("setDisabled", true);
+        }
+        function setEnable(){
+            $("#selectIcon").iconBox("setDisabled", false);
+        }
+        function readonly(){
+            $("#selectIcon").iconBox("setReadonly", true);
+        }
+        function canselelct(){
+            $("#selectIcon").iconBox("setReadonly", false);
+        }
+    </script>
+</head>
+<body>
+
+<section class="parser container-fluid">
+    <div class="page-header" id="a1"><h1>iconBox —— 图标选择</h1></div>
+    <h4>语法：</h4>
+    <pre>
+        <ol style="display:table">
+            <li><span>初始化：</span></li>
+            <li><span>jquery对象.iconBox(初始化参数对象)</span></li>
+            <li><span>方法调用：</span></li>
+            <li><span>jquery对象.iconBox('方法名',参数)</span></li>
+        </ol>
+    </pre>
+    <div class="tableBox">
+        <div class="tableBox-left">
+            <div class="table">
+                <div class="table-tr" id="a2">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 100%;">
+                                    初始化参数：
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr" id="a2_tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="table-th" style="width: 25%;">名称</div><div class="table-th" style="width: 15%;">类型</div><div class="table-th" style="width: 40%;">描述</div><div class="table-th" style="width: 20%;">默认值</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">id</div>
+                                <div class="sub-table-td" style="width: 15%;">string</div>
+                                <div class="sub-table-td" style="width: 40%;">元素id</div>
+                                <div class="sub-table-td" style="width: 20%;">none</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">name</div>
+                                <div class="sub-table-td" style="width: 15%;">string</div>
+                                <div class="sub-table-td" style="width: 40%;">表单name</div>
+                                <div class="sub-table-td" style="width: 20%;">none</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">defaultValue</div>
+                                <div class="sub-table-td" style="width: 15%;">string</div>
+                                <div class="sub-table-td" style="width: 40%;">默认值</div>
+                                <div class="sub-table-td" style="width: 20%;">&quot;&quot;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">required</div>
+                                <div class="sub-table-td" style="width: 15%;">Boolean</div>
+                                <div class="sub-table-td" style="width: 40%;">是否必选</div>
+                                <div class="sub-table-td" style="width: 20%;">false</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">multiple</div>
+                                <div class="sub-table-td" style="width: 15%;">Boolean</div>
+                                <div class="sub-table-td" style="width: 40%;">是否多选</div>
+                                <div class="sub-table-td" style="width: 20%;">false</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">url</div>
+                                <div class="sub-table-td" style="width: 15%;">String</div>
+                                <div class="sub-table-td" style="width: 40%;">远程数据地址</div>
+                                <div class="sub-table-td" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">localdata</div>
+                                <div class="sub-table-td" style="width: 15%;">Array</div>
+                                <div class="sub-table-td" style="width: 40%;">本地数据</div>
+                                <div class="sub-table-td" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">idKey</div>
+                                <div class="sub-table-td" style="width: 15%;">String</div>
+                                <div class="sub-table-td" style="width: 40%;">保存节点id的属性名</div>
+                                <div class="sub-table-td" style="width: 20%;">id</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">iconKey</div>
+                                <div class="sub-table-td" style="width: 15%;">String</div>
+                                <div class="sub-table-td" style="width: 40%;">保存节点图标的属性名</div>
+                                <div class="sub-table-td" style="width: 20%;">icon</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">classKey</div>
+                                <div class="sub-table-td" style="width: 15%;">String</div>
+                                <div class="sub-table-td" style="width: 40%;">保存节点样式的属性名</div>
+                                <div class="sub-table-td" style="width: 20%;">classes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">validate</div>
+                                <div class="sub-table-td" style="width: 15%;">Function OR String</div>
+                                <div class="sub-table-td" style="width: 40%;">定义表单验证规则。可使用globalValid中定义的正则名称 支持多种正则验证 多个正则名间用'|'进行分割。如正则无法满足 可定义function(value){return {result:false,msg:''}} 参数为表单value 返回值 包含boolean 标识验证是否成功 当result为false时 提示msg 错误信息</div>
+                                <div class="sub-table-td" style="width: 20%;">false</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">validFail</div>
+                                <div class="sub-table-td" style="width: 15%;">Function</div>
+                                <div class="sub-table-td" style="width: 40%;">验证失败触发回调方法 参数为 表单jquery对象</div>
+                                <div class="sub-table-td" style="width: 20%;">function($el){return false}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">validSuccess</div>
+                                <div class="sub-table-td" style="width: 15%;">Function</div>
+                                <div class="sub-table-td" style="width: 40%;">验证失败触发回调方法 参数为 表单jquery对象</div>
+                                <div class="sub-table-td" style="width: 20%;">function($el){return false}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+        <div class="tableBox-right">
+            <!--<h4 id="a3">方法:</h4>-->
+            <div class="table">
+                <div class="table-tr" id="a3">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 100%;">
+                                    方法：
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr" id="a3_tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="table-th" style="width: 25%;">
+                                    名称
+                                </div>
+                                <div class="table-th" style="width: 15%;">
+                                    参数
+                                </div>
+                                <div class="table-th" style="width: 60%;">
+                                    描述
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    destroy
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    销毁表单组件
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    clear
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    清除文本内容
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    getValue
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    获取文本框value
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    setValue
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    String
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    设值
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    disable
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    禁用文本框
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    enable
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    none
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    启用文本框
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    setDisabled
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    true / false
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    禁用/启用 （禁用后使用getData无法获取表单数据）
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-tr">
+                    <div class="table-td">
+                        <div class="sub-table">
+                            <div class="sub-table-tr">
+                                <div class="sub-table-td" style="width: 25%;">
+                                    setReadonly
+                                </div>
+                                <div class="sub-table-td" style="width: 15%;">
+                                    true / false
+                                </div>
+                                <div class="sub-table-td" style="width: 60%;">
+                                    只读/可编辑 （禁用后使用getData无法获取表单数据）
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h4 id="a4">案例:</h4>
+    <!--工具栏-->
+    <div class="outbackframe">
+        <button style="margin-left: 5px;margin-bottom: 10px" type="button" class="btn btn-info btn-sm copyBtn" id="copyBtn9">查看代码</button>
+        <div class="innerback">
+            <div id="bt">
+                <button class="btn btn-primary btn-sm" type="button" onclick="getValue()">取值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn1">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setValue()">赋值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn2">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="clear1()">清除组件值</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn3">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="destroy()">销毁组件</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn4">查看代码</button> |
+                <br><br>
+                <button class="btn btn-primary btn-sm" type="button" onclick="setDisabled()">禁用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn5">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="setEnable()">启用</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn6">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="readonly()">只读</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn7">查看代码</button> |
+                <button class="btn btn-primary btn-sm" type="button" onclick="canselelct()">可选择</button>&nbsp;<button type="button" class="btn btn-default btn-xs copyBtn" id="copyBtn8">查看代码</button> |
+                <br><br>
+            </div>
+
+            <button id="selectIcon"></button>
+        </div>
+    </div>
+<div style="width:1px;height:1px;overflow:hidden;">
+    <textarea id="copyTarget1">
+    alert($("#selectIcon").iconBox("getValue"));
+    </textarea>
+    <textarea id="copyTarget2">
+    $("#selectIcon").iconBox("setValue", "1112,2833,2392");
+    </textarea>
+    <textarea id="copyTarget3">
+    $("#selectIcon").iconBox("clear");
+    </textarea>
+    <textarea id="copyTarget4">
+    $("#selectIcon").iconBox("destroy");
+    </textarea>
+    <textarea id="copyTarget5">
+    $("#selectIcon").iconBox("setDisabled", true);
+    </textarea>
+    <textarea id="copyTarget6">
+    $("#selectIcon").iconBox("setDisabled", false);
+    </textarea>
+    <textarea id="copyTarget7">
+    $("#selectIcon").iconBox("setReadonly", true);
+    </textarea>
+    <textarea id="copyTarget8">
+    $("#selectIcon").iconBox("setReadonly", false);
+    </textarea>
+    <textarea id="copyTarget9">
+    html部分：&lt;button id="selectIcon"&gt;&lt;/button&gt;
+    js部分：
+    $("#selectIcon").iconBox({
+        multiple: true,
+        localdata: [
+            {id:"1112",  icon:"../css/zTreeStyle/img/diy/2.png"},
+            {id:"9021",  classes:"min-icon-1"},
+            {id:"8542",  classes:"min-icon-2"},
+            {id:"2833",  classes:"min-icon-3"},
+            {id:"0643",  classes:"min-icon-4"},
+            {id:"0569",  classes:"min-icon-5"},
+            {id:"6238",  classes:"min-icon-6"},
+            {id:"3824",  classes:"min-icon-7"},
+            {id:"8060",  classes:"min-icon-8"},
+            {id:"2392",  classes:"min-icon-9"},
+            {id:"1022", classes:"min-icon-10"},
+            {id:"1231", classes:"min-icon-11"},
+            {id:"8112", classes:"min-icon-12"},
+            {id:"1233", classes:"min-icon-13"}
+        ],
+        defaultValue:"8112"
+    })
+    </textarea>
+</div>
+    <br><br><br><br>
+</section>
+</body>
+</html>
+
+<script>
+    $(function(){
+        $(".copyBtn").on("click", function(){
+            var num = $(this).attr("id").replace(/[^0-9]/ig, "");
+            var openH = "auto";
+            if(num == 13){
+                openH = "400px";
+            }
+            var target = $("#copyTarget"+ num);
+            $.dopen({
+                title: "查看代码",
+                content: "<pre>"+ target.html() +"</pre>",
+                area: ["600px", openH],
+                btn: ["复制", "取消"],
+                btn1: function(index){
+                    var res = $.copyToClipboard(target.get(0));
+                    if(res){
+                        layer.msg('复制成功', {time: 2000});
+                        layer.close(index);
+                    }else{
+                        layer.msg('复制失败，请手动复制', {time: 2000});
+                    }
+                }
+            });
+        })
+    })
+</script>

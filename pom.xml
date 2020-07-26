@@ -1,0 +1,427 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.datanew</groupId>
+	<artifactId>zftz</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<modules>
+
+
+	</modules>
+	<repositories>
+		<repository>
+			<id>nexus-datanew</id>
+			<url>http://172.16.12.213:19999/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+	<name>zftz</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<!-- 	ORACLE -->
+		<!--<jdbc.driver.groupId>com.datanew</jdbc.driver.groupId>-->
+		<!--<jdbc.driver.artifactId>ojdbc</jdbc.driver.artifactId>-->
+		<!--<jdbc.driver.version>6</jdbc.driver.version>-->
+		<!-- 	MYSQL -->
+<!-- 	    <jdbc.driver.groupId>mysql</jdbc.driver.groupId> -->
+<!-- 		<jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId> -->
+<!-- 		<jdbc.driver.version>5.1.25</jdbc.driver.version> -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>4.1.4.RELEASE</spring.version>
+		<hibernate.version>4.3.8.Final</hibernate.version>
+		<jackson.version>2.5.0</jackson.version>
+		<slog4j.version>1.7.2</slog4j.version>
+		<cxf.version>3.0.0</cxf.version>
+		<druid.version>1.0.15</druid.version>
+		<activiti.version>5.18.0</activiti.version>
+
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.5.0</version>
+		</dependency>
+
+		<!-- http://mvnrepository.com/artifact/net.sf.ehcache/ehcache-web -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-web</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+
+
+
+		<!-- junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- 使用SpringMVC需配置 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+
+
+
+		<!-- 二级缓存ehcache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+
+
+		<!-- 数据库连接 -->
+        <!--<dependency>-->
+			<!--<groupId>${jdbc.driver.groupId}</groupId>-->
+			<!--<artifactId>${jdbc.driver.artifactId}</artifactId>-->
+			<!--<version>${jdbc.driver.version}</version>-->
+		<!--</dependency>-->
+
+		<!-- 数据源 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+
+
+		<!-- json -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- aop -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.4</version>
+		</dependency>
+
+		<!-- servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>3.0-alpha-1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slog4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>commons-codec</groupId> -->
+<!-- 			<artifactId>commons-codec</artifactId> -->
+<!-- 			<version>1.10</version> -->
+<!-- 		</dependency> -->
+
+
+		<!-- 前端框架bootstrap -->
+		<dependency>
+			<groupId>com.datanew</groupId>
+			<artifactId>dn_bootstrap2</artifactId>
+			<version>1.2.0-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+        <!-- 通用的basedao -->
+		<dependency>
+			<groupId>com.datanew</groupId>
+			<artifactId>dn_baseDao</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.restlet.jee/org.restlet.ext.servlet -->
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.servlet</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.1</artifactId>
+			<version>6.0.0</version>
+		</dependency>
+		<!--cas需要的jar包-->
+		<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>3.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>cos-hessian-api</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.37</version>
+		</dependency>
+	
+		<!-- fileupload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+		<!-- 上传下载ftp -->
+		<dependency>
+	       <groupId>commons-net</groupId>
+	       <artifactId>commons-net</artifactId>
+	   	   <version>3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>hc-sso-client</artifactId>
+			<version>6.6.0</version>
+		</dependency>
+
+
+		<!-- excel-->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10-FINAL</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.10-FINAL</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>zftz</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/java/com/datanew/model/oracle</directory>
+				<targetPath>com/datanew/model/oracle</targetPath>
+				<includes>
+					<include>*.xml</include>
+				</includes>
+			</resource>
+			<!--<resource>
+				<directory>src/main/java/com/datanew/model/mysql</directory>
+				<targetPath>com/datanew/model/mysql</targetPath>
+				<includes>
+					<include>*.xml</include>
+				</includes>
+			</resource>-->
+			<resource>
+				<directory>src/main/resources</directory>
+				<!--<includes>
+					<include>*</include>
+				</includes>-->
+			</resource>
+		</resources>
+		<plugins>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<overlays>
+						<overlay>
+							<groupId>com.datanew</groupId>
+							<artifactId>dn_bootstrap2</artifactId>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<!-- YUI Compressor Maven压缩插件 -->
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<version>1.3.0</version>
+				<configuration>
+					<!-- 读取js,css文件采用UTF-8编码 -->
+					<encoding>UTF-8</encoding>
+					<!-- 不显示js可能的错误 -->
+					<jswarn>false</jswarn>
+					<!-- 若存在已压缩的文件，会先对比源文件是否有改动 有改动便压缩，无改动就不压缩 -->
+					<force>false</force>
+					<!-- 在指定的列号后插入新行 -->
+					<linebreakpos>-1</linebreakpos>
+					<!-- 压缩之前先执行聚合文件操作 -->
+					<preProcessAggregates>true</preProcessAggregates>
+					<!-- 压缩后保存文件后缀 -->
+					<suffix>.min</suffix>
+					<!-- 源目录，即需压缩的根目录 -->
+					<!-- <sourceDirectory>${basedir}/mobile</sourceDirectory> -->
+					<!-- 压缩js和css文件 -->
+					<includes>
+						<include>**/*.js</include>
+						<include>**/*.css</include>
+					</includes>
+					<!-- 以下目录和文件不会被压缩 -->
+					<excludes>
+						<exclude>**/*.min.js</exclude>
+						<exclude>**/*.min.css</exclude>
+						<exclude>scripts/data/*.js</exclude>
+					</excludes>
+					<!-- 压缩后输出文件目录 -->
+					<outputDirectory>${basedir}/mobile</outputDirectory>
+					<!-- 聚合文件 -->
+					<aggregations>
+						<aggregation>
+							<!-- 合并每一个文件后插入一新行 -->
+							<insertNewLine>true</insertNewLine>
+							<!-- 需合并文件的根文件夹 -->
+							<inputDir>${basedir}/mobile/scripts</inputDir>
+							<!-- 最终合并的输出文件 -->
+							<output>${basedir}/mobile/scripts/app/app.js</output>
+							<!-- 把以下js文件合并成一个js文件，是按顺序合并的 -->
+							<includes>
+								<include>app/core.js</include>
+								<include>app/mlmanager.js</include>
+								<include>app/tmpl.js</include>
+								<include>app/ui.js</include>
+							</includes>
+						</aggregation>
+					</aggregations>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.26</version>
+				<configuration>
+					<scanIntervalSeconds>1</scanIntervalSeconds><!-- 多少秒进行一次热部署 -->
+					<webAppConfig>
+						<defaultsDescriptor>src/main/resources/jetty-context.xml</defaultsDescriptor> <!--Maven+Jetty免静态文件死锁的处理-->
+					</webAppConfig>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>8888</port>
+						</connector>
+					</connectors>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>6</source>
+                    <target>6</target>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+	</build>
+</project>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <title>项目台帐维护</title>
+    <script src="bootstrap2/js/jquery.js"></script>
+    <script src="bootstrap2/js/bootstrap.datanew.js"></script>
+    <link rel="stylesheet" href="css/common.css">
+    <script>
+        $(function(){
+            var json = [
+                {
+                    "plug": [
+                        {
+                            "plug": [
+                                {
+                                    "plug": [
+                                        {
+                                            "dtype":"dform",
+                                            "classes":"searchForm",
+                                            "rownum":4,
+                                            "labelwidth":"80px",
+                                            "inputs":[
+                                                {title:"项目名称", name:"", type:"textBox"},
+                                                {title:"项目类别", name:"", type:"comboBox", localdata:[{id:1, text:"1WQW"}]},
+                                                {title:"项目类型", name:"", type:"comboBox"},
+                                                {title:"查询", name:"", type:"plainText", plainText:'<button type="button" class="btn btn-primary btn-sm" onclick="">查询</button>', textAlign:"left"}
+                                            ]
+                                        },
+                                        {
+                                            "dtype":"html",
+                                            "dragHtml":"<h4 class='text-center'><b>项目基本信息维护</b></h4>"
+                                        },
+                                        {
+                                            "dtype": "dtable",
+                                            "height": $(window).height() - 80,
+                                            "columns": [
+                                                {field:"checkType", checkbox:true},
+                                                {field:"", title:"序号", width:100, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                {field:"", title:"项目代码", width:100, align:"center"},
+                                                {field:"", title:"项目名称", width:100, align:"center"},
+                                                {field:"", title:"项目建设类型", width:100, align:"center"},
+                                                {field:"", title:"项目阶段", width:100, align:"center"},
+                                                {field:"", title:"项目实施类型", width:100, align:"center"},
+                                                {field:"", title:"立项年度", width:100, align:"center"},
+                                                {field:"", title:"建设单位", width:100, align:"center"},
+                                                {field:"", title:"总投资(万元)", width:100, align:"center"}
+                                            ],
+                                            "url": "",
+                                            "toolbar": [
+                                                {"name":"新增", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"addRow()"},
+                                                {"name":"删除", "classes":"btn bootstrap-table-delete", "type":"button", "onclick":"delRow()"},
+                                                {"name":"查看/修改", "classes":"btn bootstrap-table-edit", "type":"button", "onclick":"editRow()"}
+                                            ],
+                                            "clickToSelect": true
+                                        }
+                                    ],
+                                    "colspan": "12",
+                                    "dtype": "column"
+                                }
+                            ],
+                            "dtype": "row"
+                        }
+                    ],
+                    "dtype": "body"
+                }
+            ];
+            $.initPage(json);
+        });
+
+        var dopenJson = [
+            {
+                "plug": [
+                    {
+                        "plug": [
+                            {
+                                /*"plug": [
+                                    {
+                                        "dtype":"html",
+                                        "dragHtml":'<div class="toolbar layout_toolbar clearfix">' +
+                                        '<button class="bootstrap-table-save" type="button" onclick="">保存</button>' +
+                                        '<button class="bootstrap-table-review" type="button" onclick="">重填</button>' +
+                                        '<button class="bootstrap-table-clear" type="button" onclick="">关闭</button>' +
+                                        '</div>'
+                                    },
+                                    {
+                                        "dtype":"dform",
+                                        "classes":"tableForm",
+                                        "rownum":3,
+                                        "labelwidth":"140px",
+                                        "labelAlign":"center",
+                                        "inputs":[
+                                            {title:"项目名称", name:"", type:"textBox"},
+                                            {title:"项目代码", name:"", type:"textBox"},
+                                            {title:"项目赋码", name:"", type:"textBox"},
+                                            {title:"项目阶段", name:"", type:"comboBox", localdata:[{id:1,text:"前期"},{id:2,text:"新建"},{id:3,text:"续建"},{id:4,text:"尾款"}]},
+                                            {title:"项目建设类型", name:"", type:"comboBox", localdata:[{id:1,text:"房建类"},{id:2,text:"市政园林类"},{id:3,text:"公路交通类"},{id:4,text:"水利类"},{id:5,text:"其他"}]},
+                                            {title:"项目实施类型", name:"", type:"comboBox", localdata:[{id:1,text:"施工承包模式"},{id:2,text:"PPP模式"},{id:3,text:"EPC模式"},{id:4,text:"其他"}]},
+                                            {title:"项目主管部门", name:"", type:"comboBox"},
+                                            {title:"立项年度", name:"", type:"comboBox"},
+                                            {title:"总投资/匡算投资", name:"", type:"textBox"},
+                                            {title:"建设单位", name:"", type:"textBox"},
+                                            {title:"计划开工日期", name:"", type:"dateBox"},
+                                            {title:"估算投资(万元)", name:"", type:"textBox"},
+                                            {title:"建设地址", name:"", type:"textBox"},
+                                            {title:"计划竣工日期", name:"", type:"dateBox"},
+                                            {title:"概算投资(万元)", name:"", type:"textBox"},
+                                            {title:"项目建议文书号(项目联系单)", name:"", type:"textBox"},
+                                            {title:"形象进度(%)", name:"", type:"textBox"},
+                                            {title:"其中：建安概算投资", name:"", type:"textBox"},
+                                            {title:"项目可研批复文号", name:"", type:"textBox"},
+                                            {title:"受托审核事务所(竣工决算)", name:"", type:"textBox"},
+                                            {title:"审定投资数(万元)", name:"", type:"textBox"},
+                                            {title:"是否封闭项目", name:"", type:"comboBox", localdata:[{id:0,text:"否"},{id:1,text:"是"}]},
+                                            {title:"项目初步设计批复文号", name:"", type:"textBox"},
+                                            {title:"项目绩效", name:"", type:"textBox"},
+                                            {title:"建设内容和规模", name:"", type:"textBox", multiline:true, colspan:3}
+                                        ]
+                                    },
+                                    {
+                                        "dtype":"html",
+                                        "dragHtml":'<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button type="button" class="bootstrap-table-upload" onclick="uploadFile()">上传附件</button></div>'
+                                    },
+                                    {
+                                        "dtype":"div",
+                                        "classes":"clearfix",
+                                        "plug":[
+                                            {
+                                                "dtype":"div",
+                                                "classes":"pull-left",
+                                                "attrs":{"style":"width:70%;"},
+                                                "plug":[
+                                                    {
+                                                        "dtype": "dtable",
+                                                        "height": 250,
+                                                        "url": "",
+                                                        "columns": [
+                                                            {field:"", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                            {field:"", title:"附件名", width:200, align:"center"},
+                                                            {field:"", title:"附件大类", width:100, align:"center"},
+                                                            {field:"", title:"附件小类", width:120, align:"center"},
+                                                            {field:"", title:"大小", width:80, align:"center"},
+                                                            {field:"", title:"备注", width:80, align:"center"}
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "dtype":"html",
+                                                "dragHtml":'<div class="pull-right" style="width:28%;"><img src="bootstrap2/images/image.png" width="100%" /></div>'
+                                            }
+                                        ]
+                                    }
+                                ],*/
+                                "colspan": "12",
+                                "dtype": "column",
+                                "plug":[
+                                    {
+                                        "dtype":"html",
+                                        "dragHtml":'<ul class="nav nav-tabs" role="tablist">' +
+                                        '    <li role="presentation" class="active"><a href="#infoTab1" aria-controls="infoTab1" role="tab" data-toggle="tab">项目信息登记</a></li>' +
+                                        '    <li role="presentation"><a href="#infoTab2" aria-controls="infoTab2" role="tab" data-toggle="tab">项目资产登记</a></li>' +
+                                        '</ul>'
+                                    },
+                                    {
+                                        "dtype":"div",
+                                        "classes":"tab-content",
+                                        "plug":[
+                                            {
+                                                "dtype":"div",
+                                                "classes":"tab-pane active",
+                                                "attrs":{role:"tabpanel", id:"infoTab1"},
+                                                "plug":[
+                                                    {
+                                                        "dtype":"html",
+                                                        "dragHtml":'<div class="toolbar layout_toolbar clearfix">' +
+                                                        '<button class="bootstrap-table-save" type="button" onclick="">保存</button>' +
+                                                        '<button class="bootstrap-table-review" type="button" onclick="">重填</button>' +
+                                                        '<button class="bootstrap-table-clear" type="button" onclick="">关闭</button>' +
+                                                        '</div>'
+                                                    },
+                                                    {
+                                                        "dtype":"dform",
+                                                        "classes":"tableForm",
+                                                        "rownum":3,
+                                                        "labelwidth":"140px",
+                                                        "labelAlign":"center",
+                                                        "inputs":[
+                                                            {title:"项目名称", name:"", type:"textBox"},
+                                                            {title:"项目代码", name:"", type:"textBox"},
+                                                            {title:"项目赋码", name:"", type:"textBox"},
+                                                            {title:"项目阶段", name:"", type:"comboBox", localdata:[{id:1,text:"前期"},{id:2,text:"新建"},{id:3,text:"续建"},{id:4,text:"尾款"}]},
+                                                            {title:"项目建设类型", name:"", type:"comboBox", localdata:[{id:1,text:"房建类"},{id:2,text:"市政园林类"},{id:3,text:"公路交通类"},{id:4,text:"水利类"},{id:5,text:"其他"}]},
+                                                            {title:"项目实施类型", name:"", type:"comboBox", localdata:[{id:1,text:"施工承包模式"},{id:2,text:"PPP模式"},{id:3,text:"EPC模式"},{id:4,text:"其他"}]},
+                                                            {title:"项目主管部门", name:"", type:"comboBox"},
+                                                            {title:"立项年度", name:"", type:"comboBox"},
+                                                            {title:"总投资/匡算投资", name:"", type:"textBox"},
+                                                            {title:"建设单位", name:"", type:"textBox"},
+                                                            {title:"计划开工日期", name:"", type:"dateBox"},
+                                                            {title:"估算投资(万元)", name:"", type:"textBox"},
+                                                            {title:"建设地址", name:"", type:"textBox"},
+                                                            {title:"计划竣工日期", name:"", type:"dateBox"},
+                                                            {title:"概算投资(万元)", name:"", type:"textBox"},
+                                                            {title:"项目建议文书号(项目联系单)", name:"", type:"textBox"},
+                                                            {title:"形象进度(%)", name:"", type:"textBox"},
+                                                            {title:"其中：建安概算投资", name:"", type:"textBox"},
+                                                            {title:"项目可研批复文号", name:"", type:"textBox"},
+                                                            {title:"受托审核事务所(竣工决算)", name:"", type:"textBox"},
+                                                            {title:"审定投资数(万元)", name:"", type:"textBox"},
+                                                            {title:"是否封闭项目", name:"", type:"comboBox", localdata:[{id:0,text:"否"},{id:1,text:"是"}]},
+                                                            {title:"项目初步设计批复文号", name:"", type:"textBox"},
+                                                            {title:"项目绩效", name:"", type:"textBox"},
+                                                            {title:"建设内容和规模", name:"", type:"textBox", multiline:true, colspan:3}
+                                                        ]
+                                                    },
+                                                    {
+                                                        "dtype":"html",
+                                                        "dragHtml":'<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button type="button" class="bootstrap-table-upload" onclick="uploadFile()">上传附件</button></div>'
+                                                    },
+                                                    {
+                                                        "dtype":"div",
+                                                        "classes":"clearfix",
+                                                        "plug":[
+                                                            {
+                                                                "dtype":"div",
+                                                                "classes":"pull-left",
+                                                                "attrs":{"style":"width:70%;"},
+                                                                "plug":[
+                                                                    {
+                                                                        "dtype": "dtable",
+                                                                        "height": 250,
+                                                                        "url": "",
+                                                                        "columns": [
+                                                                            {field:"", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                                            {field:"", title:"附件名", width:200, align:"center"},
+                                                                            {field:"", title:"附件大类", width:100, align:"center"},
+                                                                            {field:"", title:"附件小类", width:120, align:"center"},
+                                                                            {field:"", title:"大小", width:80, align:"center"},
+                                                                            {field:"", title:"备注", width:80, align:"center"}
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "dtype":"html",
+                                                                "dragHtml":'<div class="pull-right" style="width:28%;"><img src="bootstrap2/images/image.png" width="100%" /></div>'
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "dtype":"div",
+                                                "classes":"tab-pane",
+                                                "attrs":{role:"tabpanel", id:"infoTab2"},
+                                                "plug":[
+                                                    {
+                                                        "dtype": "dtable",
+                                                        "height": 300,
+                                                        "url": "",
+                                                        "columns": [
+                                                            {field:"checkType", checkbox:true},
+                                                            {field:"", title:"序号", width:100, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                            {field:"", title:"资产编号", width:100, align:"center"},
+                                                            {field:"", title:"资产名称", width:100, align:"center"},
+                                                            {field:"", title:"资产类别", width:100, align:"center"},
+                                                            {field:"", title:"资产价值(万元)", width:100, align:"center"},
+                                                            {field:"", title:"面积(平方米)", width:100, align:"center"},
+                                                            {field:"", title:"入账方式", width:100, align:"center"},
+                                                            {field:"", title:"入账时间", width:100, align:"center"},
+                                                            {field:"", title:"备注", width:100, align:"center"}
+                                                        ],
+                                                        "toolbar": [
+                                                            {"name":"增加行", "classes":"btn bootstrap-table-add", "type":"button", "onclick":"addRow()"},
+                                                            {"name":"删除行", "classes":"btn bootstrap-table-delete", "type":"button", "onclick":"delRow()"},
+                                                            {"name":"保存", "classes":"btn bootstrap-table-save", "type":"button", "onclick":"editRow()"},
+                                                            {"name":"关闭", "classes":"btn bootstrap-table-clear", "type":"button", "onclick":"submitRow()"}
+                                                        ],
+                                                        "clickToSelect": true
+                                                    },
+                                                    {
+                                                        "dtype":"html",
+                                                        "dragHtml":'<div style="padding:20px 0 10px 15px;"><b>附件列表：</b><button type="button" class="bootstrap-table-upload" onclick="uploadFile()">上传附件</button></div>'
+                                                    },
+                                                    {
+                                                        "dtype": "dtable",
+                                                        "height": 250,
+                                                        "url": "",
+                                                        "columns": [
+                                                            {field:"", title:"序号", width:50, align:"center", formatter:function(value,row,index){return index+1;}},
+                                                            {field:"", title:"附件名", width:200, align:"center"},
+                                                            {field:"", title:"附件大类", width:100, align:"center"},
+                                                            {field:"", title:"附件小类", width:120, align:"center"},
+                                                            {field:"", title:"大小", width:80, align:"center"},
+                                                            {field:"", title:"备注", width:80, align:"center"}
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "dtype": "row"
+                    }
+                ],
+                "dtype": "body"
+            }
+        ];
+
+        function addRow() {
+            $.dopen({
+                type: 6,
+                title :"项目登记",
+                area: ["95%", "100%"],
+                content: dopenJson,
+                btn: ["关闭"]
+            });
+            $(".customInput input").each(function(){
+                var $inp = $(this),
+                    dtype = $inp.attr("type"),
+                    options = $inp.data();
+                $inp[dtype](options);
+            })
+        }
+
+        function uploadFile(){
+            $.dopen({
+                title:"上传附件",
+                area:["600px", "300px"],
+                content:'<form id="uploadForm"></form>',
+                btn:["保存", "取消"],
+                btn1:function (index) {
+
+                }
+            });
+            $("#uploadForm").dform({
+                rownum:2,
+                labelwidth:"100px",
+                inputs:[
+                    {title:"附件大类", name:"", type:"comboBox"},
+                    {title:"附件小类", name:"", type:"comboBox"},
+                    {title:"选择文件", name:"", type:"webupload", colspan:2}
+                ]
+            })
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

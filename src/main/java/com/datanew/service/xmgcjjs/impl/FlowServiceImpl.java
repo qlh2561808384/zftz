@@ -1,0 +1,205 @@
+package com.datanew.service.xmgcjjs.impl;
+
+import com.datanew.dao.BaseDao;
+import com.datanew.model.ZftzShjl;
+import com.datanew.service.xmgcjjs.FlowService;
+import com.datanew.util.StaticData;
+import com.datanew.util.StringUtil;
+import javassist.NotFoundException;
+import org.apache.poi.ss.formula.functions.T;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author inRush
+ * @date 2019/5/27
+ **/
+@Service
+public class FlowServiceImpl implements FlowService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmgcjsbbServiceImpl.class);
+    @Autowired
+    BaseDao baseDao;
+
+    /**
+     * 操作类型
+     */
+    public enum OperateCode {
+        NEXT("1"), BACK("2");
+        private String code;
+
+        OperateCode(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
+    }
+
+    /**
+     * 插入审核记录
+     */
+    private void insertShjl(Long xmId,
+                            String sxlx,
+                            String currentFlowCode,
+                            String nextFlowCode,
+                            String comment,
+                            OperateCode operate, Long userId) {
+        // 获取上一条记录GUID和当前流程的上一流程
+        String preShjlSql = "select GUID,SYHJBM,CLSJ from ZFTZ_SHJL where XMID=" + xmId + " and SYHJBM='" + currentFlowCode + "' and SXLX='" + sxlx + "' order by CLSJ desc";
+        List<Map> res = baseDao.selectMapsBySQL(preShjlSql);
+        ZftzShjl shjl = new ZftzShjl();
+        shjl.setXmid(xmId);
+        shjl.setDqhjbm(currentFlowCode);
+        shjl.setClyhid(userId);
+        shjl.setClyj(comment);
+        shjl.setSyhjbm(nextFlowCode);
+        shjl.setCzlx(operate.getCode());
+        shjl.setSxlx(sxlx);
+
+        if (res.size() > 0) {
+            shjl.setDdrq((Date) res.get(0).get("CLSJ"));
+            shjl.setQshjlid(((BigDecimal) res.get(0).get("GUID")).longValue());
+        }
+        baseDao.save(shjl);
+    }
+
+    public void submit(Long yhId, List<Integer> ywIds, String sxbm, FlowServiceImpl.OperateCode operate, List<String> comments, SubmitEvent event) throws Exception {
+        // 必须有两个可用数据库连接
+        StaticData.signs.acquireUninterruptibly(2);
+        Connection con = null;
+        CallableStatement cs = null;
+        try {
+            con = baseDao.getConnection();
+            // 群组ID，业务ID，所属应用编码，事项类型
+            cs = con.prepareCall("{Call p_zftz_qzdyh(?,?,?,?)}");
+            for (int i = 0; i < ywIds.size(); i++) {
+                String comment;
+                if (comments == null || comments.size() == 0 || comments.size() <= i) {
+                    comment = "";
+                } else if (comments.size() == 1) {
+                    comment = comments.get(0);
+                } else {
+                    comment = comments.get(i);
+                }
+                Integer ywId = ywIds.get(i);
+                String currentFlowCode = event.onPrepare(ywId, i);
+                // 获取流程信息
+                String splcSql;
+                // 提交到流程中，查找起始环节
+                if ("-1".equals(currentFlowCode)) {
+                    if (operate.getCode().equals(OperateCode.BACK.getCode())) {
+                        throw new IllegalArgumentException("当前业务未到流程中，不可退回！");
+                    }
+                    splcSql = "select DQHJBM HJBM,SPRFZID\n" +
+                            "from ZFTZ_SPLC\n" +
+                            "where DQHJBM not in (select XYHJBM from ZFTZ_SPLC where SXBM='" + sxbm + "')\n" +
+                            "  and SXBM = '" + sxbm + "'";
+                } else if (operate.getCode().equals(OperateCode.NEXT.getCode())) {
+                    // 下一流程
+                    splcSql = "select case when t2.XYHJBM = '0' then t2.XYHJBM else t1.DQHJBM end HJBM, t1.SPRFZID\n" +
+                            "from (select XYHJBM\n" +
+                            "      from ZFTZ_SPLC\n" +
+                            "      where SXBM = '" + sxbm + "'\n" +
+                            "        and DQHJBM = '" + currentFlowCode + "') t2\n" +
+                            "         left join ZFTZ_SPLC t1 on t1.DQHJBM = t2.XYHJBM\n" +
+                            "    and SXBM = '" + sxbm + "'";
+                } else {
+                    if ("0".equals(currentFlowCode)) {
+                        splcSql = "select DQHJBM HJBM,SPRFZID from ZFTZ_SPLC where SXBM = '" + sxbm + "' and XYHJBM = '" + currentFlowCode + "'";
+                    } else {
+                        // 退回流程
+                        splcSql = "select case when t2.DQHJBM is null then '-1' else t2.DQHJBM end HJBM, t2.SPRFZID\n" +
+                                "from (select DQHJBM from ZFTZ_SPLC where SXBM = '" + sxbm + "' and DQHJBM = '" + currentFlowCode + "') t1\n" +
+                                "         left join ZFTZ_SPLC t2 on t2.XYHJBM = t1.DQHJBM and SXBM = '" + sxbm + "'";
+                    }
+
+                }
+                List<Map> res = baseDao.selectMapsBySQL(splcSql);
+                String bm;
+                Integer spfz = null;
+                if (res.size() <= 0) {
+                    // 找不到流程，直接置成-1，退回申请人
+                    throw new IllegalArgumentException("审批流程未找到！");
+                } else {
+                    bm = (String) res.get(0).get("HJBM");
+                    if (res.get(0).get("SPRFZID") != null) {
+                        spfz = ((BigDecimal) res.get(0).get("SPRFZID")).intValue();
+                    }
+                }
+                Long xmId = event.onSubmit(ywId, bm, comment);
+                if (spfz != null) {
+                    cs.setInt(1, spfz);
+                    cs.setInt(2, ywId);
+                    cs.setString(3, "ZFTZ");
+                    cs.setString(4, sxbm);
+                    cs.execute();
+                }
+
+                // 插入审核记录
+                insertShjl(xmId, sxbm, currentFlowCode, bm, comment, operate, yhId);
+            }
+        } catch (Exception e) {
+            if (con != null) {
+                con.rollback();
+            }
+            throw e;
+        } finally {
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    LOGGER.error(e.getMessage());
+                }
+            }
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                LOGGER.error(e.getMessage());
+            }
+            // 释放两个信号量
+            StaticData.signs.release(2);
+        }
+    }
+
+
+    public List<String> check(Long yhYyId, String sxbm) {
+        String sql = "select YWID\n" +
+                "from ZFTZ_GG_RYQZYH where YHID='" + yhYyId + "' and SXLX='" + sxbm + "'";
+        List<Map> list = baseDao.selectMapsBySQL(sql);
+        List<String> result = new ArrayList<String>();
+        for (Map item : list) {
+            result.add((String) item.get("YWID"));
+        }
+        return result;
+    }
+
+    @Override
+    public List<String> checkReviewedProject(Long yhYyId, String sxbm) {
+        String sql = "select XMID\n" +
+                "from ZFTZ_SHJL\n" +
+                "where CLYHID = " + yhYyId + "\n" +
+                "  and SXLX = '" + sxbm + "' group by XMID";
+        List<Map> list = baseDao.selectMapsBySQL(sql);
+        List<String> result = new ArrayList<String>();
+        for (Map item : list) {
+            result.add(item.get("XMID").toString());
+        }
+        return result;
+    }
+}

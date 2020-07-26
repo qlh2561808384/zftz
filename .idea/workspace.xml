@@ -1,0 +1,1169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="zftz:war" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a03a8fe1-b1c3-44ac-8bac-4f253b879d07" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/base/yygwToMenu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/base/yygwToMenu.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/base/zbkwh.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/base/zbkwh.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/duanxy/sgtysba.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/duanxy/sgtysba.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/xmzjgl/xmzxgl.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/xmzjgl/xmzxgl.html" afterDir="false" />
+    </list>
+    <list id="a23207e3-ff06-4fb3-8157-738dc10c282a" name="ignored list" comment="不提交的文件">
+      <change afterPath="$PROJECT_DIR$/.idea" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/zftz.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/rebel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/datanew/util/Base64Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/datanew/util/Base64Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/base/zftz_splc.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/base/zftz_splc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/indexcontent.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/indexcontent.jsp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" show_ignored="true" />
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="@10.41.130.18" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="@10.41.130.18" type="feb32156:DbDataSourceImpl" />
+        <item name="SXFX: schema" type="ac44c5e0:OracleImplModel$Schema" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="@10.41.130.18" type="feb32156:DbDataSourceImpl" />
+        <item name="SXFX: schema" type="ac44c5e0:OracleImplModel$Schema" />
+        <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Jsp File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>getXmgsmcTree</find>
+      <find>新增</find>
+      <find>上传</find>
+      <find>pageUploadFile</find>
+      <find>getTzbadj</find>
+      <find>退回</find>
+      <find>selThyj</find>
+      <find>总投资</find>
+      <find>getXmtzwhTree</find>
+      <find>增加</find>
+      <find>getXmgsData</find>
+      <find>getXmmc2</find>
+      <find>getXmgsyjData</find>
+      <find>getXmmc</find>
+      <find>/xmzjgl</find>
+      <find>/sgtysba</find>
+      <find>selectHxXmmc</find>
+      <find>forma</find>
+      <find>selectXmlx</find>
+      <find>项目名称</find>
+      <find>getNdjhglInfo</find>
+      <find>selectXmmc</find>
+      <find>保存</find>
+      <find>updateNdjhglInfo</find>
+      <find>getXmzxgl</find>
+      <find>btnsave</find>
+      <find>getHTMC</find>
+      <find>编辑</find>
+      <find>submitbtn</find>
+      <find>then</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>field</replace>
+      <replace>jo</replace>
+      <replace>项目概算</replace>
+      <replace>xmgsid</replace>
+      <replace>xmgsmxMap</replace>
+      <replace>row</replace>
+      <replace>ywid</replace>
+    </replaceStrings>
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="E:\maven\apache-maven-3.6.0\repository" />
+        <option name="mavenHome" value="$PROJECT_DIR$/../../maven/apache-maven-3.6.0" />
+        <option name="userSettingsFile" value="E:\maven\apache-maven-3.6.0\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1d2SSJHlU5hynnDVQefkGYYqukI" />
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State />
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="oracle" />
+    <property name="SearchEverywhereHistoryKey" value="proC&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/action/ProController.java&#10;config&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/resources/config.properties&#10;config.js&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/overlays/com.datanew.dn_bootstrap2-1.2.0-20190620.022047-46/bootstrap2/plugins/ckeditor/config.js&#10;proSer&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/service/impl/ProServiceImpl.java&#10;Xmzxg&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/xmzjgl/xmzxgl.html&#10;daiban&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/daiban.jsp&#10;userS&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/service/impl/UserServiceImpl.java&#10;common.js&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/js/common.js&#10;XmgcjsccS&#9;PSI&#9;JAVA://com.datanew.service.xmgcjjs.impl.XmgcjsccServiceImpl&#10;config.&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/resources/config.properties&#10;U&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/action/UserController.java&#10;proj&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/js/proj.js&#10;User&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/action/UserController.java&#10;pro&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/js/proj.js&#10;zftzxm&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXm.java&#10;zftzxmt&#9;PSI&#9;JAVA://com.datanew.model.ZftzXmtzwh&#10;file&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/service/impl/FileServiceImpl.java&#10;index&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/indexcontent.jsp&#10;page1&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/page1.html&#10;fileC&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/action/FileController.java&#10;uploadFile&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/pro/js/uploadFile.js&#10;fileCo&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/action/FileController.java&#10;zftzxmgsmx&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgsmx.java&#10;zftzxmgs&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgs.java&#10;zftzxmgsm&#9;PSI&#9;JAVA://com.datanew.model.ZftzXmgsmx&#10;zftzx&#9;PSI&#9;JAVA://com.datanew.model.ZftzXm&#10;zftz&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgs.java&#10;zftzXmgs&#9;PSI&#9;JAVA://com.datanew.model.ZftzXmgs&#10;hibe&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/resources/spring-hibernate.xml&#10;page&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/page2.html&#10;/zbk&#9;PSI&#9;JAVA://com.datanew.action.ZbkController&#10;con&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/resources/config.properties&#10;config.p&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/resources/config.properties&#10;yhglggryqz&#9;PSI&#9;JAVA://com.datanew.action.YhglGgRyqzController&#10;zftzxmgsyjzx&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgsyjzx.java&#10;zftzxmgsyj&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgsyjzx.java&#10;zftzxxb&#9;null&#9;null&#10;pom&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/pom.xml&#10;ZFTZXMTZWH&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmtzwh.java&#10;xmzcdj&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmzcdj.java&#10;page2.&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/page2.html&#10;ZFTZXM&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXm.java&#10;ZFTZXMGS&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgs.java&#10;Zftzxmgs&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXmgs.java&#10;ZFTZXMQQCH&#9;PSI&#9;JAVA://com.datanew.model.ZftzXmqqch&#10;ZFTZXMZJLYDJ&#9;PSI&#9;JAVA://com.datanew.model.ZftzXmzjlydj&#10;Zftzxmtzwh&#9;PSI&#9;JAVA://com.datanew.model.ZftzXmtzwh&#10;Zftz&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/java/com/datanew/model/ZftzXm.java&#10;page2&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/src/main/webapp/page2.html&#10;bootstrap2/js/bootstrap.datanew.js&#9;FILE&#9;file://E:/ideaworkspace/sxdsj/zftz/overlays/com.datanew.dn_bootstrap2-1.1.0-20190520.072206-72/bootstrap2/js/bootstrap.datanew.js" />
+    <property name="ToolWindowDebug.ShowToolbar" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1561817203068" />
+    <property name="database.console.LAST_STATE" value="false" />
+    <property name="last_opened_file_path" value="D:/zygl" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RebelAgentSelection">
+    <selection>jr</selection>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\ideaworkspace\sxdsj\zftz\src\main\webapp\js" />
+      <recent name="E:\ideaworkspace\sxdsj\zftz\src\main\java\com\datanew\util" />
+      <recent name="E:\ideaworkspace\sxdsj\zftz\src\main\webapp\pro\xmqqchgl" />
+      <recent name="E:\ideaworkspace\sxdsj\zftz\src\main\java\com\datanew\model" />
+      <recent name="E:\ideaworkspace\sxdsj\zftz\src\main\webapp\pro\xmtzwh" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.datanew.service" />
+      <recent name="com.datanew.action" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\ideaworkspace\sxdsj\zftz\src\main\webapp\pro\js" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Tomcat Server.zftz">
+    <configuration default="true" type="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ErlangApplicationRunConfiguration" factoryName="Erlang Application" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="debugOptions">
+        <ErlangDebugOptions>
+          <option name="autoUpdateModulesNotToInterpret" value="true" />
+          <option name="modulesNotToInterpret">
+            <set />
+          </option>
+        </ErlangDebugOptions>
+      </option>
+      <option name="erlFlags" value="" />
+      <option name="moduleAndFunction" value="" />
+      <option name="params" value="" />
+      <option name="useTestCodePath" value="false" />
+      <option name="workDirectory" />
+      <module />
+      <method />
+    </configuration>
+    <configuration default="true" type="ErlangUnitRunConfigurationType" factoryName="Erlang Eunit" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="debugOptions">
+        <ErlangDebugOptions>
+          <option name="autoUpdateModulesNotToInterpret" value="true" />
+          <option name="modulesNotToInterpret">
+            <set />
+          </option>
+        </ErlangDebugOptions>
+      </option>
+      <option name="workDirectory" />
+      <module />
+      <option name="functionNames">
+        <set />
+      </option>
+      <option name="kind" value="MODULE" />
+      <option name="moduleNames">
+        <set />
+      </option>
+      <method />
+    </configuration>
+    <configuration default="true" type="RebarEunitRunConfigurationType" factoryName="Erlang Rebar Eunit" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="command" value="eunit" />
+      <option name="skipDependencies" value="true" />
+      <module />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
+      <setting name="vmparams" value="" />
+      <setting name="cmdLine" value="run-app" />
+      <setting name="passParentEnv" value="true" />
+      <setting name="grailsApplicationRoot" value="" />
+      <setting name="launchBrowser" value="true" />
+      <setting name="launchBrowserUrl" value="" />
+      <setting name="depsClasspath" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="fbyx" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="fbyx [jetty:run]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="jetty:run" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="zftz" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.88" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="1.8">
+      <option name="BROWSER_ID" value="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
+      <option name="UPDATING_POLICY" value="hot-swap-classes" />
+      <deployment>
+        <artifact name="zftz:war">
+          <settings>
+            <option name="CONTEXT_PATH" value="/zftz" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_zftz" />
+        <option name="HTTP_PORT" value="8888" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="60245" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="JRebel Debug">
+        <option name="DEBUG_PORT" value="51805" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="JRebel Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="JRebel Executor">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="zftz:war" />
+        </option>
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Maven.fbyx [jetty:run]" />
+      <item itemvalue="Tomcat Server.zftz" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Maven.fbyx [jetty:run]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SshConsoleOptionsProvider">
+    <option name="myEncoding" value="UTF-8" />
+    <option name="myConnectionType" value="NONE" />
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\qlh\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a03a8fe1-b1c3-44ac-8bac-4f253b879d07" name="Default Changelist" comment="" />
+      <changelist id="a23207e3-ff06-4fb3-8157-738dc10c282a" name="ignored list" comment="不提交的文件" />
+      <created>1558058544884</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1558058544884</updated>
+      <workItem from="1558058550994" duration="260000" />
+      <workItem from="1558322719744" duration="2475000" />
+      <workItem from="1558344981810" duration="1265000" />
+      <workItem from="1558350108339" duration="4446000" />
+      <workItem from="1558400056529" duration="3902000" />
+      <workItem from="1558404499556" duration="630000" />
+      <workItem from="1558405780543" duration="1428000" />
+      <workItem from="1558407764971" duration="212000" />
+      <workItem from="1558408035466" duration="4363000" />
+      <workItem from="1558414606559" duration="4023000" />
+      <workItem from="1558424151177" duration="187000" />
+      <workItem from="1558424904986" duration="13159000" />
+      <workItem from="1558440903841" duration="3714000" />
+      <workItem from="1558486670070" duration="12169000" />
+      <workItem from="1558504199421" duration="23546000" />
+      <workItem from="1558530167230" duration="2410000" />
+      <workItem from="1558573230792" duration="38855000" />
+      <workItem from="1558659392483" duration="20887000" />
+      <workItem from="1558684773183" duration="5354000" />
+      <workItem from="1558925473246" duration="33747000" />
+      <workItem from="1559005453778" duration="2746000" />
+      <workItem from="1559008781730" duration="31533000" />
+      <workItem from="1559091562624" duration="33886000" />
+      <workItem from="1559178517332" duration="12062000" />
+      <workItem from="1559196153725" duration="24793000" />
+      <workItem from="1559264696368" duration="9919000" />
+      <workItem from="1559276870777" duration="429000" />
+      <workItem from="1559278657156" duration="2024000" />
+      <workItem from="1559284183351" duration="2858000" />
+      <workItem from="1559287504488" duration="5633000" />
+      <workItem from="1559353889215" duration="2516000" />
+      <workItem from="1559356750336" duration="378000" />
+      <workItem from="1559528361244" duration="2982000" />
+      <workItem from="1559533085342" duration="52000" />
+      <workItem from="1559533761991" duration="24365000" />
+      <workItem from="1559610489701" duration="10786000" />
+      <workItem from="1559624230748" duration="72000" />
+      <workItem from="1559624389202" duration="237000" />
+      <workItem from="1559627497517" duration="6434000" />
+      <workItem from="1559634518823" duration="16212000" />
+      <workItem from="1559653847080" duration="504000" />
+      <workItem from="1559697531362" duration="12806000" />
+      <workItem from="1559711747580" duration="2181000" />
+      <workItem from="1559716539208" duration="19735000" />
+      <workItem from="1559783078855" duration="15794000" />
+      <workItem from="1559800737632" duration="638000" />
+      <workItem from="1559801892345" duration="11801000" />
+      <workItem from="1560132973287" duration="5597000" />
+      <workItem from="1560139154172" duration="4573000" />
+      <workItem from="1560145087990" duration="12661000" />
+      <workItem from="1560161531218" duration="10782000" />
+      <workItem from="1560214633050" duration="40965000" />
+      <workItem from="1560301799308" duration="7162000" />
+      <workItem from="1560309820944" duration="33256000" />
+      <workItem from="1560388144938" duration="28022000" />
+      <workItem from="1560474386447" duration="19094000" />
+      <workItem from="1560567971880" duration="16712000" />
+      <workItem from="1560585558937" duration="23816000" />
+      <workItem from="1560738081105" duration="26429000" />
+      <workItem from="1560820678530" duration="4697000" />
+      <workItem from="1560825514681" duration="86000" />
+      <workItem from="1560826144038" duration="17504000" />
+      <workItem from="1560844958798" duration="16708000" />
+      <workItem from="1560908027379" duration="26635000" />
+      <workItem from="1560993700686" duration="14851000" />
+      <workItem from="1561011953032" duration="23594000" />
+      <workItem from="1561080422643" duration="20218000" />
+      <workItem from="1561344063219" duration="29398000" />
+      <workItem from="1561381380419" duration="304000" />
+      <workItem from="1561425135798" duration="35305000" />
+      <workItem from="1561511257900" duration="37529000" />
+      <workItem from="1561597983221" duration="37734000" />
+      <workItem from="1561683881472" duration="2105000" />
+      <workItem from="1561686603967" duration="26697000" />
+      <workItem from="1561784490478" duration="19756000" />
+      <workItem from="1561804978857" duration="71000" />
+      <workItem from="1561805540688" duration="10950000" />
+      <workItem from="1561860457165" duration="11000" />
+      <workItem from="1561860473381" duration="704000" />
+      <workItem from="1561862336646" duration="215000" />
+      <workItem from="1562332780070" duration="95000" />
+      <workItem from="1562403754593" duration="786000" />
+      <workItem from="1562458452803" duration="1360000" />
+      <workItem from="1562473028012" duration="110000" />
+      <workItem from="1562473224804" duration="125000" />
+      <workItem from="1562473510724" duration="67000" />
+      <workItem from="1563545952920" duration="78000" />
+      <workItem from="1564195290746" duration="249000" />
+      <workItem from="1564196555150" duration="153000" />
+      <workItem from="1564216033295" duration="1912000" />
+      <workItem from="1564219417724" duration="88000" />
+      <workItem from="1591621696085" duration="517000" />
+      <workItem from="1591701074195" duration="27000" />
+    </task>
+    <task id="LOCAL-00042">
+      <created>1560855393174</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1560855393174</updated>
+    </task>
+    <task id="LOCAL-00043">
+      <created>1560861982328</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1560861982328</updated>
+    </task>
+    <task id="LOCAL-00044">
+      <created>1560863501876</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1560863501876</updated>
+    </task>
+    <task id="LOCAL-00045">
+      <created>1560909307029</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1560909307029</updated>
+    </task>
+    <task id="LOCAL-00046">
+      <created>1560910860924</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1560910860925</updated>
+    </task>
+    <task id="LOCAL-00047">
+      <created>1560915871724</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1560915871724</updated>
+    </task>
+    <task id="LOCAL-00048">
+      <created>1560916349838</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1560916349838</updated>
+    </task>
+    <task id="LOCAL-00049">
+      <created>1560919364063</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1560919364063</updated>
+    </task>
+    <task id="LOCAL-00050">
+      <created>1560920516821</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1560920516822</updated>
+    </task>
+    <task id="LOCAL-00051">
+      <created>1560921335959</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1560921335959</updated>
+    </task>
+    <task id="LOCAL-00052">
+      <created>1560947014740</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1560947014740</updated>
+    </task>
+    <task id="LOCAL-00053">
+      <created>1560996504756</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1560996504757</updated>
+    </task>
+    <task id="LOCAL-00054">
+      <created>1560998058536</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1560998058536</updated>
+    </task>
+    <task id="LOCAL-00055">
+      <created>1560998708869</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1560998708869</updated>
+    </task>
+    <task id="LOCAL-00056">
+      <created>1561006700802</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1561006700802</updated>
+    </task>
+    <task id="LOCAL-00057">
+      <created>1561018255886</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1561018255887</updated>
+    </task>
+    <task id="LOCAL-00058">
+      <created>1561018340933</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1561018340933</updated>
+    </task>
+    <task id="LOCAL-00059">
+      <created>1561023775180</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1561023775180</updated>
+    </task>
+    <task id="LOCAL-00060">
+      <created>1561039492512</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1561039492512</updated>
+    </task>
+    <task id="LOCAL-00061">
+      <created>1561085431169</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1561085431170</updated>
+    </task>
+    <task id="LOCAL-00062">
+      <created>1561086480850</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1561086480851</updated>
+    </task>
+    <task id="LOCAL-00063">
+      <created>1561087481990</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1561087481990</updated>
+    </task>
+    <task id="LOCAL-00064">
+      <created>1561089473581</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1561089473581</updated>
+    </task>
+    <task id="LOCAL-00065">
+      <created>1561106558848</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1561106558850</updated>
+    </task>
+    <task id="LOCAL-00066">
+      <created>1561379781448</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1561379781450</updated>
+    </task>
+    <task id="LOCAL-00067">
+      <created>1561380323808</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1561380323808</updated>
+    </task>
+    <task id="LOCAL-00068">
+      <created>1561425301406</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1561425301406</updated>
+    </task>
+    <task id="LOCAL-00069">
+      <created>1561451142633</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1561451142633</updated>
+    </task>
+    <task id="LOCAL-00070">
+      <created>1561461586660</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1561461586661</updated>
+    </task>
+    <task id="LOCAL-00071">
+      <created>1561513725164</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1561513725165</updated>
+    </task>
+    <task id="LOCAL-00072">
+      <created>1561518798167</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1561518798167</updated>
+    </task>
+    <task id="LOCAL-00073">
+      <created>1561549644166</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1561549644166</updated>
+    </task>
+    <task id="LOCAL-00074">
+      <created>1561551943340</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1561551943340</updated>
+    </task>
+    <task id="LOCAL-00075">
+      <created>1561602405877</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1561602405878</updated>
+    </task>
+    <task id="LOCAL-00076">
+      <created>1561603735454</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1561603735455</updated>
+    </task>
+    <task id="LOCAL-00077">
+      <created>1561604101309</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1561604101309</updated>
+    </task>
+    <task id="LOCAL-00078">
+      <created>1561606976437</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1561606976437</updated>
+    </task>
+    <task id="LOCAL-00079">
+      <created>1561615422203</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1561615422203</updated>
+    </task>
+    <task id="LOCAL-00080">
+      <created>1561631895582</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1561631895582</updated>
+    </task>
+    <task id="LOCAL-00081">
+      <created>1561633331575</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1561633331575</updated>
+    </task>
+    <task id="LOCAL-00082">
+      <created>1561684498918</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1561684498919</updated>
+    </task>
+    <task id="LOCAL-00083">
+      <created>1561687681274</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1561687681275</updated>
+    </task>
+    <task id="LOCAL-00084">
+      <created>1561696806629</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1561696806629</updated>
+    </task>
+    <task id="LOCAL-00085">
+      <created>1561702515096</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1561702515096</updated>
+    </task>
+    <task id="LOCAL-00086">
+      <created>1561707311773</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1561707311774</updated>
+    </task>
+    <task id="LOCAL-00087">
+      <created>1561714866765</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1561714866765</updated>
+    </task>
+    <task id="LOCAL-00088">
+      <created>1561802121651</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1561802121652</updated>
+    </task>
+    <task id="LOCAL-00089">
+      <created>1561804195485</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1561804195485</updated>
+    </task>
+    <task id="LOCAL-00090">
+      <created>1561814786638</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1561814786640</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="739" y="295" key="FileChooserDialogImpl" timestamp="1591621826997">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="739" y="295" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1591621826997" />
+    <state x="453" y="184" key="SettingsEditor" timestamp="1591621827801">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="453" y="184" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1591621827801" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/ZbkServiceImpl.java</url>
+          <line>155</line>
+          <option name="timeStamp" value="89" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/action/ZbkController.java</url>
+          <line>66</line>
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/ProServiceImpl.java</url>
+          <line>1656</line>
+          <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/action/ZbkController.java</url>
+          <line>80</line>
+          <option name="timeStamp" value="186" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/ProServiceImpl.java</url>
+          <line>2684</line>
+          <option name="timeStamp" value="196" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/ProServiceImpl.java</url>
+          <line>2663</line>
+          <option name="timeStamp" value="198" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/XmzjglServiceImpl.java</url>
+          <line>419</line>
+          <option name="timeStamp" value="256" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/XmzjglServiceImpl.java</url>
+          <line>1406</line>
+          <option name="timeStamp" value="341" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/XmzjglServiceImpl.java</url>
+          <line>210</line>
+          <option name="timeStamp" value="352" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/datanew/service/impl/XmzjglServiceImpl.java</url>
+          <line>1585</line>
+          <option name="timeStamp" value="358" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
+        <watch expression="ConfigureParser.getPropert(&quot;ftp.upload.path&quot;)" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>jsonObject.containsKey(&quot;SID&quot;)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>TYPE_MAP.get(type)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>yhglywyhyy.getSzdwid()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(&quot;年度总投资&quot;).equals(title5)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(&quot;年度&quot;).equals(title4)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(&quot;总投资&quot;).equals(title3)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(&quot;项目名称&quot;).equals(title2)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(&quot;项目编码&quot;).equals(title1)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!( (&quot;项目编码&quot;).equals(title1)&amp;&amp;(&quot;项目名称&quot;).equals(title2)&amp;&amp;(&quot;总投资&quot;).equals(title3)&amp;&amp;(&quot;年度&quot;).equals(title4)&amp;&amp;(&quot;年度总投资&quot;).equals(title5))</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>zftz:war</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Spring</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>zftz</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: ant:ant:1.6.5</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
